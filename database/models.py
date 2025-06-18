@@ -1,9 +1,10 @@
 import asyncpg
-from typing import List, Optional
+from typing import List, Optional, Dict
 from datetime import datetime
 import os
 import secrets
 import string
+import logging
 
 class Database:
     def __init__(self):
@@ -42,15 +43,6 @@ class Database:
                     valid BOOLEAN DEFAULT FALSE
                 )
             ''')
-            await conn.execute('''
-                CREATE TABLE IF NOT EXISTS channels (
-                    id SERIAL PRIMARY KEY,
-                    channel_id BIGINT UNIQUE,
-                    title VARCHAR(255),
-                    username VARCHAR(255),
-                    mandatory BOOLEAN DEFAULT TRUE
-                )
-            ''')
 
     def generate_referral_code(self) -> str:
         """Generate 8-character random string"""
@@ -78,20 +70,20 @@ class Database:
                 )
                 return True, referral_code
             except asyncpg.UniqueViolationError:
-                # Get existing referral code
+                # Get existing referral code and return it as-is without generating a new one.
                 existing_code = await conn.fetchval('SELECT referral_code FROM users WHERE telegram_id = $1', telegram_id)
                 return False, existing_code
-
+                
     async def get_user(self, telegram_id: int) -> Optional[dict]:
         async with self.pool.acquire() as conn:
             row = await conn.fetchrow('SELECT * FROM users WHERE telegram_id = $1', telegram_id)
             return dict(row) if row else None
-
+            
     async def get_user_by_referral_code(self, referral_code: str) -> Optional[dict]:
         async with self.pool.acquire() as conn:
             row = await conn.fetchrow('SELECT * FROM users WHERE referral_code = $1', referral_code)
             return dict(row) if row else None
-
+            
     async def add_referral(self, referrer_telegram_id: int, referred_telegram_id: int, referral_code: str) -> bool:
         async with self.pool.acquire() as conn:
             try:
@@ -99,15 +91,31 @@ class Database:
                 referrer_id = await conn.fetchval('SELECT id FROM users WHERE telegram_id = $1', referrer_telegram_id)
                 referred_id = await conn.fetchval('SELECT id FROM users WHERE telegram_id = $1', referred_telegram_id)
                 
-                if not referrer_id or not referred_id:
+                if not referrer_id:
+                    logging.error(f"Referrer ID not found for telegram_id: {referrer_telegram_id}")
+                    return False
+                    
+                if not referred_id:
+                    logging.error(f"Referred ID not found for telegram_id: {referred_telegram_id}")
                     return False
                 
-                await conn.execute(
-                    'INSERT INTO referrals (referrer_id, referred_id, referral_code) VALUES ($1, $2, $3)',
-                    referrer_id, referred_id, referral_code
+                # Check if referral already exists
+                existing = await conn.fetchval(
+                    'SELECT id FROM referrals WHERE referrer_id = $1 AND referred_id = $2',
+                    referrer_id, referred_id
                 )
+                if existing:
+                    logging.info(f"Referral already exists: {referrer_id} -> {referred_id}")
+                    return True
+                
+                await conn.execute(
+                    'INSERT INTO referrals (referrer_id, referred_id, valid) VALUES ($1, $2, $3)',
+                    referrer_id, referred_id, False
+                )
+                logging.info(f"Added new referral: {referrer_id} -> {referred_id}")
                 return True
-            except:
+            except Exception as e:
+                logging.error(f"Error adding referral: {str(e)}")
                 return False
 
     async def validate_referral(self, referrer_telegram_id: int, referred_telegram_id: int):
@@ -128,7 +136,7 @@ class Database:
                 AND r.valid = FALSE
             ''', referrer_telegram_id)
             return [dict(row) for row in rows]
-
+            
     async def get_valid_referrals_count(self, referrer_telegram_id: int) -> int:
         async with self.pool.acquire() as conn:
             return await conn.fetchval('''
@@ -136,7 +144,7 @@ class Database:
                 WHERE referrer_id = (SELECT id FROM users WHERE telegram_id = $1) 
                 AND valid = TRUE
             ''', referrer_telegram_id)
-
+            
     def get_mandatory_channel_ids(self) -> List[int]:
         """Get mandatory channel IDs from environment variables"""
         channel_ids_str = os.getenv('MANDATORY_CHATS_IDS', '')
@@ -146,18 +154,39 @@ class Database:
             return [int(channel_id.strip()) for channel_id in channel_ids_str.split(',') if channel_id.strip()]
         except ValueError:
             return []
-
+            
     async def get_user_language(self, telegram_id: int) -> str:
-        async with self.pool.acquire() as conn:
-            lang = await conn.fetchval('SELECT language FROM users WHERE telegram_id = $1', telegram_id)
-            return lang or 'uz'
-
+        """Always return Uzbek language for all users"""
+        return 'uz'
+            
     async def update_user_language(self, telegram_id: int, language: str):
         async with self.pool.acquire() as conn:
             await conn.execute('UPDATE users SET language = $1 WHERE telegram_id = $2', language, telegram_id)
             lang = await conn.fetchval('SELECT language FROM users WHERE telegram_id = $1', telegram_id)
             return lang or 'uz'
-
-    async def update_user_language(self, telegram_id: int, language: str):
+            
+    async def set_user_language(self, telegram_id: int, language: str):
+        """Set user's preferred language"""
+        return await self.update_user_language(telegram_id, language)
+    
+    async def validate_user_referrals(self, telegram_id: int) -> Dict[str, int]:
+        """Validate any pending referrals for this user"""
         async with self.pool.acquire() as conn:
-            await conn.execute('UPDATE users SET language = $1 WHERE telegram_id = $2', language, telegram_id)
+            # Get user's internal ID
+            user_id = await conn.fetchval('SELECT id FROM users WHERE telegram_id = $1', telegram_id)
+            if not user_id:
+                return {"validated": 0}
+                
+            # Check if this user was referred by someone else and that referral is not validated yet
+            pending_referrals = await conn.fetch('''
+                SELECT id FROM referrals 
+                WHERE referred_id = $1 AND valid = FALSE
+            ''', user_id)
+            
+            # Validate all pending referrals where this user is the referred one
+            validated_count = 0
+            for ref in pending_referrals:
+                await conn.execute('UPDATE referrals SET valid = TRUE WHERE id = $1', ref['id'])
+                validated_count += 1
+                
+            return {"validated": validated_count}

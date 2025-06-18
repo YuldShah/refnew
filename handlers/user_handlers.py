@@ -1,197 +1,113 @@
-from aiogram import Router, F
-from aiogram.filters import CommandStart
-from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
-from aiogram.fsm.context import FSMContext
-from database.models import Database
-from text.messages import get_text, get_user_text
-from filters.user_filters import IsUserFilter
-from aiogram.exceptions import TelegramBadRequest
-import os
+from aiogram import Router
+from handlers.user.menu_handlers import menu_router
+from handlers.user.stats_handlers import refresh_user_stats
+from keyboards.user_keyboards import get_main_user_keyboard
+from text.messages import get_text
+from aiogram.types import CallbackQuery
+from aiogram import F
 import logging
 
+# Create main user router that includes all sub-routers
 user_router = Router()
-user_router.message.filter(IsUserFilter())
-user_router.callback_query.filter(IsUserFilter())
-
-@user_router.message(CommandStart())
-async def start_handler(message: Message, state: FSMContext, db: Database):
-    await state.clear()
-    
-    user_id = message.from_user.id
-    username = message.from_user.username or ""
-    full_name = message.from_user.full_name or ""
-    
-    # Check if user exists
-    existing_user = await db.get_user(user_id)
-    if existing_user:
-        user_lang = await db.get_user_language(user_id)
-        await message.answer(get_text('already_registered', user_lang))
-        await show_main_menu(message, db)
-        return
-    
-    # Handle referral
-    referrer = None
-    referral_code = None
-    args = message.text.split()
-    if len(args) > 1:
-        referral_code = args[1]
-        if len(referral_code) == 8:
-            referrer = await db.get_user_by_referral_code(referral_code)
-            if not referrer:
-                await message.answer(get_text('invalid_referral', 'uz'))
-                referral_code = None
-            elif referrer['telegram_id'] == user_id:
-                await message.answer(get_text('invalid_referral', 'uz'))
-                referral_code = None
-                referrer = None
-        else:
-            await message.answer(get_text('invalid_referral', 'uz'))
-            referral_code = None
-    
-    # Add user
-    success, user_referral_code = await db.add_user(user_id, username, full_name)
-    
-    if referrer and referral_code:
-        await db.add_referral(referrer['telegram_id'], user_id, referral_code)
-        user_lang = await db.get_user_language(user_id)
-        await message.answer(get_text('referral_welcome', user_lang, referrer=referrer['full_name']))
-        
-        # Check if both users are subscribed to validate referral
-        bot = message.bot
-        channel_ids = db.get_mandatory_channel_ids()
-        
-        both_subscribed = True
-        for channel_id in channel_ids:
-            try:
-                referrer_member = await bot.get_chat_member(channel_id, referrer['telegram_id'])
-                user_member = await bot.get_chat_member(channel_id, user_id)
-                
-                if (referrer_member.status in ['left', 'kicked'] or 
-                    user_member.status in ['left', 'kicked']):
-                    both_subscribed = False
-                    break
-            except:
-                both_subscribed = False
-                break
-        
-        if both_subscribed:
-            await db.validate_referral(referrer['telegram_id'], user_id)
-    else:
-        user_lang = await db.get_user_language(user_id)
-        await message.answer(get_text('welcome', user_lang))
-    
-    await show_main_menu(message, db)
-
-async def show_main_menu(message: Message, db: Database):
-    user_lang = await db.get_user_language(message.from_user.id)
-    keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=get_text('referral_system', user_lang), callback_data='referral_system')],
-        [InlineKeyboardButton(text=get_text('language_settings', user_lang), callback_data='language_settings')]
-    ])
-    await message.answer("<b>Menu</b>", reply_markup=keyboard)
-
-@user_router.callback_query(F.data == 'language_settings')
-async def language_settings_handler(callback: CallbackQuery, db: Database):
-    user_id = callback.from_user.id
-    user_lang = await db.get_user_language(user_id)
-    
-    keyboard = InlineKeyboardMarkup(inline_keyboard=[])
-    
-    if user_lang == 'uz':
-        keyboard.inline_keyboard.append([
-            InlineKeyboardButton(text=get_text('switch_to_english', user_lang), callback_data='set_lang_en')
-        ])
-    else:
-        keyboard.inline_keyboard.append([
-            InlineKeyboardButton(text=get_text('switch_to_uzbek', user_lang), callback_data='set_lang_uz')
-        ])
-    
-    keyboard.inline_keyboard.append([
-        InlineKeyboardButton(text=get_text('back', user_lang), callback_data='back_to_menu')
-    ])
-    
-    text = f"{get_text('language_settings', user_lang)}\n\n{get_text('current_language', user_lang)}"
-    
-    try:
-        await callback.message.edit_text(text, reply_markup=keyboard)
-    except TelegramBadRequest as e:
-        if "message is not modified" in str(e):
-            await callback.answer()
-        else:
-            logging.error(f"Error in language_settings: {e}")
-
-@user_router.callback_query(F.data.startswith('set_lang_'))
-async def change_language_handler(callback: CallbackQuery, db: Database):
-    user_id = callback.from_user.id
-    new_lang = callback.data.split('_')[2]  # 'uz' or 'en'
-    
-    await db.update_user_language(user_id, new_lang)
-    await callback.answer(get_text('language_changed', new_lang))
-    
-    try:
-        await show_main_menu(callback.message, db)
-    except TelegramBadRequest as e:
-        if "message is not modified" in str(e):
-            pass  # Already answered callback above
-        else:
-            logging.error(f"Error in change_language: {e}")
-
-@user_router.callback_query(F.data == 'referral_system')
-async def referral_system_handler(callback: CallbackQuery, db: Database):
-    user_id = callback.from_user.id
-    user_lang = await db.get_user_language(user_id)
-    
-    # Check unvalidated referrals and try to validate them
-    unvalidated = await db.get_unvalidated_referrals(user_id)
-    bot = callback.bot
-    channel_ids = db.get_mandatory_channel_ids()
-    
-    for referral in unvalidated:
-        both_subscribed = True
-        try:
-            for channel_id in channel_ids:
-                referrer_member = await bot.get_chat_member(channel_id, user_id)
-                referred_member = await bot.get_chat_member(channel_id, referral['referred_telegram_id'])
-                
-                if (referrer_member.status in ['left', 'kicked'] or 
-                    referred_member.status in ['left', 'kicked']):
-                    both_subscribed = False
-                    break
-            
-            if both_subscribed:
-                await db.validate_referral(user_id, referral['referred_telegram_id'])
-        except:
-            pass
-    
-    valid_count = await db.get_valid_referrals_count(user_id)
-    pending_count = len(await db.get_unvalidated_referrals(user_id))
-    
-    bot_username = (await bot.get_me()).username
-    user_data = await db.get_user(user_id)
-    referral_link = f"https://t.me/{bot_username}?start={user_data['referral_code']}"
-    
-    text = f"{get_text('valid_referrals', user_lang, count=valid_count)}\n"
-    text += f"{get_text('pending_referrals', user_lang, count=pending_count)}\n\n"
-    text += get_text('your_referral_link', user_lang, link=referral_link)
-    
-    keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=get_text('back', user_lang), callback_data='back_to_menu')]
-    ])
-    
-    await callback.message.edit_text(text, reply_markup=keyboard)
+user_router.include_router(menu_router)
 
 @user_router.callback_query(F.data == 'back_to_menu')
-async def back_to_menu_handler(callback: CallbackQuery, db: Database):
-    try:
-        await show_main_menu(callback.message, db)
-    except TelegramBadRequest as e:
-        if "message is not modified" in str(e):
-            await callback.answer()
-        else:
-            logging.error(f"Error in back_to_menu: {e}")
+async def back_to_menu_handler(callback: CallbackQuery, db):
+    """Handle back to menu callback"""
+    await callback.message.delete()
+    await callback.message.answer(
+        get_text('welcome', 'uz'),
+        reply_markup=get_main_user_keyboard()
+    )
+    await callback.answer()
 
 @user_router.callback_query(F.data == 'check_subscription')
-async def check_subscription_handler(callback: CallbackQuery, db: Database):
-    user_lang = await db.get_user_language(callback.from_user.id)
-    await callback.answer(get_text('not_subscribed', user_lang))
-    await callback.answer(get_text('not_subscribed', user_lang))
+async def check_subscription_handler(callback: CallbackQuery, db):
+    """Handle subscription check and validate referrals if user is now subscribed"""
+    user_id = callback.from_user.id
+    bot = callback.bot
+    
+    # Check subscription status
+    channel_ids = db.get_mandatory_channel_ids()
+    all_subscribed = True
+    
+    for channel_id in channel_ids:
+        try:
+            member = await bot.get_chat_member(channel_id, user_id)
+            if member.status not in ['member', 'administrator', 'creator']:
+                all_subscribed = False
+                break
+        except Exception as e:
+            all_subscribed = False
+            break
+    
+    if all_subscribed:
+        # Validate any pending referrals for this user
+        validation_result = await db.validate_user_referrals(user_id)
+        
+        # Notify referrers about newly validated referrals
+        if validation_result["validated"] > 0:
+            # Get who referred this user and notify them
+            async with db.pool.acquire() as conn:
+                referrers = await conn.fetch('''
+                    SELECT u.telegram_id, u.full_name, u.username 
+                    FROM referrals r 
+                    JOIN users u ON r.referrer_id = u.id 
+                    WHERE r.referred_id = (SELECT id FROM users WHERE telegram_id = $1) 
+                    AND r.valid = TRUE
+                ''', user_id)
+                
+                for referrer in referrers:
+                    user_display_name = callback.from_user.full_name or f"@{callback.from_user.username}" or "Anonymous"
+                    
+                    notification_text = get_text(
+                        'referrer_user_subscribed', 
+                        'uz', 
+                        user_name=user_display_name
+                    )
+                    try:
+                        await callback.bot.send_message(referrer['telegram_id'], notification_text)
+                    except Exception as e:
+                        logging.error(f"Failed to send notification to referrer {referrer['telegram_id']}: {e}")
+        
+        # Show success message
+        success_text = get_text('subscription_confirmed', 'uz')
+        
+        await callback.message.edit_text(success_text)
+        
+        # Send main menu in a new message
+        await callback.message.answer(
+            get_text('welcome', 'uz'),
+            reply_markup=get_main_user_keyboard()
+        )
+    else:
+        # User is still not subscribed - show subscription required message again
+        from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+        
+        keyboard = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(
+                text=get_text('our_chats_folder', 'uz'),
+                url="https://t.me/addlist/a55Whe4Fa9ozNDky"
+            )],
+            [InlineKeyboardButton(
+                text=get_text('check_subscription', 'uz'),
+                callback_data='check_subscription'
+            )]
+        ])
+        
+        try:
+            await callback.message.edit_text(
+                get_text('not_subscribed', 'uz'),
+                reply_markup=keyboard
+            )
+        except Exception as e:
+            logging.error(f"Failed to edit message")
+        finally:
+            await callback.answer(get_text('not_subscribed', 'uz'), show_alert=True)
+    
+    await callback.answer()
+
+@user_router.callback_query(F.data == 'refresh_stats')
+async def refresh_stats_handler(callback: CallbackQuery, db):
+    """Handle refresh stats callback"""
+    await refresh_user_stats(callback, db)

@@ -1,0 +1,106 @@
+from database.models import Database
+from typing import Dict, Any, Optional
+
+class ReferralService:
+    def __init__(self, db: Database):
+        self.db = db
+    
+    async def get_user_referral_link(self, user_id: int, bot_username: str = None) -> str:
+        """Get user's referral link"""
+        user = await self.db.get_user(user_id)
+        if user and user.get('referral_code'):
+            if not bot_username:
+                bot_username = "your_bot_username"  # Fallback
+            return f"https://t.me/{bot_username}?start={user['referral_code']}"
+        return None
+    
+    async def get_referral_stats(self, user_id: int) -> Dict[str, Any]:
+        """Get user's referral statistics"""
+        async with self.db.pool.acquire() as conn:
+            # Get total referrals
+            total_referrals = await conn.fetchval(
+                'SELECT COUNT(*) FROM referrals r JOIN users u ON r.referred_id = u.id WHERE r.referrer_id = (SELECT id FROM users WHERE telegram_id = $1)',
+                user_id
+            )
+            
+            # Get valid referrals
+            valid_referrals = await conn.fetchval(
+                'SELECT COUNT(*) FROM referrals r JOIN users u ON r.referred_id = u.id WHERE r.referrer_id = (SELECT id FROM users WHERE telegram_id = $1) AND r.valid = TRUE',
+                user_id
+            )
+            
+            # Get pending referrals
+            pending_referrals = total_referrals - valid_referrals
+            
+            return {
+                'total_referrals': total_referrals or 0,
+                'valid_referrals': valid_referrals or 0,
+                'pending_referrals': pending_referrals or 0
+            }
+    
+    async def get_referred_users(self, user_id: int) -> list:
+        """Get list of users referred by this user"""
+        async with self.db.pool.acquire() as conn:
+            referred_users = await conn.fetch("""
+                SELECT u.full_name, u.username, r.valid, u.joined_at
+                FROM referrals r 
+                JOIN users u ON r.referred_id = u.id 
+                WHERE r.referrer_id = (SELECT id FROM users WHERE telegram_id = $1)
+                ORDER BY u.joined_at DESC
+            """, user_id)
+            
+            return [dict(user) for user in referred_users]
+    
+    async def check_and_validate_pending_referrals(self, user_id: int, bot) -> Dict[str, Any]:
+        """Check subscription status of pending referrals and validate them if subscribed"""
+        # Get user ID from telegram ID
+        user = await self.db.get_user(user_id)
+        if not user:
+            return {"validated": 0, "still_pending": 0}
+            
+        # Get pending referrals
+        async with self.db.pool.acquire() as conn:
+            pending_referrals = await conn.fetch("""
+                SELECT r.id, r.referrer_id, r.referred_id, u.telegram_id as referred_telegram_id
+                FROM referrals r 
+                JOIN users u ON r.referred_id = u.id 
+                WHERE r.referrer_id = $1 AND r.valid = FALSE
+            """, user['id'])
+            
+            if not pending_referrals:
+                return {"validated": 0, "still_pending": 0}
+                
+            # Get channel IDs to check subscriptions
+            channel_ids = self.db.get_mandatory_channel_ids()
+            if not channel_ids:
+                # If no mandatory channels, validate all pending referrals
+                for ref in pending_referrals:
+                    await conn.execute("UPDATE referrals SET valid = TRUE WHERE id = $1", ref['id'])
+                return {"validated": len(pending_referrals), "still_pending": 0}
+            
+            # Check each pending referral
+            validated_count = 0
+            for ref in pending_referrals:
+                referred_telegram_id = ref['referred_telegram_id']
+                
+                # Check if user is subscribed to all channels
+                subscribed = True
+                for channel_id in channel_ids:
+                    try:
+                        member = await bot.get_chat_member(channel_id, referred_telegram_id)
+                        if member.status not in ['member', 'administrator', 'creator']:
+                            subscribed = False
+                            break
+                    except Exception as e:
+                        subscribed = False
+                        break
+                
+                # If subscribed, validate the referral
+                if subscribed:
+                    await conn.execute("UPDATE referrals SET valid = TRUE WHERE id = $1", ref['id'])
+                    validated_count += 1
+            
+            return {
+                "validated": validated_count,
+                "still_pending": len(pending_referrals) - validated_count
+            }

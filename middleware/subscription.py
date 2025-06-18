@@ -29,11 +29,14 @@ class SubscriptionMiddleware(BaseMiddleware):
                 admin_ids = list(map(int, admin_ids_str.split(',')))
                 if user.id in admin_ids:
                     return await handler(event, data)
-            
-            # Skip for certain commands
+              # Skip for certain commands and check_subscription callback
             if isinstance(event, Message) and event.text:
                 if event.text.startswith('/start'):
                     return await handler(event, data)
+            
+            # Skip subscription check for check_subscription callback to let handler handle it
+            if isinstance(event, CallbackQuery) and event.data == 'check_subscription':
+                return await handler(event, data)
             
             from text.messages import get_text
             
@@ -58,8 +61,7 @@ class SubscriptionMiddleware(BaseMiddleware):
                     bot_permission_error = True
             
             if bot_permission_error:
-                user_lang = await self.db.get_user_language(user.id)
-                error_message = get_text('unexpected_error', user_lang)
+                error_message = get_text('unexpected_error', 'uz')
                 
                 if isinstance(event, Message):
                     await event.answer(error_message)
@@ -73,29 +75,25 @@ class SubscriptionMiddleware(BaseMiddleware):
                 if state:
                     await state.clear()
                 
-                # Get user's language preference
-                user_lang = await self.db.get_user_language(user.id)
-                
                 keyboard = InlineKeyboardMarkup(inline_keyboard=[
                     [InlineKeyboardButton(
-                        text=get_text('our_chats_folder', user_lang),
+                        text=get_text('our_chats_folder', 'uz'),
                         url="https://t.me/addlist/a55Whe4Fa9ozNDky"
                     )],
                     [InlineKeyboardButton(
-                        text=get_text('check_subscription', user_lang),
+                        text=get_text('check_subscription', 'uz'),
                         callback_data='check_subscription'
-                    )]
-                ])
+                    )]                ])
                 
                 try:
                     if isinstance(event, Message):
                         await event.answer(
-                            get_text('subscription_required', user_lang),
+                            get_text('subscription_required', 'uz'),
                             reply_markup=keyboard
                         )
                     elif isinstance(event, CallbackQuery):
                         await event.message.edit_text(
-                            get_text('subscription_required', user_lang),
+                            get_text('subscription_required', 'uz'),
                             reply_markup=keyboard
                         )
                 except TelegramBadRequest as e:
@@ -108,3 +106,20 @@ class SubscriptionMiddleware(BaseMiddleware):
                 return
         
         return await handler(event, data)
+
+    async def _notify_admin(self, bot, channel_id):
+        """Notify admin about bot permission issues"""
+        try:
+            admin_ids_str = os.getenv('ADMIN_IDS', '')
+            if admin_ids_str:
+                admin_ids = list(map(int, admin_ids_str.split(',')))
+                for admin_id in admin_ids:
+                    try:
+                        await bot.send_message(
+                            admin_id, 
+                            f"⚠️ Bot doesn't have permission to check membership in channel {channel_id}. Please add bot as admin."
+                        )
+                    except Exception as e:
+                        logging.error(f"Failed to notify admin {admin_id}: {e}")
+        except Exception as e:
+            logging.error(f"Error in _notify_admin: {e}")
