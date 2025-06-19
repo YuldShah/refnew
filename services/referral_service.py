@@ -69,9 +69,8 @@ class ReferralService:
             
             if not pending_referrals:
                 return {"validated": 0, "still_pending": 0}
-                
-            # Get channel IDs to check subscriptions
-            channel_ids = self.db.get_mandatory_channel_ids()
+                  # Get channel IDs to check subscriptions
+            channel_ids = await self.db.get_mandatory_channel_ids()
             if not channel_ids:
                 # If no mandatory channels, validate all pending referrals
                 for ref in pending_referrals:
@@ -104,3 +103,46 @@ class ReferralService:
                 "validated": validated_count,
                 "still_pending": len(pending_referrals) - validated_count
             }
+        
+    async def check_and_notify_reward_eligibility(self, user_id: int, bot) -> Dict[str, Any]:
+        """Check if user is eligible for reward and send notification"""
+        stats = await self.get_referral_stats(user_id)
+        valid_count = stats.get('valid_referrals', 0)
+        
+        # Check if user just reached the reward threshold
+        if valid_count >= self.db.required_referrals:
+            # Check if user hasn't been notified yet
+            if not await self.db.has_user_accessed_reward(user_id):
+                # Send reward notification
+                await self._send_reward_notification(user_id, bot)
+                return {
+                    "reward_eligible": True,
+                    "just_qualified": True,
+                    "valid_referrals": valid_count
+                }
+            else:
+                return {
+                    "reward_eligible": True,
+                    "just_qualified": False,
+                    "valid_referrals": valid_count
+                }
+        
+        return {
+            "reward_eligible": False,
+            "just_qualified": False,
+            "valid_referrals": valid_count,
+            "remaining_referrals": self.db.required_referrals - valid_count
+        }
+    
+    async def _send_reward_notification(self, user_id: int, bot):
+        """Send reward eligibility notification to user"""
+        from text.messages import get_text
+        
+        try:
+            text = get_text('reward_eligible_notification', 'uz', 
+                          required_referrals=self.db.required_referrals)
+            await bot.send_message(user_id, text)
+        except Exception as e:
+            # Log error but don't raise - notification failure shouldn't break flow
+            import logging
+            logging.error(f"Failed to send reward notification to {user_id}: {e}")

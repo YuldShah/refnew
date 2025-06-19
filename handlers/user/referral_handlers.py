@@ -1,4 +1,4 @@
-from aiogram.types import Message
+from aiogram.types import Message, InlineQuery, InlineQueryResultVideo
 from database.models import Database
 from text.messages import get_text
 from keyboards.user_keyboards import get_referral_share_keyboard
@@ -22,7 +22,43 @@ async def show_referral_link(message: Message, db: Database):
         text = get_text('referral_link_error', 'uz')
         keyboard = None
     
-    await message.answer(
-        text,
+    await message.answer_video(
+        video="BAACAgIAAxkBAAIR4WhUZZTFkl_JvLlAkgod_CQFMljrAAIqdAACA1k4SRSFKq0mGiTUNgQ",
+        caption=text,
         reply_markup=keyboard
     )
+
+async def handle_inline_query(inline_query: InlineQuery, db: Database):
+    """Handle inline queries for sharing referral videos"""
+    import logging
+    logging.info(f"handle_inline_query called for user {inline_query.from_user.id}")
+    
+    user_id = inline_query.from_user.id
+    
+    # Get user's referral code
+    user = await db.get_user(user_id)
+    if not user:
+        logging.warning(f"User {user_id} not found in database")
+        await inline_query.answer([])
+        return
+    
+    # Get bot username
+    bot_info = await inline_query.bot.get_me()
+    bot_username = bot_info.username
+    
+    # Create referral link
+    referral_link = f"https://t.me/{bot_username}?start={user['referral_code']}"
+    
+    # Create video result
+    video_result = InlineQueryResultVideo(
+        id="referral_video",
+        video_url="https://example.com/video.mp4",  # This won't be used since we're using file_id
+        video_file_id="BAACAgIAAxkBAAIR4WhUZZTFkl_JvLlAkgod_CQFMljrAAIqdAACA1k4SRSFKq0mGiTUNgQ",
+        mime_type="video/mp4",
+        thumb_url="https://example.com/thumb.jpg",  # Optional thumbnail
+        title="Referral taklifnomam",
+        description="Mening referral linkimni ulashing",
+        caption=f"🎉 Mening taklifnomam!\n\n🔗 Link: {referral_link}\n\n📱 Ro'yxatdan o'tish uchun linkni bosing!"
+    )
+    
+    await inline_query.answer([video_result], cache_time=300)

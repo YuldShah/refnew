@@ -50,9 +50,11 @@ class AdminService:
                 'SELECT COUNT(*) FROM referrals r JOIN users u ON r.referred_id = u.id WHERE r.referrer_id = $1 AND r.valid = FALSE',
                 user['id']
             )
-        
-        # Add stats to user data        user['valid_referrals'] = valid_referrals
+          # Add stats to user data
+        user['valid_referrals'] = valid_referrals
         user['pending_referrals'] = pending_referrals
+        
+        return user
         
         return user
     

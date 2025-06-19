@@ -11,6 +11,8 @@ import logging
 menu_router = Router()
 menu_router.message.filter(IsUserFilter())
 
+@menu_router.message(F.text == "🏘 Main menu")
+@menu_router.message(F.text == "🏘 Bosh menyu")
 @menu_router.message(CommandStart())
 async def start_handler(message: Message, state: FSMContext, db: Database):
     """Handle /start command - registration and main menu"""
@@ -58,10 +60,9 @@ async def start_handler(message: Message, state: FSMContext, db: Database):
             get_text('referral_welcome', 'uz', referrer=referrer['full_name']),
             reply_markup=get_main_user_keyboard()
         )
-        
-        # Check if both users are subscribed to validate referral
+          # Check if both users are subscribed to validate referral
         bot = message.bot
-        channel_ids = db.get_mandatory_channel_ids()
+        channel_ids = await db.get_mandatory_channel_ids()
         logging.info(f"Checking subscription for channels: {channel_ids}")
         
         both_subscribed = True
@@ -117,7 +118,7 @@ async def start_handler(message: Message, state: FSMContext, db: Database):
 
 @menu_router.message(F.text.in_([
     "📋 Qoidalar", "📋 Rules",
-    "🎁 Sovg'a olish", "🎁 Get Reward", 
+    "🚀 Kirish huquqini olish", 
     "🔗 Mening taklif havolam", "🔗 My Referral Link",
     "📊 Mening statistikam", "📊 My Stats"
 ]))
@@ -127,7 +128,7 @@ async def menu_button_handler(message: Message, db: Database):
     if message.text in ["📋 Qoidalar", "📋 Rules"]:
         from .rules_handlers import show_rules
         await show_rules(message, db)
-    elif message.text in ["🎁 Sovg'a olish", "🎁 Get Reward"]:
+    elif message.text in ["🚀 Kirish huquqini olish"]:
         from .reward_handlers import show_rewards
         await show_rewards(message, db)
     elif message.text in ["🔗 Mening taklif havolam", "🔗 My Referral Link"]:

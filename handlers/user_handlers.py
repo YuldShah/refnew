@@ -3,8 +3,9 @@ from handlers.user.menu_handlers import menu_router
 from handlers.user.stats_handlers import refresh_user_stats
 from keyboards.user_keyboards import get_main_user_keyboard
 from text.messages import get_text
-from aiogram.types import CallbackQuery
+from aiogram.types import CallbackQuery, Message
 from aiogram import F
+from aiogram.fsm.context import FSMContext
 import logging
 
 # Create main user router that includes all sub-routers
@@ -26,9 +27,8 @@ async def check_subscription_handler(callback: CallbackQuery, db):
     """Handle subscription check and validate referrals if user is now subscribed"""
     user_id = callback.from_user.id
     bot = callback.bot
-    
-    # Check subscription status
-    channel_ids = db.get_mandatory_channel_ids()
+      # Check subscription status
+    channel_ids = await db.get_mandatory_channel_ids()
     all_subscribed = True
     
     for channel_id in channel_ids:
@@ -87,7 +87,7 @@ async def check_subscription_handler(callback: CallbackQuery, db):
         keyboard = InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(
                 text=get_text('our_chats_folder', 'uz'),
-                url="https://t.me/addlist/a55Whe4Fa9ozNDky"
+                url="REPLACED"
             )],
             [InlineKeyboardButton(
                 text=get_text('check_subscription', 'uz'),

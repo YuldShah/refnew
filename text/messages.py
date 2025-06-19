@@ -14,12 +14,13 @@ MESSAGES = {
         'valid_referrals': "Tasdiqlangan takliflar: <b>{count}</b>",
         'pending_referrals': "Kutilayotgan takliflar: <b>{count}</b>",
         'your_referral_link': "Sizning taklif havolangiz:\n<code>{link}</code>",
-        'admin_panel': "Admin panel 👨‍💼",
-        'admin_top_referrers': "🏆 Top 10 referrerlar",
-        'admin_user_lookup': "🔍 Foydalanuvchini qidirish",
-        'admin_export_data': "📊 Ma'lumotlarni eksport qilish",
+        'admin_panel': "👨‍💼 Admin panelga xush kelibsiz!",
+        'admin_top_referrers': "🏆 Top 10",
+        'admin_user_lookup': "🔍 Qidirish",
+        'admin_export_data': "📊 Excel",
         'admin_stats': "📈 Statistika",
-        'back_to_admin_menu': "⬅️ Admin menyuga qaytish",
+        'admin_manage_access': "🔐 Majburiy chatlar",
+        'back_to_admin_menu': "🏘 Bosh menyu",
         'admin_user_not_found': "⚠️ Foydalanuvchi topilmadi",
         'admin_enter_user_id': "🔍 Qidirish uchun foydalanuvchi ID raqamini kiriting:",
         'admin_user_info': "<b>Foydalanuvchi ma'lumotlari:</b>\n\n👤 ID: {telegram_id}\n📝 Ism: {full_name}\n📱 Username: @{username}\n🔗 Taklif kodi: {referral_code}\n📅 Qo'shilgan sana: {joined_at}\n\n<b>Referral statistikasi:</b>\n\n✅ Tasdiqlangan takliflar: {valid_referrals}\n⏳ Kutilayotgan takliflar: {pending_referrals}",
@@ -45,11 +46,25 @@ MESSAGES = {
         
         # Main menu buttons
         'rules_button': "📋 Qoidalar",
-        'get_reward_button': "🎁 Sovg'a olish",
+        'get_reward_button': "🚀 Kirish huquqini olish",
         'my_referral_link_button': "🔗 Mening taklif havolam",        'my_stats_button': "📊 Mening statistikam",
+        'share_referral_link': "🔗 Referral havolani ulashish",
         'back_to_menu': "🔙 Bosh menyuga qaytish",        'refresh_stats': "🔄 Yangilash",
-        'share_referral_link': "📤 Havolani ulashish",
-        'stats_up_to_date': "📊 Statistika allaqachon yangi!",
+        'search_user': "🔍 Qidirish",
+        'top_10_referrers': "🏆 Top 10",
+        'export_my_data': "📊 Eksport",
+        'stats_up_to_date': "📊 Statistika yangilangan",
+        
+        # Manage access messages
+        'mandatory_channels_btn': "📋 Majburiy kanallar",
+        'manual_access_btn': "👤 Qo'lda boshqarish",
+        'add_channel_btn': "➕ Kanal qo'shish",
+        'reset_all_channels_btn': "🔄 Hammasini o'chirish",
+        'add_user_access_btn': "✅ Ruxsat berish",
+        'remove_user_access_btn': "❌ Ruxsatni olib qo'yish",
+        'back_btn': "⬅️ Orqaga",
+        'confirm_btn': "✅ Tasdiqlash",
+        'cancel_btn': "❌ Bekor qilish",
         
         # Rules content (placeholder)
         'rules_content': """📋 <b>Bot qoidalari</b>
@@ -60,52 +75,84 @@ MESSAGES = {
 🔹 Spam va noto'g'ri harakatlar taqiqlanadi
 
 Bu yerda qoidalar to'liq yoziladi...""",
-        
-        # Reward content (placeholder)
-        'reward_content': """🎁 <b>Mukofotlar</b>
 
-💰 Har bir tasdiqlangan taklif uchun: 1000 so'm
-🎯 5 taklif uchun: 10,000 so'm bonus
-🏆 10 taklif uchun: 25,000 so'm bonus
+        'reward_available': """🎉 <b>Tabriklaymiz!</b>
 
-Bu yerda mukofotlar tizimi to'liq yoziladi...""",
+🎯 Siz {required_referrals} ta tasdiqlangan foydalanuvchilarni taklif qildingiz! Endi siz darslarimizda qatnasha olasiz!
+
+👇 Quyidagi havolaga bosib chatlar jildini qo'shib oling:
+""",
+
+        'reward_not_available': """
+🎯 Darslarimizga qo'shilish uchun {required_referrals} ta SAT topshirmoqchi bo'lgan tanishingizni botga taklif qilishingiz kerak.
+
+<blockquote>✅ Siz hozircha {current_referrals} ta foydalanuvchini taklif qildingiz. 
+📢 Yana {remaining_referrals} ta do'stingizni taklif qiling!</blockquote>
+
+✍️ Yodda tuting, taklif qilgan tanishlaringiz ham bizning barcha kanallarimizga a'zo bo'lishlari shart!""",
+
+        'reward_eligible_notification': """🎉 <b>Tabriklaymiz!</b>
+
+🎯 Siz {required_referrals} ta tasdiqlangan taklif to'pladingiz!
+""",
         
         # Referral link messages
-        'referral_link_message': """🔗 <b>Sizning taklif havolangiz:</b>
+        'referral_link_message': """
+<b>Ingliz tili 0 darajada bo'lgan lekin Xalqaro SAT sertifikati orqali 3 yil davomida 50% ustama olishni xohlaganlar uchun SAT ELBEK tomonidan barchaga manfaatli loyihaga start bermoqdamiz!
 
-<code>{link}</code>
+Bizni asosiy maqsadimiz o'qituvchilarni shu serifikat ni olib oz-moz bolsada oilaga qoshimcha rizq olib kirishiga sababchi bolishdir
 
-Bu havolani do'stlaringiz bilan ulashing va mukofot oling! 💰""",
+
+O'qituvchi: 
+Elbek Asatullayev 3x SAT Math score 800/800</b>
+
+1⃣
+<blockquote>Oxirgi 2 yil davomida Ingliz tili mutloqo 0 Dan 1000 lab o'quvchilarni kerakli natijani olishizga sababchi bo'ldim</blockquote>
+2⃣
+<blockquote>Ustozlarimizni Ingliz tili darajasini 0 Dan sertifikat olish darajasigacha ko'tardim.</blockquote>
+
+<b>Agar siz ham Bepul marafonda ishtirok etib maximal natijaga ega bo'lmoqchi bo'lsangiz:
+SAT Elbek kanalga a'zo bo'ling
+
+@satelbek</b>
+
+Yetarli ballarga ega bo'ling yopiq kanal va guruhimiz a'zosiga aylaning.
+
+<blockquote>⚠️ Joylar soni cheklangan, bunday imkoniyatni qo'ldan boy bermang 👇</blockquote>
+{link}
+{link}
+{link}
+""",
         'referral_link_error': "Taklif havolasini olishda xatolik yuz berdi.",
         
         # User stats messages        
-        'user_stats_message': """📊 <b>Sizning statistikangiz:</b>
-
-👥 Jami takliflar: <b>{total_referrals}</b>
+        'user_stats_message': """
+<b>📊 Sizning statistikangiz:</b>
+<blockquote>🆔 Sizning ID: <code>{user_id}</code>
+👤 Username: <b>@{username}</b>
 ✅ Tasdiqlangan takliflar: <b>{valid_referrals}</b>
-⏳ Kutilayotgan takliflar: <b>{pending_referrals}</b>
-
-Davom eting va ko'proq mukofot oling! 🎯""",
+⏳ Kutilayotgan takliflar: <b>{pending_referrals}</b></blockquote>
+""",
         'referrals_validated': """🎉 <b>Yangilik!</b> Do'stlaringizdan {count} ta yangi taklif tasdiqlandi!""",
         
         # Referrer notification messages
-        'referrer_new_user_subscribed': """🎉 <b>New user!</b>
+        'referrer_new_user_subscribed': """🎉 <b>Yangi foydalanuvchi!</b>
 
-👤 {user_name} joined the bot through your referral and subscribed to all mandatory channels!
+👤 {user_name} sizning taklifingiz orqali botga qo'shildi va barcha majburiy kanallarga obuna bo'ldi!
 
-✅ This referral has been added to your confirmed referrals list.""",
+✅ Bu taklif tasdiqlangan takliflar ro'yxatiga qo'shildi.""",
         
-        'referrer_new_user_pending': """🔔 <b>New user!</b>
+        'referrer_new_user_pending': """🔔 <b>Yangi foydalanuvchi!</b>
 
-👤 {user_name} joined the bot through your referral.
+👤 {user_name} sizning taklifingiz orqali botga qo'shildi.
 
-⏳ Currently waiting for them to subscribe to mandatory channels. The referral will be confirmed once they subscribe.""",
+⏳ Taklif qilingan foydalanuvchi bizning kanallarga obuna bo'lgandan so'ng taklif tasdiqlanadi.""",
         
-        'referrer_user_subscribed': """🎉 <b>Referral confirmed!</b>
+        'referrer_user_subscribed': """🎉 <b>Taklif tasdiqlandi!</b>
 
-👤 {user_name} has subscribed to mandatory channels!
+👤 {user_name} bizning kanallarga obuna bo'ldi!
 
-✅ This referral is now in your confirmed referrals list.""",
+✅ Bu taklif endi tasdiqlangan takliflar ro'yxatida.""",
     },
     'en': {
         'welcome': "Welcome to the bot! 🎉",
@@ -125,9 +172,9 @@ Davom eting va ko'proq mukofot oling! 🎯""",
         'admin_panel': "Admin Panel 👨‍💼",
         'admin_top_referrers': "🏆 Top 10 referrers",
         'admin_user_lookup': "🔍 Find user by ID",
-        'admin_export_data': "📊 Export user data",
-        'admin_stats': "📈 Statistics",
-        'back_to_admin_menu': "⬅️ Back to admin menu",
+        'admin_export_data': "📊 Export user data",        'admin_stats': "📈 Statistics",
+        'admin_manage_access': "🔐 Manage Access",
+        'back_to_admin_menu': "🏘 Main menu",
         'admin_user_not_found': "⚠️ User not found",
         'admin_enter_user_id': "🔍 Enter Telegram user ID to search:",
         'admin_user_info': "<b>User Information:</b>\n\n👤 ID: {telegram_id}\n📝 Name: {full_name}\n📱 Username: @{username}\n🔗 Referral code: {referral_code}\n📅 Joined: {joined_at}\n\n<b>Referral statistics:</b>\n\n✅ Confirmed referrals: {valid_referrals}\n⏳ Pending referrals: {pending_referrals}",
@@ -154,10 +201,23 @@ Davom eting va ko'proq mukofot oling! 🎯""",
         # Main menu buttons
         'rules_button': "📋 Rules",
         'get_reward_button': "🎁 Get Reward",
-        'my_referral_link_button': "🔗 My Referral Link",        'my_stats_button': "📊 My Stats",
-        'back_to_menu': "🔙 Back to Menu",        'refresh_stats': "🔄 Refresh",
-        'share_referral_link': "📤 Share Link",
-        'stats_up_to_date': "📊 Stats are already up to date!",
+        'my_referral_link_button': "🔗 My Referral Link",        'my_stats_button': "📊 My Stats",        'back_to_menu': "🔙 Back to Menu",
+        'refresh_stats': "🔄 Refresh",
+        'search_user': "🔍 Search",
+        'top_10_referrers': "🏆 Top 10",
+        'export_my_data': "📊 Export",
+        'stats_up_to_date': "📊 Stats updated",
+        
+        # Manage access messages
+        'mandatory_channels_btn': "📋 Mandatory Channels",
+        'manual_access_btn': "👤 Manual Control",
+        'add_channel_btn': "➕ Add Channel",
+        'reset_all_channels_btn': "🔄 Reset all",
+        'add_user_access_btn': "✅ Grant Access",
+        'remove_user_access_btn': "❌ Revoke Access",
+        'back_btn': "⬅️ Back",
+        'confirm_btn': "✅ Confirm",
+        'cancel_btn': "❌ Cancel",
         
         # Rules content (placeholder)
         'rules_content': """📋 <b>Bot Rules</b>
@@ -168,15 +228,58 @@ Davom eting va ko'proq mukofot oling! 🎯""",
 🔹 Spam and inappropriate behavior is prohibited
 
 Complete rules will be written here...""",
-        
-        # Reward content (placeholder)
+          # Reward content
         'reward_content': """🎁 <b>Rewards</b>
 
-💰 For each confirmed referral: 1000 som
-🎯 For 5 referrals: 10,000 som bonus
-🏆 For 10 referrals: 25,000 som bonus
+🎯 Special group access after {required_referrals} confirmed referrals!
 
-Complete reward system will be described here...""",
+📊 Current status:
+✅ Confirmed referrals: {current_referrals}
+⏳ Remaining: {remaining_referrals}
+
+Refer {remaining_referrals} more friends and get your reward! 🚀""",
+
+        'reward_available': """🎉 <b>Congratulations!</b>
+
+🎯 You have collected {required_referrals} confirmed referrals!
+
+🎁 Your reward: Special group access!
+
+👇 Click the link below:
+{reward_link}
+
+🚀 Exciting content and bonuses are waiting in the group!""",
+
+        'reward_not_available': """🎁 <b>Rewards</b>
+
+🎯 You need {required_referrals} confirmed referrals to access the special group.
+
+📊 Current status:
+✅ Confirmed referrals: {current_referrals}
+⏳ Remaining: {remaining_referrals}
+
+📢 Refer {remaining_referrals} more friends and get your reward!
+
+💡 How to refer:
+1. Press "📊 Statistics" button
+2. Copy your referral link
+3. Send to your friends""",
+
+        'reward_already_accessed': """🎁 <b>Reward received!</b>
+
+✅ You have already received your reward and joined the special group!
+
+🚀 But keep going! Refer more friends and expand our community!
+
+📊 Track your results in the "Statistics" section.""",
+
+        'reward_eligible_notification': """🎉 <b>Congratulations!</b>
+
+🎯 You have collected {required_referrals} confirmed referrals!
+
+🎁 A special reward is ready for you! Press the "🎁 Get Reward" button and claim your prize!
+
+💰 Access to the special group is waiting for you!""",
         
         # Referral link messages
         'referral_link_message': """🔗 <b>Your referral link:</b>

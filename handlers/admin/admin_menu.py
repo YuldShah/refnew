@@ -1,12 +1,12 @@
-from aiogram import Router, F
+from aiogram import Router, F, html
 from aiogram.filters import Command, CommandStart
-from aiogram.types import Message, CallbackQuery, FSInputFile
+from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from database.models import Database
 from text.messages import get_text
 from filters.user_filters import IsAdminFilter
-from keyboards.admin_keyboards import admin_main_keyboard
+from keyboards.admin_keyboards import admin_main_keyboard, get_main_menu_keyboard
 from services.admin_service import AdminService
 import os
 
@@ -18,6 +18,8 @@ class AdminStates(StatesGroup):
 admin_menu_router = Router()
 admin_menu_router.message.filter(IsAdminFilter())
 
+@admin_menu_router.message(F.text == "🏘 Main menu")
+@admin_menu_router.message(F.text == "🏘 Bosh menyu")
 @admin_menu_router.message(CommandStart())
 async def admin_start_handler(message: Message, state: FSMContext):
     """Handle /start command for admins"""
@@ -32,28 +34,26 @@ async def admin_command(message: Message, state: FSMContext):
 
 async def show_admin_menu(message: Message):
     """Show main admin menu with options"""
-    text = f"<b>{get_text('admin_panel', 'uz')}</b>\n\n"
-    text += "Statistika va boshqaruv paneli"
+    text = f"<b>{get_text('admin_panel', 'uz')}</b>"
     
     await message.answer(text, reply_markup=admin_main_keyboard('uz'))
 
 # Message handlers for admin menu buttons
 @admin_menu_router.message(F.text.in_([
-    "🏆 Top 10 referrerlar", "🏆 Top 10 referrers",
-    "🔍 Foydalanuvchini qidirish", "🔍 Find user by ID",
     "📊 Ma'lumotlarni eksport qilish", "📊 Export user data",
-    "📈 Statistika", "📈 Statistics"
+    "📈 Statistika", "📈 Statistics",
+    "🔐 Majburiy chatlar", "🔐 Manage Access"
 ]))
 async def admin_menu_handler(message: Message, state: FSMContext, db: Database):
     """Handle admin menu button presses"""
-    if message.text in ["🏆 Top 10 referrerlar", "🏆 Top 10 referrers"]:
-        await show_top_referrers_message(message, db)
-    elif message.text in ["🔍 Foydalanuvchini qidirish", "🔍 Find user by ID"]:
-        await user_lookup_request_message(message, state)
-    elif message.text in ["📊 Ma'lumotlarni eksport qilish", "📊 Export user data"]:
-        await export_user_data_message(message, db)
-    elif message.text in ["📈 Statistika", "📈 Statistics"]:
+    if message.text in ["📈 Statistika", "📈 Statistics"]:
+        await message.reply(html.bold(f"📈 Stats menu"), reply_markup=get_main_menu_keyboard('uz'))
         await show_admin_stats_message(message, db)
+    elif message.text in ["🔐 Majburiy chatlar", "🔐 Manage Access"]:
+        await message.reply(html.bold(f"🔐 Manage Access menu"), reply_markup=get_main_menu_keyboard('uz'))
+        # Initialize manage access with proper state
+        from handlers.admin.manage_access import show_manage_access_menu as init_manage_access
+        await init_manage_access(message, state)
 
 async def show_top_referrers_message(message: Message, db: Database):
     """Show top 10 referrers"""
@@ -83,29 +83,6 @@ async def user_lookup_request_message(message: Message, state: FSMContext):
     await state.set_state(AdminStates.waiting_for_user_id)
     await message.answer(get_text('admin_enter_user_id', 'uz'))
 
-async def export_user_data_message(message: Message, db: Database):
-    """Export all user data to Excel"""
-    await message.answer("⏳ Exporting data...")
-    
-    admin_service = AdminService(db)
-    file_path = await admin_service.export_users_data()
-    
-    if file_path:
-        # Send file using FSInputFile
-        document = FSInputFile(file_path, filename=os.path.basename(file_path))
-        await message.answer_document(
-            document=document,
-            caption=get_text('admin_export_success', 'uz')
-        )
-        
-        # Clean up the file after sending
-        try:
-            os.remove(file_path)
-        except:
-            pass
-    else:
-        await message.answer(get_text('admin_export_error', 'uz'))
-
 async def show_admin_stats_message(message: Message, db: Database):
     """Show admin statistics"""
     async with db.pool.acquire() as conn:
@@ -113,10 +90,33 @@ async def show_admin_stats_message(message: Message, db: Database):
         total_referrals = await conn.fetchval('SELECT COUNT(*) FROM referrals WHERE valid = TRUE')
         pending_referrals = await conn.fetchval('SELECT COUNT(*) FROM referrals WHERE valid = FALSE')
     
-    text = f"📊 <b>Bot Statistikasi</b>\n\n"
-    text += f"👥 Jami foydalanuvchilar: <b>{total_users}</b>\n"
+    # Get reward access count
+    reward_access_count = await db.get_reward_access_count()
+    
+    text = f"📈 <b>Umumiy bot statistikasi: </b>\n"
+    text += f"<blockquote>👥 Foydalanuvchilar: <b>{total_users}</b>\n"
     text += f"✅ Tasdiqlangan takliflar: <b>{total_referrals}</b>\n"
     text += f"⏳ Kutilayotgan takliflar: <b>{pending_referrals}</b>\n"
+    text += f"🔓 Kirish huquqini olganlar: <b>{reward_access_count}</b></blockquote>"
+    
+    # Create inline keyboard for stats sub-menu
+    from keyboards.admin_keyboards import get_admin_stats_keyboard
+    await message.answer(text, reply_markup=get_admin_stats_keyboard('uz'))
+
+async def show_manage_access_menu(message: Message):
+    """Show manage access menu - now implemented!"""
+    from handlers.admin.manage_access import show_manage_access_menu as show_access
+    from aiogram.fsm.context import FSMContext
+    
+    # We need to get the FSMContext, but since it's not passed, we'll create a simple version
+    text = "🔐 <b>Kirishni boshqarish</b>\n\n"
+    text += "🎯 Bu bo'limda quyidagilarni boshqarish mumkin:\n\n"
+    text += "📋 • Majburiy kanallar qo'shish/o'chirish\n"
+    text += "👤 • Foydalanuvchilarga qo'lda ruxsat berish\n"
+    text += "🚫 • Foydalanuvchilarni bloklash\n"
+    text += "📊 • Kirish statistikasi\n\n"
+    text += "⚠️ <i>To'liq funksional endi mavjud!</i>\n\n"
+    text += "Davom etish uchun /admin buyrug'ini ishlating va 'Kirishni boshqarish' tugmasini bosing."
     
     await message.answer(text)
 
@@ -152,3 +152,5 @@ async def process_user_lookup(message: Message, state: FSMContext, db: Database)
         
     except ValueError:
         await message.answer(get_text('admin_user_not_found', 'uz'))
+
+# Callback query handlers for admin stats inline buttons
