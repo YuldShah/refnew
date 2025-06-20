@@ -28,7 +28,9 @@ async def main():
     # Add middleware
     from middleware.subscription import SubscriptionMiddleware
     dp.message.middleware(SubscriptionMiddleware(db))
-    dp.callback_query.middleware(SubscriptionMiddleware(db))    # Register routers
+    dp.callback_query.middleware(SubscriptionMiddleware(db))  
+    dp.inline_query.middleware(SubscriptionMiddleware(db))  
+    # Register routers
     from handlers.admin_handlers import admin_router
     from handlers.user_handlers import user_router
     dp.include_router(admin_router)
