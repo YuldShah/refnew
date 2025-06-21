@@ -12,7 +12,7 @@ Qoshimcha ma'lumotlar uchun quyidagi menyudan foydalansangiz bo'ladi.""",
         'referral_welcome': "Siz <b>{referrer}</b> tomonidan taklif qilindingiz! 🎉",
         'already_registered': """Siz allaqachon botda ro'yxatdan o'tgansiz!""",
         'invalid_referral': "Noto'g'ri taklif havolasi!",
-        'subscription_required': "Botdan foydalanish uchun barcha majburiy kanallarga obuna bo'ling:",
+        'subscription_required': "Botdan foydalanish uchun bizning barcha kanallarimizga obuna bo'ling:",
         'not_subscribed': "Siz hali ham barcha kanallarga obuna bo'lmagansiz!",
         'our_chats_folder': "Bizning kanallar papkasi 📁",
         'subscribe_button': "Obuna bo'lish ✅",
@@ -148,7 +148,7 @@ Yetarli ballarga ega bo'ling yopiq kanal va guruhimiz a'zosiga aylaning.
         # Referrer notification messages
         'referrer_new_user_subscribed': """🎉 <b>Yangi foydalanuvchi!</b>
 
-👤 {user_name} sizning taklifingiz orqali botga qo'shildi va barcha majburiy kanallarga obuna bo'ldi!
+👤 {user_name} sizning taklifingiz orqali botga qo'shildi va bizning barcha kanallarimizga obuna bo'ldi!
 
 ✅ Bu taklif tasdiqlangan takliflar ro'yxatiga qo'shildi.""",
         
@@ -311,7 +311,7 @@ Keep going and earn more rewards! 🎯""",
         # Referrer notification messages
         'referrer_new_user_subscribed': """🎉 <b>Yangi foydalanuvchi!</b>
 
-👤 {user_name} sizning taklifingiz orqali botga qo'shildi va barcha majburiy kanallarga obuna bo'ldi!
+👤 {user_name} sizning taklifingiz orqali botga qo'shildi va bizning barcha kanallarimizga obuna bo'ldi!
 
 ✅ Bu taklif tasdiqlangan takliflar ro'yxatiga qo'shildi.""",
         
@@ -319,11 +319,11 @@ Keep going and earn more rewards! 🎯""",
 
 👤 {user_name} sizning taklifingiz orqali botga qo'shildi.
 
-⏳ Hozircha majburiy kanallarga obuna bo'lishi kutilmoqda. Obuna bo'lgandan so'ng taklif tasdiqlanadi.""",
+⏳ Hozircha bizning kanallarimizga obuna bo'lishi kutilmoqda. Obuna bo'lgandan so'ng taklif tasdiqlanadi.""",
         
         'referrer_user_subscribed': """🎉 <b>Taklif tasdiqlandi!</b>
 
-👤 {user_name} majburiy kanallarga obuna bo'ldi!
+👤 {user_name} bizning kanallarimizga obuna bo'ldi!
 
 ✅ Bu taklif endi tasdiqlangan takliflar ro'yxatida.""",
     }
