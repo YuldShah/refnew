@@ -1,15 +1,23 @@
 MESSAGES = {
     'uz': {
-        'welcome': "Botga xush kelibsiz! 🎉",
+        'welcome': """👋 Assalomu alaykum, <b>{link_to_user}</b>!
+
+<i>📖 3 Marta SAT matematika qismidan maximal 800/800 ball olgan Elbek ustoz o'tayotgan Bepul darslarimizga xush kelibsiz!</i>
+
+Bizning bepul darslarda qatnashish uchun siz quyidagi shartlarni bajarishingiz kerak:
+<blockquote>1️⃣ Barcha kanallarimizga a'zo bo'ling
+2️⃣ 3 ta SAT matematika qismidan eng yuqori natijani olaman va 50% ustamani olishni chin dildan niyat qilgan tanishlarni botimizga taklif qiling va ular ham bizning barcha kanallarimizga a'zo bo'lib eng muhim bilimlarni olishsin)</blockquote>
+
+Qoshimcha ma'lumotlar uchun quyidagi menyudan foydalansangiz bo'ladi.""",
         'referral_welcome': "Siz <b>{referrer}</b> tomonidan taklif qilindingiz! 🎉",
-        'already_registered': "Siz allaqachon ro'yxatdan o'tgansiz!",
+        'already_registered': """Siz allaqachon botda ro'yxatdan o'tgansiz!""",
         'invalid_referral': "Noto'g'ri taklif havolasi!",
         'subscription_required': "Botdan foydalanish uchun barcha majburiy kanallarga obuna bo'ling:",
         'not_subscribed': "Siz hali ham barcha kanallarga obuna bo'lmagansiz!",
         'our_chats_folder': "Bizning kanallar papkasi 📁",
         'subscribe_button': "Obuna bo'lish ✅",
         'check_subscription': "Obunani tekshirish ✅",
-        'subscription_confirmed': "✅ Tabriklaymiz! Siz barcha majburiy kanallarga obuna bo'ldingiz!",
+        'subscription_confirmed': "✅ Tabriklaymiz! Siz barcha bizning kanallarga obuna bo'ldingiz va botdan bemalol foydalanishingiz mumkin!",
         'referral_system': "Taklif tizimi 📊",
         'valid_referrals': "Tasdiqlangan takliflar: <b>{count}</b>",
         'pending_referrals': "Kutilayotgan takliflar: <b>{count}</b>",
@@ -78,9 +86,11 @@ Bu yerda qoidalar to'liq yoziladi...""",
 
         'reward_available': """🎉 <b>Tabriklaymiz!</b>
 
-🎯 Siz {required_referrals} ta tasdiqlangan foydalanuvchilarni taklif qildingiz! Endi siz darslarimizda qatnasha olasiz!
+🎯 <i>Siz {required_referrals} ta tasdiqlangan foydalanuvchilarni taklif qildingiz! Endi siz darslarimizda qatnasha olasiz!</i>
 
-👇 Quyidagi havolaga bosib chatlar jildini qo'shib oling:
+👇 Quyida sizga darslarimiz bo'lib o'tadigan kanal va guruhlar havolalari berilgan.
+
+<blockquote>Yodda tuting, ushbu havolalar orqali faqat bir kishi kanallar va guruhlarga qo'shilishi mumkin.</blockquote>
 """,
 
         'reward_not_available': """
@@ -128,8 +138,8 @@ Yetarli ballarga ega bo'ling yopiq kanal va guruhimiz a'zosiga aylaning.
         # User stats messages        
         'user_stats_message': """
 <b>📊 Sizning statistikangiz:</b>
-<blockquote>🆔 Sizning ID: <code>{user_id}</code>
-👤 Username: <b>@{username}</b>
+<blockquote>👤 Foydalanuvchi: {user_mention}
+🆔 Sizning ID: <code>{user_id}</code>{username_line}
 ✅ Tasdiqlangan takliflar: <b>{valid_referrals}</b>
 ⏳ Kutilayotgan takliflar: <b>{pending_referrals}</b></blockquote>
 """,

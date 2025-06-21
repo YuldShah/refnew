@@ -22,19 +22,16 @@ async def show_user_stats(message: Message, db: Database):
     user_stats = await referral_service.get_referral_stats(message.from_user.id)
       # Add user info to stats
     user_stats['user_id'] = message.from_user.id
-    user_stats['username'] = message.from_user.username or "None"
-    
+    user_stats['user_mention'] = message.from_user.mention_html()
+
+    # Add username line only if user has a username
+    if message.from_user.username:
+        user_stats['username_line'] = f"\n👤 Username: <b>@{message.from_user.username}</b>"
+    else:
+        user_stats['username_line'] = ""
+
     # Create user stats text (only user's personal stats)
     text = get_text('user_stats_message', 'uz', **user_stats)
-    
-    # Add validation result if any referrals were validated
-    if validation_result["validated"] > 0:
-        validation_text = get_text(
-            'referrals_validated', 
-            'uz', 
-            count=validation_result["validated"]
-        )
-        text += f"\n\n{validation_text}"
     
     await message.answer(
         text,
@@ -60,8 +57,14 @@ async def refresh_user_stats(callback: CallbackQuery, db: Database):
     user_stats = await referral_service.get_referral_stats(callback.from_user.id)
       # Add user info to stats
     user_stats['user_id'] = callback.from_user.id
-    user_stats['username'] = callback.from_user.username or "None"
-    
+    user_stats['user_mention'] = callback.from_user.mention_html()
+
+    # Add username line only if user has a username
+    if callback.from_user.username:
+        user_stats['username_line'] = f"\n👤 Username: <b>@{callback.from_user.username}</b>"
+    else:
+        user_stats['username_line'] = ""
+
     # Create user stats text (only user's personal stats)
     text = get_text('user_stats_message', 'uz', **user_stats)
     

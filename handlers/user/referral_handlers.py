@@ -52,13 +52,21 @@ async def handle_inline_query(inline_query: InlineQuery, db: Database):
     # Create video result
     video_result = InlineQueryResultVideo(
         id="referral_video",
-        video_url="https://example.com/video.mp4",  # This won't be used since we're using file_id
-        video_file_id="BAACAgIAAxkBAAIR4WhUZZTFkl_JvLlAkgod_CQFMljrAAIqdAACA1k4SRSFKq0mGiTUNgQ",
-        mime_type="video/mp4",
-        thumb_url="https://example.com/thumb.jpg",  # Optional thumbnail
-        title="Referral taklifnomam",
-        description="Mening referral linkimni ulashing",
-        caption=f"🎉 Mening taklifnomam!\n\n🔗 Link: {referral_link}\n\n📱 Ro'yxatdan o'tish uchun linkni bosing!"
+        video_url="BAACAgIAAxkBAAIR4WhUZZTFkl_JvLlAkgod_CQFMljrAAIqdAACA1k4SRSFKq0mGiTUNgQ",
+        mime_type="video/mp4",  # Optional thumbnail
+        title="Referral havolasi",
+        thumbnail_url="https://i.postimg.cc/5yCpybYn/uplimg.jpg",
+        description="Referral havolangizni ulashing",
+        caption=get_text('referral_link_message', 'uz', link=referral_link)
     )
     
-    await inline_query.answer([video_result], cache_time=300)
+    await inline_query.answer([video_result], cache_time=0)
+
+async def handle_inline_query_for_not_subbed(inline_query: InlineQuery, db: Database):
+    """Handle inline queries for users who are not subscribed"""
+    await inline_query.answer(
+        [],
+        cache_time=0,
+        switch_pm_text="Avval bizning kanallarga obuna bo'ling!",
+        switch_pm_parameter="sub"
+    )

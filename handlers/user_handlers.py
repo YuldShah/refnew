@@ -58,12 +58,13 @@ async def check_subscription_handler(callback: CallbackQuery, db):
                 ''', user_id)
                 
                 for referrer in referrers:
-                    user_display_name = callback.from_user.full_name or f"@{callback.from_user.username}" or "Anonymous"
-                    
+                    # Create user mention (prefer mention_html, fallback to tg deep link)
+                    user_mention = f'<a href="tg://user?id={callback.from_user.id}">{callback.from_user.full_name or f"@{callback.from_user.username}" or "User"}</a>'
+
                     notification_text = get_text(
-                        'referrer_user_subscribed', 
-                        'uz', 
-                        user_name=user_display_name
+                        'referrer_user_subscribed',
+                        'uz',
+                        user_name=user_mention
                     )
                     try:
                         await callback.bot.send_message(referrer['telegram_id'], notification_text)
@@ -77,7 +78,7 @@ async def check_subscription_handler(callback: CallbackQuery, db):
         
         # Send main menu in a new message
         await callback.message.answer(
-            get_text('welcome', 'uz'),
+            get_text('welcome', 'uz', link_to_user=callback.from_user.mention_html()),
             reply_markup=get_main_user_keyboard()
         )
     else:

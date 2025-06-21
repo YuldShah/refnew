@@ -21,23 +21,39 @@ async def start_handler(message: Message, state: FSMContext, db: Database):
     user_id = message.from_user.id
     username = message.from_user.username or ""
     full_name = message.from_user.full_name or ""
-      # Check if user exists
-    existing_user = await db.get_user(user_id)
-    if existing_user:
-        await message.answer(
-            get_text('already_registered', 'uz'),
-            reply_markup=get_main_user_keyboard()
-        )
-        return
-      # Handle referral
+
+    # Handle start parameters first (before checking existing user)
     referrer = None
     referral_code = None
     args = message.text.split()
     logging.info(f"Start command args: {args}")
     if len(args) > 1:
-        logging.info(f"Processing referral code: {args[1]}")
-        referral_code = args[1]
-        if len(referral_code) == 8:
+        param = args[1]
+        logging.info(f"Processing start parameter: {param}")
+
+        # Handle subscription required parameter
+        if param == "sub":
+            # Show subscription required message for any user (new or existing)
+            from middleware.subscription import SubscriptionMiddleware
+            middleware = SubscriptionMiddleware(db)
+            keyboard = await middleware.create_subscription_keyboard()
+            await message.answer(
+                get_text('subscription_required', 'uz'),
+                reply_markup=keyboard
+            )
+            return
+
+        # Handle access denied parameter
+        if param == "access_denied":
+            # Show access denied message
+            text = "🚫 <b>Kirish taqiqlangan</b>\n\n"
+            text += "Sizga bu botdan foydalanish taqiqlangan."
+            await message.answer(text)
+            return
+
+        # Handle referral code (8 characters) - only for new users
+        if len(param) == 8:
+            referral_code = param
             referrer = await db.get_user_by_referral_code(referral_code)
             if not referrer:
                 await message.answer(get_text('invalid_referral', 'uz'))
@@ -47,8 +63,21 @@ async def start_handler(message: Message, state: FSMContext, db: Database):
                 referral_code = None
                 referrer = None
         else:
+            # Invalid parameter
             await message.answer(get_text('invalid_referral', 'uz'))
-            referral_code = None    # Add user
+            referral_code = None
+
+    # Check if user exists (after handling special parameters)
+    existing_user = await db.get_user(user_id)
+    if existing_user and len(args) > 1:
+        await message.answer(
+            get_text('welcome', 'uz', link_to_user=message.from_user.mention_html()),
+            reply_markup=get_main_user_keyboard()
+        )
+        await message.answer(
+            get_text('already_registered', 'uz'),
+        )
+        return    # Add user
     success, user_referral_code = await db.add_user(user_id, username, full_name)
     
     if referrer and referral_code:
@@ -57,8 +86,15 @@ async def start_handler(message: Message, state: FSMContext, db: Database):
         logging.info(f"Referral added success: {success}")
         
         await message.answer(
-            get_text('referral_welcome', 'uz', referrer=referrer['full_name']),
+            get_text('welcome', 'uz', link_to_user=message.from_user.mention_html()),
             reply_markup=get_main_user_keyboard()
+        )
+
+        # Create referrer mention (prefer mention_html, fallback to tg deep link)
+        referrer_mention = f'<a href="tg://user?id={referrer["telegram_id"]}">{referrer["full_name"] or "User"}</a>'
+
+        await message.answer(
+            get_text('referral_welcome', 'uz', referrer=referrer_mention),
         )
           # Check if both users are subscribed to validate referral
         bot = message.bot
@@ -90,10 +126,13 @@ async def start_handler(message: Message, state: FSMContext, db: Database):
             logging.info(f"Validating referral: referrer={referrer['telegram_id']}, referred={user_id}")
             await db.validate_referral(referrer['telegram_id'], user_id)
               # Notify referrer that user joined and is already subscribed
+            # Create user mention (prefer mention_html, fallback to tg deep link)
+            user_mention = f'<a href="tg://user?id={user_id}">{full_name or f"@{username}" or "User"}</a>'
+
             notification_text = get_text(
-                'referrer_new_user_subscribed', 
-                'uz', 
-                user_name=full_name or f"@{username}" or "Anonymous"
+                'referrer_new_user_subscribed',
+                'uz',
+                user_name=user_mention
             )
             try:
                 await bot.send_message(referrer['telegram_id'], notification_text)
@@ -101,10 +140,13 @@ async def start_handler(message: Message, state: FSMContext, db: Database):
                 logging.error(f"Failed to send notification to referrer {referrer['telegram_id']}: {e}")
         else:
             # Notify referrer that user joined but needs to subscribe
+            # Create user mention (prefer mention_html, fallback to tg deep link)
+            user_mention = f'<a href="tg://user?id={user_id}">{full_name or f"@{username}" or "User"}</a>'
+
             notification_text = get_text(
-                'referrer_new_user_pending', 
-                'uz', 
-                user_name=full_name or f"@{username}" or "Anonymous"
+                'referrer_new_user_pending',
+                'uz',
+                user_name=user_mention
             )
             try:
                 await bot.send_message(referrer['telegram_id'], notification_text)
@@ -112,7 +154,7 @@ async def start_handler(message: Message, state: FSMContext, db: Database):
                 logging.error(f"Failed to send notification to referrer {referrer['telegram_id']}: {e}")
     else:
         await message.answer(
-            get_text('welcome', 'uz'),
+            get_text('welcome', 'uz', link_to_user=message.from_user.mention_html()),
             reply_markup=get_main_user_keyboard()
         )
 

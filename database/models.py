@@ -5,6 +5,7 @@ import os
 import secrets
 import string
 import logging
+import json
 
 class Database:
     def __init__(self):
@@ -35,7 +36,6 @@ class Database:
                     referral_code VARCHAR(8) UNIQUE,
                     language VARCHAR(2) DEFAULT 'uz',
                     joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    reward_accessed BOOLEAN DEFAULT FALSE,
                     manual_access INTEGER DEFAULT 0
                 )
             ''')
@@ -57,11 +57,11 @@ class Database:
                 )
             ''')
             await conn.execute('''
-                CREATE TABLE IF NOT EXISTS mandatory_channels (
+                CREATE TABLE IF NOT EXISTS rewards (
                     id SERIAL PRIMARY KEY,
-                    channel_id BIGINT UNIQUE NOT NULL,
-                    channel_name VARCHAR(255),
-                    is_active BOOLEAN DEFAULT TRUE
+                    user_id BIGINT NOT NULL REFERENCES users(id),
+                    reward JSONB NOT NULL,
+                    generated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             ''')
 
@@ -205,19 +205,45 @@ class Database:
     async def get_reward_access_count(self) -> int:
         """Get count of users who accessed the reward"""
         async with self.pool.acquire() as conn:
-            count = await conn.fetchval('SELECT COUNT(*) FROM users WHERE reward_accessed = TRUE')
+            count = await conn.fetchval('SELECT COUNT(DISTINCT user_id) FROM rewards')
             return count or 0
-    
-    async def mark_reward_accessed(self, telegram_id: int):
-        """Mark that user accessed the reward"""
+
+    async def save_user_reward(self, telegram_id: int, reward_data: dict):
+        """Save user's reward data (invite links) to database"""
+        
         async with self.pool.acquire() as conn:
-            await conn.execute('UPDATE users SET reward_accessed = TRUE WHERE telegram_id = $1', telegram_id)
-    
+            # Get user's internal ID from telegram_id
+            user_id = await conn.fetchval('SELECT id FROM users WHERE telegram_id = $1', telegram_id)
+            if not user_id:
+                raise ValueError(f"User with telegram_id {telegram_id} not found")
+
+            await conn.execute(
+                'INSERT INTO rewards (user_id, reward) VALUES ($1, $2)',
+                user_id, json.dumps(reward_data)
+            )
+
+    async def get_user_reward(self, telegram_id: int) -> Optional[dict]:
+        """Get user's saved reward data from database"""
+        
+        async with self.pool.acquire() as conn:
+            # Get user's internal ID from telegram_id
+            user_id = await conn.fetchval('SELECT id FROM users WHERE telegram_id = $1', telegram_id)
+            if not user_id:
+                return None
+
+            result = await conn.fetchval('SELECT reward FROM rewards WHERE user_id = $1', user_id)
+            return json.loads(result) if result else None
+
     async def has_user_accessed_reward(self, telegram_id: int) -> bool:
         """Check if user has already accessed the reward"""
         async with self.pool.acquire() as conn:
-            result = await conn.fetchval('SELECT reward_accessed FROM users WHERE telegram_id = $1', telegram_id)
-            return result is True
+            # Get user's internal ID from telegram_id
+            user_id = await conn.fetchval('SELECT id FROM users WHERE telegram_id = $1', telegram_id)
+            if not user_id:
+                return False
+
+            result = await conn.fetchval('SELECT id FROM rewards WHERE user_id = $1', user_id)
+            return result is not None
     
     # Mandatory Channels Management
     async def add_mandatory_channel(self, chat_id: int, title: str, link: str = None) -> bool:

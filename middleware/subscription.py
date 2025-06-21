@@ -19,9 +19,9 @@ class SubscriptionMiddleware(BaseMiddleware):
         event: TelegramObject,
         data: Dict[str, Any]
     ) -> Any:
-        # Skip middleware for inline queries - let them pass through
+        # Handle inline queries separately
         if isinstance(event, InlineQuery):
-            return await handler(event, data)
+            return await self._handle_inline_query(handler, event, data)
             
         if isinstance(event, (Message, CallbackQuery)):
             user = event.from_user
@@ -33,10 +33,13 @@ class SubscriptionMiddleware(BaseMiddleware):
                 admin_ids = list(map(int, admin_ids_str.split(',')))
                 if user.id in admin_ids:
                     return await handler(event, data)
-              # Skip for certain commands and check_subscription callback
+            
+            # Skip for certain commands and check_subscription callback
             if isinstance(event, Message) and event.text:
                 if event.text.startswith('/start'):
-                    return await handler(event, data)            # Skip subscription check for check_subscription callback to let handler handle it
+                    return await handler(event, data)
+            
+            # Skip subscription check for check_subscription callback to let handler handle it
             if isinstance(event, CallbackQuery) and event.data == 'check_subscription':
                 return await handler(event, data)
             
@@ -110,6 +113,56 @@ class SubscriptionMiddleware(BaseMiddleware):
                 return
         
         return await handler(event, data)
+
+    async def _handle_inline_query(self, handler, inline_query: InlineQuery, data: Dict[str, Any]) -> Any:
+        """Handle inline queries with subscription checking"""
+        user = inline_query.from_user
+        bot = data['bot']
+        print("Inline query")
+        # Skip subscription check for admins
+        admin_ids_str = os.getenv('ADMIN_IDS', '')
+        if admin_ids_str:
+            admin_ids = list(map(int, admin_ids_str.split(',')))
+            if user.id in admin_ids:
+                return await handler(inline_query, data)
+        
+        # Check manual access first
+        user_access = await self.db.check_user_access(user.id)
+        if user_access is True:
+            # User has manual access granted
+            return await handler(inline_query, data)
+        elif user_access is False:
+            # User has manual access denied - show switch_pm
+            await inline_query.answer(
+                [],
+                switch_pm_text="Botga o'tish",
+                switch_pm_parameter="access_denied"
+            )
+            return
+        
+        # Check mandatory channels
+        channel_ids = await self.db.get_mandatory_channel_ids()
+        if not channel_ids:
+            return await handler(inline_query, data)
+            
+        unsubscribed_channels = []
+        for channel_id in channel_ids:
+            try:
+                member = await bot.get_chat_member(channel_id, user.id)
+                if member.status in ['left', 'kicked']:
+                    unsubscribed_channels.append(channel_id)
+            except Exception as e:
+                logging.error(f"Error checking subscription for channel {channel_id}: {e}")
+        
+        print(unsubscribed_channels)
+        if unsubscribed_channels:
+            # User not subscribed - use the dedicated handler
+            from handlers.user.referral_handlers import handle_inline_query_for_not_subbed
+            await handle_inline_query_for_not_subbed(inline_query, self.db)
+            return
+        
+        # User is subscribed - proceed with handler
+        return await handler(inline_query, data)
 
     async def _notify_admin(self, bot, channel_id):
         """Notify admin about bot permission issues"""

@@ -1,4 +1,4 @@
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton, SwitchInlineQueryChosenChat
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton, SwitchInlineQueryChosenChat, CopyTextButton
 from text.messages import get_text
 
 def get_main_user_keyboard() -> ReplyKeyboardMarkup:
@@ -26,20 +26,38 @@ def get_stats_keyboard() -> InlineKeyboardMarkup:
 def get_referral_share_keyboard(referral_link: str = "") -> InlineKeyboardMarkup:
     """Get referral link share inline keyboard (hardcoded Uzbek)"""
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [
+            InlineKeyboardButton(
+                text="Referral havolani nusxalash",
+                copy_text=CopyTextButton(text=referral_link)
+            )
+        ],
         [InlineKeyboardButton(
             text=get_text('share_referral_link', 'uz'), 
-            switch_inline_query_chosen_chat=SwitchInlineQueryChosenChat(allow_bot_chats=False, allow_channel_chats=True, allow_user_chats=True, allow_group_chats=True)
+            switch_inline_query_chosen_chat=SwitchInlineQueryChosenChat(allow_bot_chats=False, allow_channel_chats=True, allow_user_chats=True, allow_group_chats=True, query="Xabar yuklanishini kuting...")
         )]
     ])
     return keyboard
 
-def get_reward_link_button(reward_link: str = "") -> InlineKeyboardMarkup:
+def get_reward_link_button(links: list) -> InlineKeyboardMarkup:
     """Get reward link inline keyboard (hardcoded Uzbek)"""
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [
             InlineKeyboardButton(
-                text="📂 SAT Elbek",
-                url=reward_link
+                text="Bepul darslar kanali",
+                url=links[1]  # links are now strings, not ChatInviteLink objects
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text="Bepul darslar guruhi",
+                url=links[0]  # links are now strings, not ChatInviteLink objects
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text="Muhokama guruhi",
+                url=links[2]  # links are now strings, not ChatInviteLink objects
             )
         ]
     ])
