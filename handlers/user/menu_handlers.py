@@ -1,6 +1,6 @@
 from aiogram import Router, F
 from aiogram.filters import CommandStart
-from aiogram.types import Message
+from aiogram.types import Message, InlineQuery
 from aiogram.fsm.context import FSMContext
 from database.models import Database
 from text.messages import get_text
@@ -137,3 +137,9 @@ async def menu_button_handler(message: Message, db: Database):
     elif message.text in ["📊 Mening statistikam", "📊 My Stats"]:
         from .stats_handlers import show_user_stats
         await show_user_stats(message, db)
+
+@menu_router.inline_query()
+async def handle_inline_query(inline_query: InlineQuery, db: Database):
+    """Handle inline queries for referral links"""
+    from .referral_handlers import handle_inline_query
+    await handle_inline_query(inline_query, db)
