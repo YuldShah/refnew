@@ -39,7 +39,12 @@ async def handle_inline_query(inline_query: InlineQuery, db: Database):
     user = await db.get_user(user_id)
     if not user:
         logging.warning(f"User {user_id} not found in database")
-        await inline_query.answer([])
+        await inline_query.answer(
+            [],
+            cache_time=0,
+            switch_pm_text="Avval botda ro'yxatdan o'ting!",
+            switch_pm_parameter="register"
+        )
         return
     
     # Get bot username

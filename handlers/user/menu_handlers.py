@@ -167,6 +167,16 @@ async def start_handler(message: Message, state: FSMContext, db: Database):
 async def menu_button_handler(message: Message, db: Database):
     """Handle main menu button presses"""
     
+    # Check if user exists before allowing access to any menu features
+    user = await db.get_user(message.from_user.id)
+    if not user:
+        # Get user's language preference (fallback to telegram language or default 'uz')
+        user_lang = 'uz'
+        await message.answer(
+            get_text('register_first', user_lang)
+        )
+        return
+    
     if message.text in ["📋 Qoidalar", "📋 Rules"]:
         from .rules_handlers import show_rules
         await show_rules(message, db)

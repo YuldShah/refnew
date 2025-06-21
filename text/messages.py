@@ -51,6 +51,7 @@ Qoshimcha ma'lumotlar uchun quyidagi menyudan foydalansangiz bo'ladi.""",
         'unexpected_error': "Kutilmagan xatolik yuz berdi! ⚠️\nIltimos, keyinroq urinib ko'ring.",        'channel_validation_error': "Kanalni tekshirishda xatolik yuz berdi.",
         'channel_not_accessible': "Bot ushbu kanalga kirish huquqiga ega emas.",
         'add_bot_as_admin': "Botni kanal administratori sifatida qo'shing.",
+        'register_first': "Iltimos, avval ro'yxatdan o'ting.\n\n/start /start /start",
         
         # Main menu buttons
         'rules_button': "📋 Qoidalar",
