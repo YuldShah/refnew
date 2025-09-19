@@ -5,9 +5,10 @@ def get_main_user_keyboard() -> ReplyKeyboardMarkup:
     """Get the main user reply keyboard with 4 options (hardcoded Uzbek)"""
     keyboard = ReplyKeyboardMarkup(
         keyboard=[
-            [KeyboardButton(text=get_text('get_reward_button', 'uz'))],
-            [KeyboardButton(text=get_text('my_referral_link_button', 'uz'))],
-            [KeyboardButton(text=get_text('my_stats_button', 'uz'))]
+            [KeyboardButton(text='🔗Taklif havolasi🔗')],
+            [KeyboardButton(text='Prizlar🏆'), KeyboardButton(text='Ballarim📈')],
+            [KeyboardButton(text='🔝SAT marafon haqida🔝')],
+            [KeyboardButton(text='‼️ Marafonda qatnashish sharti ‼️')]
         ],
         resize_keyboard=True,
         one_time_keyboard=False

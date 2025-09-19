@@ -38,6 +38,23 @@ async def show_user_stats(message: Message, db: Database):
         reply_markup=get_stats_keyboard()
     )
 
+async def show_user_points(message: Message, db: Database):
+    """Display user's points for the marathon"""
+    referral_service = ReferralService(db)
+      # Check and validate any pending referrals
+    validation_result = await referral_service.check_and_validate_pending_referrals(
+        message.from_user.id, message.bot
+    )
+    
+    # Get updated user stats after validation
+    user_stats = await referral_service.get_referral_stats(message.from_user.id)
+    current_points = user_stats.get('valid_referrals', 0)
+    
+    # Create points text
+    text = get_text('user_stats_new', 'uz', current_points=current_points)
+    
+    await message.answer(text)
+
 async def refresh_user_stats(callback: CallbackQuery, db: Database):
     """Handle refresh stats button press"""
     await callback.answer("🔄 Refreshing stats...")

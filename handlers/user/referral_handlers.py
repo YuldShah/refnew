@@ -28,6 +28,29 @@ async def show_referral_link(message: Message, db: Database):
         reply_markup=keyboard
     )
 
+async def show_new_referral_link(message: Message, db: Database):
+    """Display user's new referral link for the marathon"""
+    referral_service = ReferralService(db)
+    
+    # Get bot username dynamically
+    bot = message.bot
+    bot_info = await bot.get_me()
+    bot_username = bot_info.username
+    
+    referral_link = await referral_service.get_user_referral_link(message.from_user.id, bot_username)
+    
+    if referral_link:
+        text = get_text('new_referral_link_message', 'uz', link=referral_link)
+        keyboard = get_referral_share_keyboard(referral_link)
+    else:
+        text = get_text('referral_link_error', 'uz')
+        keyboard = None
+    
+    await message.answer(
+        text,
+        reply_markup=keyboard
+    )
+
 async def handle_inline_query(inline_query: InlineQuery, db: Database):
     """Handle inline queries for sharing referral videos"""
     import logging

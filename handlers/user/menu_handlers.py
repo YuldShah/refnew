@@ -159,7 +159,13 @@ async def start_handler(message: Message, state: FSMContext, db: Database):
         )
 
 @menu_router.message(F.text.in_([
-    "📋 Qoidalar", "📋 Rules",
+    "�Taklif havolasi🔗", 
+    "Prizlar🏆",
+    "Ballarim📈", 
+    "🔝SAT marafon haqida🔝",
+    "‼️ Marafonda qatnashish sharti ‼️",
+    # Legacy buttons for compatibility
+    "�📋 Qoidalar", "📋 Rules",
     "🚀 Kirish huquqini olish", 
     "🔗 Mening taklif havolam", "🔗 My Referral Link",
     "📊 Mening statistikam", "📊 My Stats"
@@ -177,7 +183,21 @@ async def menu_button_handler(message: Message, db: Database):
         )
         return
     
-    if message.text in ["📋 Qoidalar", "📋 Rules"]:
+    # New marathon buttons
+    if message.text == "🔗Taklif havolasi🔗":
+        from .referral_handlers import show_new_referral_link
+        await show_new_referral_link(message, db)
+    elif message.text == "Prizlar🏆":
+        await message.answer(get_text('prizes_info', 'uz'))
+    elif message.text == "Ballarim📈":
+        from .stats_handlers import show_user_points
+        await show_user_points(message, db)
+    elif message.text == "🔝SAT marafon haqida🔝":
+        await message.answer(get_text('sat_marathon_info', 'uz'))
+    elif message.text == "‼️ Marafonda qatnashish sharti ‼️":
+        await message.answer(get_text('marathon_conditions', 'uz'))
+    # Legacy buttons
+    elif message.text in ["📋 Qoidalar", "📋 Rules"]:
         from .rules_handlers import show_rules
         await show_rules(message, db)
     elif message.text in ["🚀 Kirish huquqini olish"]:
