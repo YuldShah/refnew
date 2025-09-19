@@ -159,13 +159,7 @@ async def start_handler(message: Message, state: FSMContext, db: Database):
         )
 
 @menu_router.message(F.text.in_([
-    "�Taklif havolasi🔗", 
-    "Prizlar🏆",
-    "Ballarim📈", 
-    "🔝SAT marafon haqida🔝",
-    "‼️ Marafonda qatnashish sharti ‼️",
-    # Legacy buttons for compatibility
-    "�📋 Qoidalar", "📋 Rules",
+    "📋 Qoidalar", "📋 Rules",
     "🚀 Kirish huquqini olish", 
     "🔗 Mening taklif havolam", "🔗 My Referral Link",
     "📊 Mening statistikam", "📊 My Stats"
@@ -183,7 +177,39 @@ async def menu_button_handler(message: Message, db: Database):
         )
         return
     
-    # New marathon buttons
+    if message.text in ["📋 Qoidalar", "📋 Rules"]:
+        from .rules_handlers import show_rules
+        await show_rules(message, db)
+    elif message.text in ["🚀 Kirish huquqini olish"]:
+        from .reward_handlers import show_rewards
+        await show_rewards(message, db)
+    elif message.text in ["🔗 Mening taklif havolam", "🔗 My Referral Link"]:
+        from .referral_handlers import show_referral_link
+        await show_referral_link(message, db)
+    elif message.text in ["📊 Mening statistikam", "📊 My Stats"]:
+        from .stats_handlers import show_user_stats
+        await show_user_stats(message, db)
+
+@menu_router.message(F.text.in_([
+    "🔗Taklif havolasi🔗",
+    "Prizlar🏆", 
+    "Ballarim📈",
+    "🔝SAT marafon haqida🔝",
+    "‼️ Marafonda qatnashish sharti ‼️"
+]))
+async def new_marathon_buttons_handler(message: Message, db: Database):
+    """Handle new marathon button presses"""
+    
+    # Check if user exists before allowing access to any menu features
+    user = await db.get_user(message.from_user.id)
+    if not user:
+        # Get user's language preference (fallback to telegram language or default 'uz')
+        user_lang = 'uz'
+        await message.answer(
+            get_text('register_first', user_lang)
+        )
+        return
+    
     if message.text == "🔗Taklif havolasi🔗":
         from .referral_handlers import show_new_referral_link
         await show_new_referral_link(message, db)
@@ -196,19 +222,6 @@ async def menu_button_handler(message: Message, db: Database):
         await message.answer(get_text('sat_marathon_info', 'uz'))
     elif message.text == "‼️ Marafonda qatnashish sharti ‼️":
         await message.answer(get_text('marathon_conditions', 'uz'))
-    # Legacy buttons
-    elif message.text in ["📋 Qoidalar", "📋 Rules"]:
-        from .rules_handlers import show_rules
-        await show_rules(message, db)
-    elif message.text in ["🚀 Kirish huquqini olish"]:
-        from .reward_handlers import show_rewards
-        await show_rewards(message, db)
-    elif message.text in ["🔗 Mening taklif havolam", "🔗 My Referral Link"]:
-        from .referral_handlers import show_referral_link
-        await show_referral_link(message, db)
-    elif message.text in ["📊 Mening statistikam", "📊 My Stats"]:
-        from .stats_handlers import show_user_stats
-        await show_user_stats(message, db)
 
 @menu_router.inline_query()
 async def handle_inline_query(inline_query: InlineQuery, db: Database):
