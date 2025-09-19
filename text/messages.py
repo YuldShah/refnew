@@ -190,7 +190,7 @@ Marafonda qoshilib, jonli darslarda qatnashish uchun "<b>‼️ Marafonda qatnas
 <blockquote>📌 Taklif havolangizni SAT ning matematika qismi bilan shug'ullanayotgan tanishlaringizga yuborishga harakat qiling!</blockquote>
 ✅ Tayyor bo'lsangiz, menyudan "<b>🔗 Taklif havolasi 🔗</b>" tugmasini bosing va do'stlaringizni taklif qiling!""",
 
-        'new_referral_link_message': """<b>❗️Qadirdonim yaxshiroq oqib deb, sizga ilindim😊
+        'new_referral_link_message': """<b>❗️Qadirdonim yaxshiroq o'qing deb, sizga ilindim😊
     
 📌Ingliz tilim 0 darajada lekin SAT olaman deb niyat qilgan matematika ustozlar uchun bu ajoyib imkoniyat ✅</b>
 
@@ -211,7 +211,10 @@ Marafonda qoshilib, jonli darslarda qatnashish uchun "<b>‼️ Marafonda qatnas
 📌Bu guruhga ulanish bepul yani sizdan hech qanday toʻlov talab qilinmaydi🤝</b>
 
 <blockquote>⚠️ Joylar soni cheklangan, bunday imkoniyatni qo'ldan boy bermang 👇</blockquote>
-{link}""",
+{link}
+{link}
+{link}
+""",
 
         'user_stats_new': """<b>📈 Ballarim</b>
 
