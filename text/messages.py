@@ -216,9 +216,7 @@ Marafonda qoshilib, jonli darslarda qatnashish uchun "<b>‼️ Marafonda qatnas
 {link}
 """,
 
-        'user_stats_new': """<b>📈 Ballarim</b>
-
-Sizning ballaringiz: <b>{current_points} ball</b>.
+        'user_stats_new': """Sizning ballaringiz: <b>{current_points} ball</b>.
 
 <blockquote>‼️ Siz taklif havolangiz orqali qo'shilgan odamlar kanallardan obunani bekor qilsa sizga shu odam uchun berilgan ball qaytarib olinadi!</blockquote>
 
