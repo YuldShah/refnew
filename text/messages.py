@@ -167,36 +167,36 @@ Yetarli ballarga ega bo'ling yopiq kanal va guruhimiz a'zosiga aylaning.
 ✅ Bu taklif endi tasdiqlangan takliflar ro'yxatida.""",
 
         # New marathon messages
-        'sat_marathon_info': """📢 Assalomu alaykum, SAT olmoqchi bolgan matematika ustozlarimiz hamda o'quvchilar!  
+        'sat_marathon_info': """<b>📢 Assalomu alaykum, SAT olmoqchi bolgan matematika ustozlarimiz hamda o'quvchilar!</b>  
 
-SAT imtixonini topshirmoqchisiz lekin natijalaringiz ozgarmayaptimi?
+<i>SAT imtixonini topshirmoqchisiz lekin natijalaringiz ozgarmayaptimi?</i>
 
-📌 Unda sizni 30 kunlik BEPUL Turbo Marafonimizga taklif qilaman!
-<b>Men — Asatullayev Elbek:</b>
+<b>📌 Unda sizni 30 kunlik BEPUL Turbo Marafonimizga taklif qilaman!</b>
+<blockquote>Men — <b>Asatullayev Elbek:</b>
 ✅ 4 marta SAT Math 800/800 ball egasi
 ✅ Umumiy SAT natijam esa 1550/1600
 ✅  1000+ ustoz va o'quvchi SAT bo'yicha english nol darajadan tayyorlab 50 foiz ustamaga olib chiqqanman.
 ✅Barchani ingliz tili 0 dan natijagacha olib chiqmoqdaman
-📊 Ushbu marafonda men sizlarga 30 kun davomida SAT Math bo'limidan mutloq tekin formatda jonli dars o'tib beraman. 
- Agar siz ham jonli darslarimizga qatnashib,ozingizda ozgarishni his qilib,Turbo Dekabr kursimizga qo'shilmoqchi bo'lsangiz. 
-Marafon shartlarini bajaring va joyingizni oldindan band eting. 
+📊 Ushbu marafonda men sizlarga 30 kun davomida SAT Math bo'limidan mutloq tekin formatda jonli dars o'tib beraman. </blockquote>
+ <i>Agar siz ham jonli darslarimizga qatnashib,ozingizda ozgarishni his qilib, <b>Turbo Dekabr</b> kursimizga qo'shilmoqchi bo'lsangiz. 
+Marafon shartlarini bajaring va joyingizni oldindan band eting. </i>
 
 Marafonda qoshilib, jonli darslarda qatnashish uchun "<b>‼️ Marafonda qatnashish sharti ‼️</b>" tugmasini bosing va kerakli ma'lumotni oling!""",
 
         'marathon_conditions': """🎯 <b>Bepul SAT Turbo Marafonida ishtirok eting!</b>
- 1️⃣ Bot sizga shaxsiy taklif havolasini taqdim etadi. Siz ushbu havolani eng kamida 3 nafar SAT imtihoniga tayyorlanayotgan tanishlaringizga yuborishingiz kerak bo'ladi. Ular sizning havolangiz orqali botga kirsa, har biri uchun sizga 1 balldan beriladi.
-2️⃣ Sizning ballaringiz 3 va undan ko'p bo'lsa, Ballarim bo'limi orqali siz uchun maxsus yopiq kanal va guruhga qo'shilish imkoniyatiga ega bo'lasiz.
-🚫 Ballaringiz 3 dan kamayib ketsa, avtomatik tarzda guruh va kanaldan chetlatilasiz.
-📌 Taklif havolangizni SAT ning matematika qismi bilan shug'ullanayotgan tanishlaringizga yuborishga harakat qiling!
+<blockquote> 1️⃣ Bot sizga shaxsiy taklif havolasini taqdim etadi. Siz ushbu havolani eng kamida 3 nafar SAT imtihoniga tayyorlanayotgan tanishlaringizga yuborishingiz kerak bo'ladi. Ular sizning havolangiz orqali botga kirsa, har biri uchun sizga 1 balldan beriladi.
+2️⃣ Sizning ballaringiz 3 va undan ko'p bo'lsa, Ballarim bo'limi orqali siz uchun maxsus yopiq kanal va guruhga qo'shilish imkoniyatiga ega bo'lasiz.</blockquote>
+<b>🚫 Ballaringiz 3 dan kamayib ketsa, avtomatik tarzda guruh va kanaldan chetlatilasiz.</b>
+<blockquote>📌 Taklif havolangizni SAT ning matematika qismi bilan shug'ullanayotgan tanishlaringizga yuborishga harakat qiling!</blockquote>
 ✅ Tayyor bo'lsangiz, menyudan "<b>🔗 Taklif havolasi 🔗</b>" tugmasini bosing va do'stlaringizni taklif qiling!""",
 
-        'new_referral_link_message': """❗️Qadirdonim yaxshiroq oqib deb, sizga ilindim😊
+        'new_referral_link_message': """<b>❗️Qadirdonim yaxshiroq oqib deb, sizga ilindim😊
     
-📌Ingliz tilim 0 darajada lekin SAT olaman deb niyat qilgan matematika ustozlar uchun bu ajoyib imkoniyat ✅
+📌Ingliz tilim 0 darajada lekin SAT olaman deb niyat qilgan matematika ustozlar uchun bu ajoyib imkoniyat ✅</b>
 
 ⚡️Oktabr oyining 1-sanasidan boshlab yopiq Bepul guruh tashkil qilinadi ✅
 
-Darslarda faol qatnashib umumiy hisobda eng kamida 90 mln pul yutuq qolga kiriting🎁
+<b>Darslarda faol qatnashib umumiy hisobda eng kamida 90 mln pul yutuq qolga kiriting🎁</b>
 
 •Bizda har kuni jonli darslar boladi
 
@@ -204,34 +204,31 @@ Darslarda faol qatnashib umumiy hisobda eng kamida 90 mln pul yutuq qolga kiriti
 
 •Maximal natijaga erishishingiz uchun qoshimcha topshiriqlar
 
-⚡️Yopiq guruhda vazifalarni toʻliq qilganlar orasidan 3 kishiga toʻliq xarajatlarini qoplagan holda 0 dan natijaga olib chiqamiz
+⚡️Yopiq guruhda <b>vazifalarni toʻliq qilganlar orasidan 3 kishiga toʻliq xarajatlarini qoplagan holda</b> 0 dan natijaga olib chiqamiz
 
-❗️HOZIR VAQTI KEYIN KECH.
+<b>❗️HOZIR VAQTI KEYIN KECH.
 
-📌Bu guruhga ulanish bepul yani sizdan hech qanday toʻlov talab qilinmaydi🤝
-
-•Hoziroq ulaning joylar kam👇
+📌Bu guruhga ulanish bepul yani sizdan hech qanday toʻlov talab qilinmaydi🤝</b>
 
 <blockquote>⚠️ Joylar soni cheklangan, bunday imkoniyatni qo'ldan boy bermang 👇</blockquote>
 {link}""",
 
         'user_stats_new': """<b>📈 Ballarim</b>
 
-sizning ballaringiz: <b>{current_points} ball</b>.
+Sizning ballaringiz: <b>{current_points} ball</b>.
 
-‼️ Siz taklif havolangiz orqali qo'shilgan odamlar kanallardan obunani bekor qilsa sizga shu odam uchun berilgan ball qaytarib olinadi!
-✅ Hisobingizdagi ballar 3 balldan yuqori qiymatga ega bo'lgandan so'ng yopiq kanal va guruhimizga qo'shilishingiz mumkin bo'ladi.""",
+<blockquote>‼️ Siz taklif havolangiz orqali qo'shilgan odamlar kanallardan obunani bekor qilsa sizga shu odam uchun berilgan ball qaytarib olinadi!</blockquote>
 
-        'prizes_info': """🏆 <b>Prizlar</b>
+<b>✅ Hisobingizdagi ballar 3 balldan yuqori qiymatga ega bo'lgandan so'ng yopiq kanal va guruhimizga qo'shilishingiz mumkin bo'ladi.</b>""",
 
-🏆 Marafonda sizni nafaqat bilim, balki KATTA imkoniyatlar ham kutmoqda!
-📌 Marafon guruhida yuqori natija qayd etgan ustozlarimiz SAT Dekabr Turbo kursimizga chegirma asosida qabul qilinadi.
-🎯 Qoshimchasiga, darslarni doimiy bajargan TOP-3 nafar ustozlarimiz yoki o'quvchilar uchun eng kamida 90 mln sum pul yutuq kutmoqda har biriga
+        'prizes_info': """<b>🏆 Marafonda sizni nafaqat bilim, balki KATTA imkoniyatlar ham kutmoqda!</b>
+<blockquote>📌 Marafon guruhida yuqori natija qayd etgan ustozlarimiz SAT Dekabr Turbo kursimizga chegirma asosida qabul qilinadi.</blockquote>
+<b>🎯 Qoshimchasiga, darslarni doimiy bajargan TOP-3 nafar ustozlarimiz yoki o'quvchilar uchun eng kamida 90 mln sum pul yutuq kutmoqda har biriga</b>
 <b>Biz 3 nafar odamning hammasiga:</b>
-⚡️ SAT 111$ tolovni toliq qoplab beramiz
+<blockquote>⚡️ SAT 111$ tolovni toliq qoplab beramiz
 ⚡️ Pullik maxsus kursimizda bepul oqitamiz
-⚡️ Vazirlikka yuborish va boshqa barcha narsalarni ozimiz qilib beramiz
- <b>Sizdan harakat bizdan esa imkoniyatlar:</b>
+⚡️ Vazirlikka yuborish va boshqa barcha narsalarni ozimiz qilib beramiz</blockquote>
+ <b>Sizdan harakat bizdan esa imkoniyatlar:
 
 SAT sertifikati orqali siz 3 yil davomida 50% ustama olasiz
 
@@ -239,7 +236,7 @@ Agar siz 5,000,000 oylik olsangiz
 
 Bu 2,500,000*36 = 90,000,000 
 
-<b>Barcha harajatlarni faol ustozlarimizga qoplab beramiz</b>""",
+Barcha harajatlarni faol ustozlarimizga qoplab beramiz</b>""",
     },
     'en': {
         'welcome': "Welcome to the bot! 🎉",

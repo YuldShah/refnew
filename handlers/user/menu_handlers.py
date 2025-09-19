@@ -214,7 +214,7 @@ async def new_marathon_buttons_handler(message: Message, db: Database):
         from .referral_handlers import show_new_referral_link
         await show_new_referral_link(message, db)
     elif message.text == "Prizlar🏆":
-        await message.answer(get_text('prizes_info', 'uz'))
+        await message.answer_photo(photo="AgACAgIAAxkBAANKaMz4Y9AdZDJBTlm4vIAIgkFWpTwAAoX3MRsM6GlKqL91bcYgiYkBAAMCAAN5AAM2BA", caption=get_text('prizes_info', 'uz'))
     elif message.text == "Ballarim📈":
         from .stats_handlers import show_user_points
         await show_user_points(message, db)
