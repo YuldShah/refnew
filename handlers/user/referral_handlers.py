@@ -1,4 +1,4 @@
-from aiogram.types import Message, InlineQuery, InlineQueryResultVideo
+from aiogram.types import Message, InlineQuery, InlineQueryResultPhoto
 from database.models import Database
 from text.messages import get_text
 from keyboards.user_keyboards import get_referral_share_keyboard
@@ -46,8 +46,9 @@ async def show_new_referral_link(message: Message, db: Database):
         text = get_text('referral_link_error', 'uz')
         keyboard = None
     
-    await message.answer(
-        text,
+    await message.answer_photo(
+        photo="AgACAgIAAxkBAAIBIWjPzxkEZEPoLN1Q64rGMxceWlq_AAK--zEbd9uAShbLWeD9ob0YAQADAgADeQADNgQ",
+        caption=text,
         reply_markup=keyboard
     )
 
@@ -76,19 +77,19 @@ async def handle_inline_query(inline_query: InlineQuery, db: Database):
     
     # Create referral link
     referral_link = f"https://t.me/{bot_username}?start={user['referral_code']}"
-    
-    # Create video result
-    video_result = InlineQueryResultVideo(
-        id="referral_video",
-        video_url="BAACAgIAAxkBAAIR4WhUZZTFkl_JvLlAkgod_CQFMljrAAIqdAACA1k4SRSFKq0mGiTUNgQ",
+
+    # Create photo result
+    photo_result = InlineQueryResultPhoto(
+        id="referral_photo",
+        photo_url="AgACAgIAAxkBAAIBIWjPzxkEZEPoLN1Q64rGMxceWlq_AAK--zEbd9uAShbLWeD9ob0YAQADAgADeQADNgQ",
         mime_type="video/mp4",  # Optional thumbnail
         title="Referral havolasi",
         thumbnail_url="https://i.postimg.cc/5yCpybYn/uplimg.jpg",
         description="Referral havolangizni ulashing",
         caption=get_text('referral_link_message', 'uz', link=referral_link)
     )
-    
-    await inline_query.answer([video_result], cache_time=0)
+
+    await inline_query.answer([photo_result], cache_time=0)
 
 async def handle_inline_query_for_not_subbed(inline_query: InlineQuery, db: Database):
     """Handle inline queries for users who are not subscribed"""
