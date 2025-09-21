@@ -158,37 +158,6 @@ async def start_handler(message: Message, state: FSMContext, db: Database):
             reply_markup=get_main_user_keyboard()
         )
 
-@menu_router.message(F.text.in_([
-    "📋 Qoidalar", "📋 Rules",
-    "🚀 Kirish huquqini olish", 
-    "🔗 Mening taklif havolam", "🔗 My Referral Link",
-    "📊 Mening statistikam", "📊 My Stats"
-]))
-async def menu_button_handler(message: Message, db: Database):
-    """Handle main menu button presses"""
-    
-    # Check if user exists before allowing access to any menu features
-    user = await db.get_user(message.from_user.id)
-    if not user:
-        # Get user's language preference (fallback to telegram language or default 'uz')
-        user_lang = 'uz'
-        await message.answer(
-            get_text('register_first', user_lang)
-        )
-        return
-    
-    if message.text in ["📋 Qoidalar", "📋 Rules"]:
-        from .rules_handlers import show_rules
-        await show_rules(message, db)
-    elif message.text in ["🚀 Kirish huquqini olish"]:
-        from .reward_handlers import show_rewards
-        await show_rewards(message, db)
-    elif message.text in ["🔗 Mening taklif havolam", "🔗 My Referral Link"]:
-        from .referral_handlers import show_referral_link
-        await show_referral_link(message, db)
-    elif message.text in ["📊 Mening statistikam", "📊 My Stats"]:
-        from .stats_handlers import show_user_stats
-        await show_user_stats(message, db)
 
 @menu_router.message(F.text.in_([
     "🔗Taklif havolasi🔗",

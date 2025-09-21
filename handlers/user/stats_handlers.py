@@ -2,7 +2,7 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.exceptions import TelegramBadRequest
 from database.models import Database
 from text.messages import get_text
-from keyboards.user_keyboards import get_stats_keyboard
+from keyboards.user_keyboards import get_stats_keyboard, get_reward_link_button
 from services.referral_service import ReferralService
 
 async def show_user_stats(message: Message, db: Database):
@@ -41,19 +41,79 @@ async def show_user_stats(message: Message, db: Database):
 async def show_user_points(message: Message, db: Database):
     """Display user's points for the marathon"""
     referral_service = ReferralService(db)
-      # Check and validate any pending referrals
+    user_id = message.from_user.id
+    
+    # Check and validate any pending referrals
     validation_result = await referral_service.check_and_validate_pending_referrals(
-        message.from_user.id, message.bot
+        user_id, message.bot
     )
     
     # Get updated user stats after validation
-    user_stats = await referral_service.get_referral_stats(message.from_user.id)
+    user_stats = await referral_service.get_referral_stats(user_id)
     current_points = user_stats.get('valid_referrals', 0)
     
     # Create points text
     text = get_text('user_stats_new', 'uz', current_points=current_points)
     
-    await message.answer(text)
+    if current_points >= 3:
+        # User has enough points for reward
+        text = get_text('user_stats_for_rewarding', 'uz', current_points=current_points)
+        
+        # Check if user has already accessed reward
+        if await db.has_user_accessed_reward(user_id):
+            # Get existing reward data from database
+            reward_data = await db.get_user_reward(user_id)
+            if reward_data and 'links' in reward_data:
+                # Use existing links
+                links = reward_data['links']
+                await message.answer(text, reply_markup=get_reward_link_button(links))
+            else:
+                # Fallback: regenerate links if data is corrupted
+                links = await _generate_invite_links(message, user_id)
+                await _save_reward_data(db, user_id, links)
+                await message.answer(text, reply_markup=get_reward_link_button(links))
+        else:
+            # First time accessing reward - generate new links
+            links = await _generate_invite_links(message, user_id)
+            await _save_reward_data(db, user_id, links)
+            await message.answer(text, reply_markup=get_reward_link_button(links))
+    else:
+        # User doesn't have enough points yet
+        await message.answer(text)
+
+async def _generate_invite_links(message: Message, user_id: int) -> list:
+    """Generate invite links for reward channels"""
+    # Bepul darslar guruhi
+    link1_obj = await message.bot.create_chat_invite_link(
+        chat_id=-1003087849002,
+        name=f"Join link for {user_id}",
+        member_limit=1
+    )
+
+    # Bepul darslar kanali
+    link2_obj = await message.bot.create_chat_invite_link(
+        chat_id=-1002914914573,
+        name=f"Join link for {user_id}",
+        member_limit=1
+    )
+
+    # Muhokama guruhi
+    link3_obj = await message.bot.create_chat_invite_link(
+        chat_id=-1003077395393,
+        name=f"Join link for {user_id}",
+        member_limit=1
+    )
+
+    # Extract the actual invite link URLs from ChatInviteLink objects
+    return [link1_obj.invite_link, link2_obj.invite_link, link3_obj.invite_link]
+
+async def _save_reward_data(db: Database, user_id: int, links: list):
+    """Save reward data to database"""
+    reward_data = {
+        'links': links
+    }
+    await db.save_user_reward(user_id, reward_data)
+
 
 async def refresh_user_stats(callback: CallbackQuery, db: Database):
     """Handle refresh stats button press"""

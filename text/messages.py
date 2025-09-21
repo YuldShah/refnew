@@ -222,6 +222,12 @@ Marafonda qoshilib, jonli darslarda qatnashish uchun "<b>‼️ Marafonda qatnas
 
 <b>✅ Hisobingizdagi ballar 3 balldan yuqori qiymatga ega bo'lgandan so'ng yopiq kanal va guruhimizga qo'shilishingiz mumkin bo'ladi.</b>""",
 
+        'user_stats_for_rewarding': """Sizning ballaringiz: <b>{current_points} ball</b>.
+
+<b>🥳 Tabriklaymiz sizning hisobingizda ballar talab qilingan 3 balldan yuqori bo'ldi. Endi siz marafon bo'lib o'tadigan yopiq guruh va kanallarga qo'shilishingiz mumkin. Quyidagi linklar orqali ularga ulanib oling.👇</b>
+
+<blockquote>‼️ Siz taklif havolangiz orqali qo'shilgan odamlar kanallardan obunani bekor qilsa sizga shu odam uchun berilgan ball qaytarib olinadi!</blockquote> """,
+
         'prizes_info': """<b>🏆 Marafonda sizni nafaqat bilim, balki KATTA imkoniyatlar ham kutmoqda!</b>
 <blockquote>📌 Marafon guruhida yuqori natija qayd etgan ustozlarimiz SAT Dekabr Turbo kursimizga chegirma asosida qabul qilinadi.</blockquote>
 <b>🎯 Qoshimchasiga, darslarni doimiy bajargan TOP-3 nafar ustozlarimiz yoki o'quvchilar uchun eng kamida 90 mln sum pul yutuq kutmoqda har biriga</b>
@@ -383,12 +389,6 @@ Share this link with your friends and get rewards! 💰""",        'referral_lin
 Keep going and earn more rewards! 🎯""",
         'referrals_validated': """🎉 <b>News!</b> {count} new referrals have been confirmed from your friends!""",
         
-        # Referrer notification messages
-        'referrer_new_user_subscribed': """🎉 <b>Yangi foydalanuvchi!</b>
-
-👤 {user_name} sizning taklifingiz orqali botga qo'shildi va bizning barcha kanallarimizga obuna bo'ldi!
-
-✅ Bu taklif tasdiqlangan takliflar ro'yxatiga qo'shildi.""",
         
         'referrer_new_user_pending': """🔔 <b>Yangi foydalanuvchi!</b>
 

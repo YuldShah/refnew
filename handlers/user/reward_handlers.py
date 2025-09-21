@@ -25,17 +25,17 @@ async def show_rewards(message: Message, db: Database):
             if reward_data and 'links' in reward_data:
                 # Use existing links
                 links = reward_data['links']
-                await message.answer(reward_text, reply_markup=get_reward_link_button(links), protect_content=True)
+                await message.answer(reward_text, reply_markup=get_reward_link_button(links))
             else:
                 # Fallback: regenerate links if data is corrupted
                 links = await _generate_invite_links(message, user_id)
                 await _save_reward_data(db, user_id, links)
-                await message.answer(reward_text, reply_markup=get_reward_link_button(links), protect_content=True)
+                await message.answer(reward_text, reply_markup=get_reward_link_button(links))
         else:
             # First time accessing reward - generate new links
             links = await _generate_invite_links(message, user_id)
             await _save_reward_data(db, user_id, links)
-            await message.answer(reward_text, reply_markup=get_reward_link_button(links), protect_content=True)
+            await message.answer(reward_text, reply_markup=get_reward_link_button(links))
     else:
         # User doesn't have enough referrals yet
         remaining = db.required_referrals - valid_count
@@ -50,21 +50,21 @@ async def _generate_invite_links(message: Message, user_id: int) -> list:
     """Generate invite links for reward channels"""
     # Bepul darslar guruhi
     link1_obj = await message.bot.create_chat_invite_link(
-        chat_id=-1002746646141,
+        chat_id=-1003087849002,
         name=f"Join link for {user_id}",
         member_limit=1
     )
 
     # Bepul darslar kanali
     link2_obj = await message.bot.create_chat_invite_link(
-        chat_id=-1002510444446,
+        chat_id=-1002914914573,
         name=f"Join link for {user_id}",
         member_limit=1
     )
 
     # Muhokama guruhi
     link3_obj = await message.bot.create_chat_invite_link(
-        chat_id=-1002861603252,
+        chat_id=-1003077395393,
         name=f"Join link for {user_id}",
         member_limit=1
     )
