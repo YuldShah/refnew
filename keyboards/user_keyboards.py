@@ -63,3 +63,15 @@ def get_reward_link_button(links: list) -> InlineKeyboardMarkup:
         ]
     ])
     return keyboard
+
+def get_press_referral_link_button(referral_link) -> InlineKeyboardMarkup:
+    """Get button prompting user to press referral link button (hardcoded Uzbek)"""
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [
+            InlineKeyboardButton(
+                text="🏆 Marafonda qatnashish 🏆",
+                url=referral_link
+            )
+        ]
+    ])
+    return keyboard

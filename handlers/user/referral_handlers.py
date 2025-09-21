@@ -1,7 +1,7 @@
 from aiogram.types import Message, InlineQuery, InlineQueryResultPhoto
 from database.models import Database
 from text.messages import get_text
-from keyboards.user_keyboards import get_referral_share_keyboard
+from keyboards.user_keyboards import get_referral_share_keyboard, get_press_referral_link_button
 from services.referral_service import ReferralService
 
 async def show_referral_link(message: Message, db: Database):
@@ -86,7 +86,8 @@ async def handle_inline_query(inline_query: InlineQuery, db: Database):
         title="Referral havolasi",
         thumbnail_url="https://i.postimg.cc/5yCpybYn/uplimg.jpg",
         description="Referral havolangizni ulashing",
-        caption=get_text('new_referral_link_message', 'uz', link=referral_link)
+        caption=get_text('new_referral_link_message', 'uz', link=referral_link),
+        reply_markup=get_press_referral_link_button(referral_link)
     )
 
     await inline_query.answer([photo_result], cache_time=0)
