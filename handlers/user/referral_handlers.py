@@ -86,7 +86,7 @@ async def handle_inline_query(inline_query: InlineQuery, db: Database):
         title="Referral havolasi",
         thumbnail_url="https://i.postimg.cc/5yCpybYn/uplimg.jpg",
         description="Referral havolangizni ulashing",
-        caption=get_text('referral_link_message', 'uz', link=referral_link)
+        caption=get_text('new_referral_link_message', 'uz', link=referral_link)
     )
 
     await inline_query.answer([photo_result], cache_time=0)
