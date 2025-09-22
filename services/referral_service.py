@@ -17,7 +17,10 @@ class ReferralService:
     async def get_referral_stats(self, user_id: int) -> Dict[str, Any]:
         """Get user's referral statistics (excluding admin user ID 19 from counts)"""
         async with self.db.pool.acquire() as conn:
-            if user_id == 19:
+            # Check if this user_id (telegram_id) corresponds to database id = 19
+            user_db_id = await conn.fetchval('SELECT id FROM users WHERE telegram_id = $1', user_id)
+            
+            if user_db_id == 19:
                 # For admin user, return 0 to not display inflated stats
                 return {
                     'total_referrals': 0,
@@ -28,18 +31,16 @@ class ReferralService:
             # Get total referrals (excluding referrals to admin user ID 19)
             total_referrals = await conn.fetchval('''
                 SELECT COUNT(*) FROM referrals r 
-                JOIN users u ON r.referred_id = u.id 
                 WHERE r.referrer_id = (SELECT id FROM users WHERE telegram_id = $1)
-                AND u.telegram_id != 19
+                AND r.referred_id != 19
             ''', user_id)
             
             # Get valid referrals (excluding referrals to admin user ID 19)
             valid_referrals = await conn.fetchval('''
                 SELECT COUNT(*) FROM referrals r 
-                JOIN users u ON r.referred_id = u.id 
                 WHERE r.referrer_id = (SELECT id FROM users WHERE telegram_id = $1) 
                 AND r.valid = TRUE 
-                AND u.telegram_id != 19
+                AND r.referred_id != 19
             ''', user_id)
             
             # Get pending referrals
@@ -54,7 +55,10 @@ class ReferralService:
     async def get_referred_users(self, user_id: int) -> list:
         """Get list of users referred by this user (excluding admin user ID 19)"""
         async with self.db.pool.acquire() as conn:
-            if user_id == 19:
+            # Check if this user_id (telegram_id) corresponds to database id = 19
+            user_db_id = await conn.fetchval('SELECT id FROM users WHERE telegram_id = $1', user_id)
+            
+            if user_db_id == 19:
                 # For admin user, return empty list to not display inflated referrals
                 return []
             
@@ -63,7 +67,7 @@ class ReferralService:
                 FROM referrals r 
                 JOIN users u ON r.referred_id = u.id 
                 WHERE r.referrer_id = (SELECT id FROM users WHERE telegram_id = $1)
-                AND u.telegram_id != 19
+                AND u.id != 19
                 ORDER BY u.joined_at DESC
             """, user_id)
             
@@ -82,7 +86,7 @@ class ReferralService:
                 SELECT r.id, r.referrer_id, r.referred_id, u.telegram_id as referred_telegram_id
                 FROM referrals r 
                 JOIN users u ON r.referred_id = u.id 
-                WHERE r.referrer_id = $1 AND r.valid = FALSE AND u.telegram_id != 19
+                WHERE r.referrer_id = $1 AND r.valid = FALSE AND u.id != 19
             """, user['id'])
             
             if not pending_referrals:

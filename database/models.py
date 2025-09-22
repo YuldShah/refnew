@@ -183,21 +183,20 @@ class Database:
     async def validate_user_referrals(self, telegram_id: int) -> Dict[str, int]:
         """Validate any pending referrals for this user (excluding admin user ID 19)"""
         async with self.pool.acquire() as conn:
-            # Don't validate referrals for admin user
-            if telegram_id == 19:
-                return {"validated": 0}
-            
             # Get user's internal ID
             user_id = await conn.fetchval('SELECT id FROM users WHERE telegram_id = $1', telegram_id)
             if not user_id:
+                return {"validated": 0}
+            
+            # Don't validate referrals for admin user
+            if user_id == 19:
                 return {"validated": 0}
                 
             # Check if this user was referred by someone else and that referral is not validated yet
             # Exclude referrals from admin user ID 19
             pending_referrals = await conn.fetch('''
                 SELECT r.id FROM referrals r
-                JOIN users u ON r.referrer_id = u.id
-                WHERE r.referred_id = $1 AND r.valid = FALSE AND u.telegram_id != 19
+                WHERE r.referred_id = $1 AND r.valid = FALSE AND r.referrer_id != 19
             ''', user_id)
             
             # Validate all pending referrals where this user is the referred one
@@ -213,8 +212,7 @@ class Database:
         async with self.pool.acquire() as conn:
             count = await conn.fetchval('''
                 SELECT COUNT(DISTINCT r.user_id) FROM rewards r
-                JOIN users u ON r.user_id = u.id
-                WHERE u.telegram_id != 19
+                WHERE r.user_id != 19
             ''')
             return count or 0
 

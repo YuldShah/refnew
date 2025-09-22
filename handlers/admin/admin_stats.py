@@ -22,20 +22,16 @@ async def show_admin_stats(message: Message, db: Database):
         reply_markup=admin_main_keyboard()
     )
     
-    # Get overall bot stats (excluding admin user with telegram_id = 19)
+    # Get overall bot stats (excluding admin user with id = 19)
     async with db.pool.acquire() as conn:
-        total_users = await conn.fetchval('SELECT COUNT(*) FROM users WHERE telegram_id != 19')
+        total_users = await conn.fetchval('SELECT COUNT(*) FROM users WHERE id != 19')
         total_valid_referrals = await conn.fetchval('''
             SELECT COUNT(*) FROM referrals r 
-            JOIN users u1 ON r.referrer_id = u1.id 
-            JOIN users u2 ON r.referred_id = u2.id 
-            WHERE r.valid = TRUE AND u1.telegram_id != 19 AND u2.telegram_id != 19
+            WHERE r.valid = TRUE AND r.referrer_id != 19 AND r.referred_id != 19
         ''')
         total_pending_referrals = await conn.fetchval('''
             SELECT COUNT(*) FROM referrals r 
-            JOIN users u1 ON r.referrer_id = u1.id 
-            JOIN users u2 ON r.referred_id = u2.id 
-            WHERE r.valid = FALSE AND u1.telegram_id != 19 AND u2.telegram_id != 19
+            WHERE r.valid = FALSE AND r.referrer_id != 19 AND r.referred_id != 19
         ''')
     
     reward_access_count = await db.get_reward_access_count()
@@ -146,20 +142,16 @@ async def refresh_admin_stats(callback: CallbackQuery, db: Database):
     """Refresh admin statistics"""
     await callback.answer("🔄 Refreshing admin stats...")
     
-    # Get overall bot stats (excluding admin user with telegram_id = 19)
+    # Get overall bot stats (excluding admin user with id = 19)
     async with db.pool.acquire() as conn:
-        total_users = await conn.fetchval('SELECT COUNT(*) FROM users WHERE telegram_id != 19')
+        total_users = await conn.fetchval('SELECT COUNT(*) FROM users WHERE id != 19')
         total_valid_referrals = await conn.fetchval('''
             SELECT COUNT(*) FROM referrals r 
-            JOIN users u1 ON r.referrer_id = u1.id 
-            JOIN users u2 ON r.referred_id = u2.id 
-            WHERE r.valid = TRUE AND u1.telegram_id != 19 AND u2.telegram_id != 19
+            WHERE r.valid = TRUE AND r.referrer_id != 19 AND r.referred_id != 19
         ''')
         total_pending_referrals = await conn.fetchval('''
             SELECT COUNT(*) FROM referrals r 
-            JOIN users u1 ON r.referrer_id = u1.id 
-            JOIN users u2 ON r.referred_id = u2.id 
-            WHERE r.valid = FALSE AND u1.telegram_id != 19 AND u2.telegram_id != 19
+            WHERE r.valid = FALSE AND r.referrer_id != 19 AND r.referred_id != 19
         ''')
     
     reward_access_count = await db.get_reward_access_count()
