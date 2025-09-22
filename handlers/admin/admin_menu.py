@@ -86,9 +86,19 @@ async def user_lookup_request_message(message: Message, state: FSMContext):
 async def show_admin_stats_message(message: Message, db: Database):
     """Show admin statistics"""
     async with db.pool.acquire() as conn:
-        total_users = await conn.fetchval('SELECT COUNT(*) FROM users')
-        total_referrals = await conn.fetchval('SELECT COUNT(*) FROM referrals WHERE valid = TRUE')
-        pending_referrals = await conn.fetchval('SELECT COUNT(*) FROM referrals WHERE valid = FALSE')
+        total_users = await conn.fetchval('SELECT COUNT(*) FROM users WHERE telegram_id != 19')
+        total_referrals = await conn.fetchval('''
+            SELECT COUNT(*) FROM referrals r 
+            JOIN users u1 ON r.referrer_id = u1.id 
+            JOIN users u2 ON r.referred_id = u2.id 
+            WHERE r.valid = TRUE AND u1.telegram_id != 19 AND u2.telegram_id != 19
+        ''')
+        pending_referrals = await conn.fetchval('''
+            SELECT COUNT(*) FROM referrals r 
+            JOIN users u1 ON r.referrer_id = u1.id 
+            JOIN users u2 ON r.referred_id = u2.id 
+            WHERE r.valid = FALSE AND u1.telegram_id != 19 AND u2.telegram_id != 19
+        ''')
     
     # Get reward access count
     reward_access_count = await db.get_reward_access_count()

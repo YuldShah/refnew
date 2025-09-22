@@ -10,7 +10,7 @@ class AdminService:
         self.db = db
     
     async def get_top_referrers(self, limit: int = 10) -> List[Dict[str, Any]]:
-        """Get top N referrers ordered by valid referrals count"""
+        """Get top N referrers ordered by valid referrals count (excluding admin user ID 19)"""
         async with self.db.pool.acquire() as conn:
             query = """
             SELECT 
@@ -22,8 +22,12 @@ class AdminService:
                 users u
             JOIN 
                 referrals r ON u.id = r.referrer_id
+            JOIN
+                users u2 ON r.referred_id = u2.id
             WHERE 
                 r.valid = TRUE
+                AND u.telegram_id != 19
+                AND u2.telegram_id != 19
             GROUP BY 
                 u.telegram_id, u.username, u.full_name
             ORDER BY 
@@ -39,17 +43,24 @@ class AdminService:
         if not user:
             return None
             
-        # Get referral stats
+        # Get referral stats (excluding referrals from/to admin user ID 19)
         async with self.db.pool.acquire() as conn:
-            valid_referrals = await conn.fetchval(
-                'SELECT COUNT(*) FROM referrals r JOIN users u ON r.referred_id = u.id WHERE r.referrer_id = $1 AND r.valid = TRUE',
-                user['id']
-            )
-            
-            pending_referrals = await conn.fetchval(
-                'SELECT COUNT(*) FROM referrals r JOIN users u ON r.referred_id = u.id WHERE r.referrer_id = $1 AND r.valid = FALSE',
-                user['id']
-            )
+            if user['telegram_id'] == 19:
+                # For admin user, show 0 referrals to not skew stats display
+                valid_referrals = 0
+                pending_referrals = 0
+            else:
+                valid_referrals = await conn.fetchval('''
+                    SELECT COUNT(*) FROM referrals r 
+                    JOIN users u ON r.referred_id = u.id 
+                    WHERE r.referrer_id = $1 AND r.valid = TRUE AND u.telegram_id != 19
+                ''', user['id'])
+                
+                pending_referrals = await conn.fetchval('''
+                    SELECT COUNT(*) FROM referrals r 
+                    JOIN users u ON r.referred_id = u.id 
+                    WHERE r.referrer_id = $1 AND r.valid = FALSE AND u.telegram_id != 19
+                ''', user['id'])
           # Add stats to user data
         user['valid_referrals'] = valid_referrals
         user['pending_referrals'] = pending_referrals
@@ -63,7 +74,7 @@ class AdminService:
         try:
             # Get all users with their referral statistics
             async with self.db.pool.acquire() as conn:
-                # Get users with referral stats
+                # Get users with referral stats (excluding admin user ID 19)
                 users_query = '''
                     SELECT 
                         u.id,
@@ -79,22 +90,27 @@ class AdminService:
                     FROM 
                         users u
                     LEFT JOIN (
-                        SELECT referrer_id, COUNT(*) as count 
-                        FROM referrals 
-                        WHERE valid = TRUE 
-                        GROUP BY referrer_id
+                        SELECT r.referrer_id, COUNT(*) as count 
+                        FROM referrals r
+                        JOIN users u1 ON r.referrer_id = u1.id
+                        JOIN users u2 ON r.referred_id = u2.id
+                        WHERE r.valid = TRUE AND u1.telegram_id != 19 AND u2.telegram_id != 19
+                        GROUP BY r.referrer_id
                     ) valid_refs ON u.id = valid_refs.referrer_id
                     LEFT JOIN (
-                        SELECT referrer_id, COUNT(*) as count 
-                        FROM referrals 
-                        WHERE valid = FALSE 
-                        GROUP BY referrer_id
+                        SELECT r.referrer_id, COUNT(*) as count 
+                        FROM referrals r
+                        JOIN users u1 ON r.referrer_id = u1.id
+                        JOIN users u2 ON r.referred_id = u2.id
+                        WHERE r.valid = FALSE AND u1.telegram_id != 19 AND u2.telegram_id != 19
+                        GROUP BY r.referrer_id
                     ) pending_refs ON u.id = pending_refs.referrer_id
+                    WHERE u.telegram_id != 19
                     ORDER BY u.joined_at
                 '''
                 
                 users = await conn.fetch(users_query)
-                  # Get detailed referrals data
+                  # Get detailed referrals data (excluding admin user ID 19)
                 referrals = await conn.fetch('''
                     SELECT 
                         r.id, 
@@ -111,10 +127,12 @@ class AdminService:
                         users u1 ON r.referrer_id = u1.id
                     JOIN 
                         users u2 ON r.referred_id = u2.id
+                    WHERE 
+                        u1.telegram_id != 19 AND u2.telegram_id != 19
                     ORDER BY r.id DESC
                 ''')
                 
-                # Get top referrers summary
+                # Get top referrers summary (excluding admin user ID 19)
                 top_referrers = await conn.fetch('''
                     SELECT 
                         u.telegram_id,
@@ -125,8 +143,12 @@ class AdminService:
                         users u
                     JOIN 
                         referrals r ON u.id = r.referrer_id
+                    JOIN
+                        users u2 ON r.referred_id = u2.id
                     WHERE 
                         r.valid = TRUE
+                        AND u.telegram_id != 19
+                        AND u2.telegram_id != 19
                     GROUP BY 
                         u.telegram_id, u.username, u.full_name
                     ORDER BY 
