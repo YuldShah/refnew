@@ -40,28 +40,18 @@ def get_referral_share_keyboard(referral_link: str = "") -> InlineKeyboardMarkup
     ])
     return keyboard
 
-def get_reward_link_button(links: list) -> InlineKeyboardMarkup:
-    """Get reward link inline keyboard (hardcoded Uzbek)"""
-    keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [
+def get_reward_link_button(invite_data: list) -> InlineKeyboardMarkup:
+    """Get reward link inline keyboard - dynamically generated from config"""
+    buttons = []
+    for item in invite_data:
+        buttons.append([
             InlineKeyboardButton(
-                text="Bepul darslar kanali",
-                url=links[1]  # links are now strings, not ChatInviteLink objects
+                text=item['name'],
+                url=item['link']
             )
-        ],
-        [
-            InlineKeyboardButton(
-                text="Bepul darslar guruhi",
-                url=links[0]  # links are now strings, not ChatInviteLink objects
-            )
-        ],
-        [
-            InlineKeyboardButton(
-                text="Muhokama guruhi",
-                url=links[2]  # links are now strings, not ChatInviteLink objects
-            )
-        ]
-    ])
+        ])
+
+    keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     return keyboard
 
 def get_press_referral_link_button(referral_link) -> InlineKeyboardMarkup:
