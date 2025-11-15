@@ -11,6 +11,7 @@ import logging
 
 menu_router = Router()
 menu_router.message.filter(IsUserFilter())
+menu_router.message.filter(F.chat.type == "private")
 
 @menu_router.message(F.text == "🏘 Main menu")
 @menu_router.message(F.text == "🏘 Bosh menyu")

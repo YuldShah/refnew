@@ -10,6 +10,9 @@ import logging
 
 # Create main user router that includes all sub-routers
 user_router = Router()
+# Filter to only handle private chats (except inline queries which don't have chat type)
+user_router.message.filter(F.chat.type == "private")
+user_router.callback_query.filter(F.message.chat.type == "private")
 user_router.include_router(menu_router)
 
 @user_router.callback_query(F.data == 'back_to_menu')
