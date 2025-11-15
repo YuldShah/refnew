@@ -184,7 +184,10 @@ Ularning qatorida esa navbat endi sizniki bo'lishi shart!
 
 🟢 Taklif havola tugmasini bosing!</blockquote>
 🟢 <b>Agar siz ham Turbo Marafon guruhimizga qo'shilmoqchi bo'lsangiz — botga <a href="{link}">Start</a> bering va joyingizni band qiling!</b>
-<blockquote>⚠️ Joylar soni kam qolmoqda 👇</blockquote>""",
+<blockquote>⚠️ Joylar soni kam qolmoqda 👇</blockquote>
+{link}
+{link}
+{link}""",
 
         'user_stats_new': """📈 <b>Sizning ballaringiz: {current_points} ball.</b>
 <blockquote>‼️ Siz taklif havolangiz orqali qo'shilgan odam kanallardan obunani bekor qilsa sizga shu odam uchun berilgan ball qaytarib olinadi!</blockquote>
