@@ -47,11 +47,13 @@ async def show_new_referral_link(message: Message, db: Database):
         text = get_text('referral_link_error', 'uz')
         keyboard = None
     
-    await message.answer_photo(
+    msg = await message.answer_photo(
         photo=get_photo('referral_link'),
         caption=text,
         reply_markup=keyboard
     )
+    await msg.reply(get_text('new_referral_link_followup', 'uz'))
+    
 
 async def handle_inline_query(inline_query: InlineQuery, db: Database):
     """Handle inline queries for sharing referral videos"""

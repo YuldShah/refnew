@@ -188,6 +188,9 @@ Ularning qatorida esa navbat endi sizniki bo'lishi shart!
 {link}
 {link}
 {link}</blockquote>""",
+        "new_referral_link_followup" : """👆 <b>Yuqoridagi sizning taklif havolangiz.</b>
+<blockquote>👑 Taklif havolangiz orqali botimizga 3 va undan ortiq do'stlaringizni taklif qiling va VIP kanal va guruhimizga qo'shilish imkoniyatini qo'lga kiriting!</blockquote>
+❗️<b>SHOSHILING! Jami bo'lib 1000 ta joy ajratilgan</b>🤝""",
 
         'user_stats_new': """📈 <b>Sizning ballaringiz: {current_points} ball.</b>
 <blockquote>‼️ Siz taklif havolangiz orqali qo'shilgan odam kanallardan obunani bekor qilsa sizga shu odam uchun berilgan ball qaytarib olinadi!</blockquote>
