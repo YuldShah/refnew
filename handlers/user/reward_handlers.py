@@ -3,6 +3,7 @@ from database.models import Database
 from text.messages import get_text
 from services.referral_service import ReferralService
 from keyboards.user_keyboards import get_reward_link_button
+from config.loader import get_reward_channels
 
 async def show_rewards(message: Message, db: Database):
     """Display available rewards to user"""
@@ -47,30 +48,24 @@ async def show_rewards(message: Message, db: Database):
         await message.answer(reward_text)
 
 async def _generate_invite_links(message: Message, user_id: int) -> list:
-    """Generate invite links for reward channels"""
-    # Bepul darslar guruhi
-    link1_obj = await message.bot.create_chat_invite_link(
-        chat_id=-1003087849002,
-        name=f"Join link for {user_id}",
-        member_limit=1
-    )
+    """Generate invite links for reward channels (loaded dynamically from config)"""
+    channels = get_reward_channels()
+    invite_links = []
 
-    # Bepul darslar kanali
-    link2_obj = await message.bot.create_chat_invite_link(
-        chat_id=-1002914914573,
-        name=f"Join link for {user_id}",
-        member_limit=1
-    )
+    for channel in channels:
+        try:
+            link_obj = await message.bot.create_chat_invite_link(
+                chat_id=channel['chat_id'],
+                name=f"{channel['name']} - User {user_id}",
+                member_limit=1
+            )
+            invite_links.append(link_obj.invite_link)
+        except Exception as e:
+            print(f"Error creating invite link for {channel['name']}: {e}")
+            # Continue with other channels even if one fails
+            continue
 
-    # Muhokama guruhi
-    link3_obj = await message.bot.create_chat_invite_link(
-        chat_id=-1003077395393,
-        name=f"Join link for {user_id}",
-        member_limit=1
-    )
-
-    # Extract the actual invite link URLs from ChatInviteLink objects
-    return [link1_obj.invite_link, link2_obj.invite_link, link3_obj.invite_link]
+    return invite_links
 
 async def _save_reward_data(db: Database, user_id: int, links: list):
     """Save reward data to database"""

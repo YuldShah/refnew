@@ -15,37 +15,24 @@ class ReferralService:
         return None
     
     async def get_referral_stats(self, user_id: int) -> Dict[str, Any]:
-        """Get user's referral statistics (excluding admin user ID 19 from counts)"""
+        """Get user's referral statistics"""
         async with self.db.pool.acquire() as conn:
-            # Check if this user_id (telegram_id) corresponds to database id = 19
-            user_db_id = await conn.fetchval('SELECT id FROM users WHERE telegram_id = $1', user_id)
-            
-            if user_db_id == 19:
-                # For admin user, return 0 to not display inflated stats
-                return {
-                    'total_referrals': 0,
-                    'valid_referrals': 0,
-                    'pending_referrals': 0
-                }
-            
-            # Get total referrals (excluding referrals to admin user ID 19)
+            # Get total referrals
             total_referrals = await conn.fetchval('''
-                SELECT COUNT(*) FROM referrals r 
+                SELECT COUNT(*) FROM referrals r
                 WHERE r.referrer_id = (SELECT id FROM users WHERE telegram_id = $1)
-                AND r.referred_id != 19
             ''', user_id)
-            
-            # Get valid referrals (excluding referrals to admin user ID 19)
+
+            # Get valid referrals
             valid_referrals = await conn.fetchval('''
-                SELECT COUNT(*) FROM referrals r 
-                WHERE r.referrer_id = (SELECT id FROM users WHERE telegram_id = $1) 
-                AND r.valid = TRUE 
-                AND r.referred_id != 19
+                SELECT COUNT(*) FROM referrals r
+                WHERE r.referrer_id = (SELECT id FROM users WHERE telegram_id = $1)
+                AND r.valid = TRUE
             ''', user_id)
-            
+
             # Get pending referrals
             pending_referrals = total_referrals - valid_referrals
-            
+
             return {
                 'total_referrals': total_referrals or 0,
                 'valid_referrals': valid_referrals or 0,
@@ -53,24 +40,16 @@ class ReferralService:
             }
     
     async def get_referred_users(self, user_id: int) -> list:
-        """Get list of users referred by this user (excluding admin user ID 19)"""
+        """Get list of users referred by this user"""
         async with self.db.pool.acquire() as conn:
-            # Check if this user_id (telegram_id) corresponds to database id = 19
-            user_db_id = await conn.fetchval('SELECT id FROM users WHERE telegram_id = $1', user_id)
-            
-            if user_db_id == 19:
-                # For admin user, return empty list to not display inflated referrals
-                return []
-            
             referred_users = await conn.fetch("""
                 SELECT u.full_name, u.username, r.valid, u.joined_at
-                FROM referrals r 
-                JOIN users u ON r.referred_id = u.id 
+                FROM referrals r
+                JOIN users u ON r.referred_id = u.id
                 WHERE r.referrer_id = (SELECT id FROM users WHERE telegram_id = $1)
-                AND u.id != 19
                 ORDER BY u.joined_at DESC
             """, user_id)
-            
+
             return [dict(user) for user in referred_users]
     
     async def check_and_validate_pending_referrals(self, user_id: int, bot) -> Dict[str, Any]:
@@ -80,13 +59,13 @@ class ReferralService:
         if not user:
             return {"validated": 0, "still_pending": 0}
             
-        # Get pending referrals (excluding referrals to admin user ID 19)
+        # Get pending referrals
         async with self.db.pool.acquire() as conn:
             pending_referrals = await conn.fetch("""
                 SELECT r.id, r.referrer_id, r.referred_id, u.telegram_id as referred_telegram_id
-                FROM referrals r 
-                JOIN users u ON r.referred_id = u.id 
-                WHERE r.referrer_id = $1 AND r.valid = FALSE AND u.id != 19
+                FROM referrals r
+                JOIN users u ON r.referred_id = u.id
+                WHERE r.referrer_id = $1 AND r.valid = FALSE
             """, user['id'])
             
             if not pending_referrals:

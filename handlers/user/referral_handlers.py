@@ -1,6 +1,7 @@
 from aiogram.types import Message, InlineQuery, InlineQueryResultPhoto
 from database.models import Database
 from text.messages import get_text
+from config.loader import get_photo
 from keyboards.user_keyboards import get_referral_share_keyboard, get_press_referral_link_button
 from services.referral_service import ReferralService
 
@@ -47,7 +48,7 @@ async def show_new_referral_link(message: Message, db: Database):
         keyboard = None
     
     await message.answer_photo(
-        photo="AgACAgIAAxkBAAIBIWjPzxkEZEPoLN1Q64rGMxceWlq_AAK--zEbd9uAShbLWeD9ob0YAQADAgADeQADNgQ",
+        photo=get_photo('referral_link'),
         caption=text,
         reply_markup=keyboard
     )
@@ -81,7 +82,7 @@ async def handle_inline_query(inline_query: InlineQuery, db: Database):
     # Create photo result
     photo_result = InlineQueryResultPhoto(
         id="referral_photo",
-        photo_url="AgACAgIAAxkBAAIBIWjPzxkEZEPoLN1Q64rGMxceWlq_AAK--zEbd9uAShbLWeD9ob0YAQADAgADeQADNgQ",
+        photo_url=get_photo('referral_link'),
         mime_type="video/mp4",  # Optional thumbnail
         title="Referral havolasi",
         thumbnail_url="https://i.postimg.cc/5yCpybYn/uplimg.jpg",

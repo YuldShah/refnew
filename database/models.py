@@ -181,38 +181,32 @@ class Database:
         return await self.update_user_language(telegram_id, language)
     
     async def validate_user_referrals(self, telegram_id: int) -> Dict[str, int]:
-        """Validate any pending referrals for this user (excluding admin user ID 19)"""
+        """Validate any pending referrals for this user"""
         async with self.pool.acquire() as conn:
             # Get user's internal ID
             user_id = await conn.fetchval('SELECT id FROM users WHERE telegram_id = $1', telegram_id)
             if not user_id:
                 return {"validated": 0}
-            
-            # Don't validate referrals for admin user
-            if user_id == 19:
-                return {"validated": 0}
-                
+
             # Check if this user was referred by someone else and that referral is not validated yet
-            # Exclude referrals from admin user ID 19
             pending_referrals = await conn.fetch('''
                 SELECT r.id FROM referrals r
-                WHERE r.referred_id = $1 AND r.valid = FALSE AND r.referrer_id != 19
+                WHERE r.referred_id = $1 AND r.valid = FALSE
             ''', user_id)
-            
+
             # Validate all pending referrals where this user is the referred one
             validated_count = 0
             for ref in pending_referrals:
                 await conn.execute('UPDATE referrals SET valid = TRUE WHERE id = $1', ref['id'])
                 validated_count += 1
-                
+
             return {"validated": validated_count}
     
     async def get_reward_access_count(self) -> int:
-        """Get count of users who accessed the reward (excluding admin user ID 19)"""
+        """Get count of users who accessed the reward"""
         async with self.pool.acquire() as conn:
             count = await conn.fetchval('''
                 SELECT COUNT(DISTINCT r.user_id) FROM rewards r
-                WHERE r.user_id != 19
             ''')
             return count or 0
 

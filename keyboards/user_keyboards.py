@@ -2,13 +2,13 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMar
 from text.messages import get_text
 
 def get_main_user_keyboard() -> ReplyKeyboardMarkup:
-    """Get the main user reply keyboard with 4 options (hardcoded Uzbek)"""
+    """Get the main user reply keyboard with 4 rows (hardcoded Uzbek)"""
     keyboard = ReplyKeyboardMarkup(
         keyboard=[
-            [KeyboardButton(text='🔗Taklif havolasi🔗')],
-            [KeyboardButton(text='Prizlar🏆'), KeyboardButton(text='Ballarim📈')],
-            [KeyboardButton(text='🔝SAT marafon haqida🔝')],
-            [KeyboardButton(text='‼️ Marafonda qatnashish sharti ‼️')]
+            [KeyboardButton(text='📋 SAT marafon haqida 📋')],
+            [KeyboardButton(text='‼️ Marafonda qatnashish sharti ‼️'), KeyboardButton(text='🎁 Sovrinlar ⭐️')],
+            [KeyboardButton(text='🔗Taklif havolasi🔗'), KeyboardButton(text='📊Ballarim📊')],
+            [KeyboardButton(text='👇SAT imtixoni beradigan imkoniyatlar👇')]
         ],
         resize_keyboard=True,
         one_time_keyboard=False

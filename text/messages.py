@@ -13,13 +13,8 @@ Siz SAT sertifikat olish uchun muhim qadam tashladingiz!
         'subscription_required': "Botdan foydalanish uchun bizning barcha kanallarimizga obuna bo'ling:",
         'not_subscribed': "Siz hali ham barcha kanallarga obuna bo'lmagansiz!",
         'our_chats_folder': "Bizning kanallar papkasi 📁",
-        'subscribe_button': "Obuna bo'lish ✅",
         'check_subscription': "Obunani tekshirish ✅",
         'subscription_confirmed': "✅ Tabriklaymiz! Siz barcha bizning kanallarga obuna bo'ldingiz va botdan bemalol foydalanishingiz mumkin!",
-        'referral_system': "Taklif tizimi 📊",
-        'valid_referrals': "Tasdiqlangan takliflar: <b>{count}</b>",
-        'pending_referrals': "Kutilayotgan takliflar: <b>{count}</b>",
-        'your_referral_link': "Sizning taklif havolangiz:\n<code>{link}</code>",
         'admin_panel': "👨‍💼 Admin panelga xush kelibsiz!",
         'admin_top_referrers': "🏆 Top 10",
         'admin_user_lookup': "🔍 Qidirish",
@@ -34,35 +29,12 @@ Siz SAT sertifikat olish uchun muhim qadam tashladingiz!
         'admin_export_error': "⚠️ Eksport qilishda xatolik yuz berdi.",
         'admin_top_referrers_title': "🏆 <b>TOP 10 Referrerlar:</b>\n\n",
         'admin_top_referrer_item': "{position}. {full_name} (@{username}) - {count} ta taklif",
-        'manage_channels': "Kanallarni boshqarish",
-        'add_channel': "Kanal qo'shish",
-        'remove_channel': "Kanalni o'chirish",
-        'channel_added': "Kanal muvaffaqiyatli qo'shildi!",
-        'channel_removed': "Kanal o'chirildi!",
-        'send_channel_info': "Kanal ID, nomi va username kiriting:",
-        'invalid_format': "Noto'g'ri format!",
-        'back': "⬅️ Orqaga",
-        'language_settings': "Til sozlamalari 🌐",
-        'current_language': "Joriy til: <b>O'zbek tili</b> 🇺🇿",
-        'switch_to_english': "Switch to English 🇺🇸",
-        'language_changed': "Til muvaffaqiyatli o'zgartirildi! 🎉",
-        'unexpected_error': "Kutilmagan xatolik yuz berdi! ⚠️\nIltimos, keyinroq urinib ko'ring.",        
-        'channel_validation_error': "Kanalni tekshirishda xatolik yuz berdi.",
-        'channel_not_accessible': "Bot ushbu kanalga kirish huquqiga ega emas.",
-        'add_bot_as_admin': "Botni kanal administratori sifatida qo'shing.",
+        'unexpected_error': "Kutilmagan xatolik yuz berdi! ⚠️\nIltimos, keyinroq urinib ko'ring.",
         'register_first': "Iltimos, avval ro'yxatdan o'ting.\n\n/start /start /start",
         
         # Main menu buttons
-        'rules_button': "📋 Qoidalar",
-        'get_reward_button': "🚀 Kirish huquqini olish",
-        'my_referral_link_button': "🔗 Mening taklif havolam",        
-        'my_stats_button': "📊 Mening statistikam",
         'share_referral_link': "🔗 Referral havolani ulashish",
-        'back_to_menu': "🔙 Bosh menyuga qaytish",        
         'refresh_stats': "🔄 Yangilash",
-        'search_user': "🔍 Qidirish",
-        'top_10_referrers': "🏆 Top 10",
-        'export_my_data': "📊 Eksport",
         'stats_up_to_date': "📊 Statistika yangilangan",
         
         # Manage access messages
@@ -167,83 +139,72 @@ Yetarli ballarga ega bo'ling yopiq kanal va guruhimiz a'zosiga aylaning.
 ✅ Bu taklif endi tasdiqlangan takliflar ro'yxatida.""",
 
         # New marathon messages
-        'sat_marathon_info': """<b>📢 Assalomu alaykum, SAT olmoqchi bolgan matematika ustozlarimiz hamda o'quvchilar!</b>  
+        'sat_marathon_info': """📢 <b>Assalomu alaykum, hurmatli matematika ustozlar va o'quvchilar!</b>
 
-<i>SAT imtixonini topshirmoqchisiz lekin natijalaringiz ozgarmayaptimi?</i>
+SAT imtixonining matematika qismidan <i>anchadan beri tayyorgarlik ko'rayapsiz lekin natijalar siz xohlagan darajada emasmi?</i>
 
-<b>📌 Unda sizni 30 kunlik BEPUL Turbo Marafonimizga taklif qilaman!</b>
-<blockquote>Men — <b>Asatullayev Elbek:</b>
-✅ 4 marta SAT Math 800/800 ball egasi
-✅ Umumiy SAT natijam esa 1550/1600
-✅  1000+ ustoz va o'quvchi SAT bo'yicha english nol darajadan tayyorlab 50 foiz ustamaga olib chiqqanman.
-✅Barchani ingliz tili 0 dan natijagacha olib chiqmoqdaman
-📊 Ushbu marafonda men sizlarga 30 kun davomida SAT Math bo'limidan mutloq tekin formatda jonli dars o'tib beraman. </blockquote>
- <i>Agar siz ham jonli darslarimizga qatnashib,ozingizda ozgarishni his qilib, <b>Turbo Dekabr</b> kursimizga qo'shilmoqchi bo'lsangiz. 
-Marafon shartlarini bajaring va joyingizni oldindan band eting. </i>
+📌 <b>Unda sizni Mart SAT matematikauchun BEPUL Turbo Marafonimizga taklif qilaman!</b>
+<blockquote>⚡️O'qituvchimiz— Bir nechta xalqaro sertifikatlar sohibi
 
-Marafonda qoshilib, jonli darslarda qatnashish uchun "<b>‼️ Marafonda qatnashish sharti ‼️</b>" tugmasini bosing va kerakli ma'lumotni oling!""",
+<b>ELBEK Asatullayev
+SAT Math ketma-ket 4x (800/800)
+SAT Umumiy natija (1550/1600)
+IELTS (7.5/9.0)
+Oktabr imtixonning ozida matematikadan 150 ta natija va ularning ortachasi 750
+So'nggi 2 yil ichida kurslarimizda  4000+</b> ustozlar Xalqaro Sertifikatlarda maximal natija qayd etdi.
+Ularning qatorida esa navbat endi sizniki bo'lishi shart!
 
-        'marathon_conditions': """🎯 <b>Bepul SAT Turbo Marafonida ishtirok eting!</b>
-<blockquote> 1️⃣ Bot sizga shaxsiy taklif havolasini taqdim etadi. Siz ushbu havolani eng kamida 3 nafar SAT imtihoniga tayyorlanayotgan tanishlaringizga yuborishingiz kerak bo'ladi. Ular sizning havolangiz orqali botga kirsa, har biri uchun sizga 1 balldan beriladi.
-2️⃣ Sizning ballaringiz 3 va undan ko'p bo'lsa, Ballarim bo'limi orqali siz uchun maxsus yopiq kanal va guruhga qo'shilish imkoniyatiga ega bo'lasiz.</blockquote>
-<b>🚫 Ballaringiz 3 dan kamayib ketsa, avtomatik tarzda guruh va kanaldan chetlatilasiz.</b>
-<blockquote>📌 Taklif havolangizni SAT ning matematika qismi bilan shug'ullanayotgan tanishlaringizga yuborishga harakat qiling!</blockquote>
-✅ Tayyor bo'lsangiz, menyudan "<b>🔗 Taklif havolasi 🔗</b>" tugmasini bosing va do'stlaringizni taklif qiling!""",
+<b>Ustozimiz</b> o'z soxasi ustasi va sizni imtixongacha puxta va hotirjam tayyor bolishingizda yaqindan yordam beradi.</blockquote>
+🎯 <i>Agar siz ham jonli darslarimizga qatnashib, darslarimizdan namunalar ko'rib,  kursimizga qo'shilmoqchi bo'lsangiz.
+Marafon shartlarini bajaring va joyingizni oldindan band eting.</i>
 
-        'new_referral_link_message': """<b>❗️Qadirdonim yaxshiroq o'qing deb, sizga ilindim😊
-    
-📌Ingliz tilim 0 darajada lekin SAT olaman deb niyat qilgan matematika ustozlar uchun bu ajoyib imkoniyat ✅</b>
+Marafonda qatnashish uchun "‼️ <b>Marafonda qatnashish sharti </b>‼️" tugmasini bosing va batafsil ma'lumotni oling!""",
 
-⚡️Oktabr oyining 1-sanasidan boshlab yopiq Bepul guruh tashkil qilinadi ✅
+        'marathon_conditions': """🎯 <b>Bepul Turbo SAT Marafonida ishtirok eting!</b>
+<blockquote>1️⃣ Bot sizga shaxsiy taklif havolasini taqdim etadi. Siz ushbu havolani kamida 3 nafar SAT imtihoniga tayyorlanayotgan tanishlaringizga yuborishingiz kerak bo'ladi. Ular sizning havolangiz orqali botga kirsa, har biri uchun sizga 1 balldan beriladi.
+2️⃣ Sizning <b>ballaringiz 3 va undan ko'p</b> bo'lsa, Ballarim bo'limi orqali siz uchun maxsus yopiq kanal va guruhga qo'shilish imkoniyatiga ega bo'lasiz.</blockquote>
+🚫 <b>Ballaringiz 3 dan kamayib ketsa, avtomatik tarzda guruh va kanaldan chetlatilasiz.</b>
+<blockquote>📌 Taklif havolangizni matematika bilan shug'ullanayotgan tanishlaringizga yuborishga harakat qiling!</blockquote>
+✅ Tayyor bo'lsangiz, menyudan "🔗 <b>Taklif havolasi</b> 🔗" tugmasini bosing va do'stlaringizni taklif qiling!""",
 
-<b>Darslarda faol qatnashib umumiy hisobda eng kamida 90 mln pul yutuq qolga kiriting🎁</b>
+        'new_referral_link_message': """<b>Deyarli hamma ustama olib boldi. Sizda esa hali ham tayyorgarlik yaxshi emas.
+Bizda esa siz uchun ajoyib yechim bor.</b>
+<i>Jamoamiz o'z</i> ishining ustasi
+<blockquote>Elbek Asatullayev
+<b>SAT math ketma-ket 4 marta 800/800 maximal ball 🔥
+SAT umumiy natija 1550/1600 ⭐️
+IELTS overall 7.5/9.0 ball 📌
+Agar sizning ingliz tili darajangiz 0 bolsa, sizga ingliz tili o'rganishni eng oson usullarini biz o'rgatamiz.
+Ayniqsa matnli masalalarga kelganda boshqa kurslardan farqini sezasizlar. ‼️</b></blockquote>
 
-•Bizda har kuni jonli darslar boladi
+<blockquote>Sizlarni Mart SAT BEPUL Turbo  Marafon yopiq guruh va kanalimizga taklif etamiz
 
-•Ingliz tilini 0 dan oshirishga maxsus topshiriqlarimiz
+📊So'nggi 2 yil ichida kurslarimizda  4000+ ustozlar va o'quvchilarimiz Xalqaro Sertifikatlarda maximal natija qayd etdi.
+Ularning qatorida esa navbat endi sizniki bo'lishi shart!
 
-•Maximal natijaga erishishingiz uchun qoshimcha topshiriqlar
+🟢 Taklif havola tugmasini bosing!</blockquote>
+🟢 <b>Agar siz ham Turbo Marafon guruhimizga qo'shilmoqchi bo'lsangiz — botga <a href="{link}">Start</a> bering va joyingizni band qiling!</b>
+<blockquote>⚠️ Joylar soni kam qolmoqda 👇</blockquote>""",
 
-⚡️Yopiq guruhda <b>vazifalarni toʻliq qilganlar orasidan 3 kishiga toʻliq xarajatlarini qoplagan holda</b> 0 dan natijaga olib chiqamiz
+        'user_stats_new': """📈 <b>Sizning ballaringiz: {current_points} ball.</b>
+<blockquote>‼️ Siz taklif havolangiz orqali qo'shilgan odam kanallardan obunani bekor qilsa sizga shu odam uchun berilgan ball qaytarib olinadi!</blockquote>
+✅ <b>Hisobingizdagi ballar 3 balldan yuqori qiymatga ega bo'lgandan so'ng yopiq kanal va guruhimizga qo'shilishingiz mumkin bo'ladi.</b>""",
 
-<b>❗️HOZIR VAQTI KEYIN KECH.
-
-📌Bu guruhga ulanish bepul yani sizdan hech qanday toʻlov talab qilinmaydi🤝</b>
-
-<blockquote>⚠️ Joylar soni cheklangan, bunday imkoniyatni qo'ldan boy bermang 👇</blockquote>
-{link}
-{link}
-{link}
-""",
-
-        'user_stats_new': """Sizning ballaringiz: <b>{current_points} ball</b>.
-
-<blockquote>‼️ Siz taklif havolangiz orqali qo'shilgan odamlar kanallardan obunani bekor qilsa sizga shu odam uchun berilgan ball qaytarib olinadi!</blockquote>
-
-<b>✅ Hisobingizdagi ballar 3 balldan yuqori qiymatga ega bo'lgandan so'ng yopiq kanal va guruhimizga qo'shilishingiz mumkin bo'ladi.</b>""",
-
-        'user_stats_for_rewarding': """Sizning ballaringiz: <b>{current_points} ball</b>.
+        'user_stats_for_rewarding': """📈 <b>Sizning ballaringiz: {current_points} ball.</b>
 
 <b>🥳 Tabriklaymiz sizning hisobingizda ballar talab qilingan 3 balldan yuqori bo'ldi. Endi siz marafon bo'lib o'tadigan yopiq guruh va kanallarga qo'shilishingiz mumkin. Quyidagi linklar orqali ularga ulanib oling.👇</b>
 
-<blockquote>‼️ Siz taklif havolangiz orqali qo'shilgan odamlar kanallardan obunani bekor qilsa sizga shu odam uchun berilgan ball qaytarib olinadi!</blockquote> """,
+<blockquote>‼️ Siz taklif havolangiz orqali qo'shilgan odam kanallardan obunani bekor qilsa sizga shu odam uchun berilgan ball qaytarib olinadi!</blockquote>""",
 
-        'prizes_info': """<b>🏆 Marafonda sizni nafaqat bilim, balki KATTA imkoniyatlar ham kutmoqda!</b>
-<blockquote>📌 Marafon guruhida yuqori natija qayd etgan ustozlarimiz SAT Dekabr Turbo kursimizga chegirma asosida qabul qilinadi.</blockquote>
-<b>🎯 Qoshimchasiga, darslarni doimiy bajargan TOP-3 nafar ustozlarimiz yoki o'quvchilar uchun eng kamida 90 mln sum pul yutuq kutmoqda har biriga</b>
-<b>Biz 3 nafar odamning hammasiga:</b>
-<blockquote>⚡️ SAT 111$ tolovni toliq qoplab beramiz
-⚡️ Pullik maxsus kursimizda bepul oqitamiz
-⚡️ Vazirlikka yuborish va boshqa barcha narsalarni ozimiz qilib beramiz</blockquote>
- <b>Sizdan harakat bizdan esa imkoniyatlar:
+        'prizes_info': """🏆<b> Marafonda sizni nafaqat bilim, balki KATTA imkoniyatlar ham kutmoqda!</b>
+<blockquote><i>📌 Marafon guruhida faol qatnashib, vazifalarni bajargan  eng  yuqori natija qayd etgan 3 ta ustozlarimizga imtixon</i> harajatlari toliq qoplanib beriladi (111$+Turbo kursimiz narxi)</blockquote>
+<blockquote>Shoshmang, bu Hali hammasi e,marafonga qatnashib, vazifalarni o'z vaqtida bajarib aktivlik ko'rsatgan Top-5 ishtirokchilarga esa Mart kursi uchun  💯 foizlik vaucherlar taqdim etiladi</blockquote>
+🎯<b>Shoshiling,  sovg'alardan  biri aynan sizniki bo'lishi mumkin.</b>""",
 
-SAT sertifikati orqali siz 3 yil davomida 50% ustama olasiz
+        'sat_opportunities': """<b>Hozirda SAT sizga qanday imkoniyatlar bermoqda.
+1) Agarda siz matematika o'qituvchisi bolsangiz SAT imtixonining matematika qismidan eng kamida 700/800 natija orqali 3 yilga 50% ustamani naqd qilasiz
 
-Agar siz 5,000,000 oylik olsangiz
-
-Bu 2,500,000*36 = 90,000,000 
-
-Barcha harajatlarni faol ustozlarimizga qoplab beramiz</b>""",
+2) Agarda siz maktab o'quvchisi bolsangiz vazirlar mahkamasining yaqinda  qabul qilgan qaroriga ko'ra SAT imtixonidan umumiy 1200+ natija orqali davlat universitetlariga 100% grandni qo'lga kiritasiz</b>""",
     },
     'en': {
         'welcome': "Welcome to the bot! 🎉",
@@ -252,14 +213,9 @@ Barcha harajatlarni faol ustozlarimizga qoplab beramiz</b>""",
         'invalid_referral': "Invalid referral link!",
         'subscription_required': "Subscribe to all mandatory channels to use the bot:",
         'our_chats_folder': "Our Chats Folder 📁",
-        'subscribe_button': "Subscribe ✅",
         'check_subscription': "Check Subscription ✅",
         'not_subscribed': "You are still not subscribed to all channels!",
         'subscription_confirmed': "✅ Congratulations! You have subscribed to all mandatory channels!",
-        'referral_system': "Referral System 📊",
-        'valid_referrals': "Valid referrals: <b>{count}</b>",
-        'pending_referrals': "Pending referrals: <b>{count}</b>",
-        'your_referral_link': "Your referral link:\n<code>{link}</code>",
         'admin_panel': "Admin Panel 👨‍💼",
         'admin_top_referrers': "🏆 Top 10 referrers",
         'admin_user_lookup': "🔍 Find user by ID",
@@ -273,30 +229,10 @@ Barcha harajatlarni faol ustozlarimizga qoplab beramiz</b>""",
         'admin_export_error': "⚠️ Error exporting data.",
         'admin_top_referrers_title': "🏆 <b>TOP 10 Referrers:</b>\n\n",
         'admin_top_referrer_item': "{position}. {full_name} (@{username}) - {count} referrals",
-        'manage_channels': "Manage Channels",
-        'add_channel': "Add Channel",
-        'remove_channel': "Remove Channel",
-        'channel_added': "Channel added successfully!",
-        'channel_removed': "Channel removed!",
-        'send_channel_info': "Send channel ID, title and username:",
-        'invalid_format': "Invalid format!",
-        'back': "⬅️ Back",
-        'language_settings': "Language Settings 🌐",
-        'current_language': "Current language: <b>English</b> 🇺🇸",
-        'switch_to_uzbek': "O'zbek tiliga o'tish 🇺🇿",
-        'language_changed': "Language changed successfully! 🎉",
-        'unexpected_error': "An unexpected error occurred! ⚠️\nPlease try again later.",        'channel_validation_error': "Error occurred while validating channel.",
-        'channel_not_accessible': "Bot doesn't have access to this channel.",
-        'add_bot_as_admin': "Add the bot as an admin to the channel.",
+        'unexpected_error': "An unexpected error occurred! ⚠️\nPlease try again later.",
         
         # Main menu buttons
-        'rules_button': "📋 Rules",
-        'get_reward_button': "🎁 Get Reward",
-        'my_referral_link_button': "🔗 My Referral Link",        'my_stats_button': "📊 My Stats",        'back_to_menu': "🔙 Back to Menu",
         'refresh_stats': "🔄 Refresh",
-        'search_user': "🔍 Search",
-        'top_10_referrers': "🏆 Top 10",
-        'export_my_data': "📊 Export",
         'stats_up_to_date': "📊 Stats updated",
         
         # Manage access messages

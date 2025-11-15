@@ -22,16 +22,16 @@ async def show_admin_stats(message: Message, db: Database):
         reply_markup=admin_main_keyboard()
     )
     
-    # Get overall bot stats (excluding admin user with id = 19)
+    # Get overall bot stats
     async with db.pool.acquire() as conn:
-        total_users = await conn.fetchval('SELECT COUNT(*) FROM users WHERE id != 19')
+        total_users = await conn.fetchval('SELECT COUNT(*) FROM users')
         total_valid_referrals = await conn.fetchval('''
-            SELECT COUNT(*) FROM referrals r 
-            WHERE r.valid = TRUE AND r.referrer_id != 19 AND r.referred_id != 19
+            SELECT COUNT(*) FROM referrals r
+            WHERE r.valid = TRUE
         ''')
         total_pending_referrals = await conn.fetchval('''
-            SELECT COUNT(*) FROM referrals r 
-            WHERE r.valid = FALSE AND r.referrer_id != 19 AND r.referred_id != 19
+            SELECT COUNT(*) FROM referrals r
+            WHERE r.valid = FALSE
         ''')
     
     reward_access_count = await db.get_reward_access_count()
@@ -142,16 +142,16 @@ async def refresh_admin_stats(callback: CallbackQuery, db: Database):
     """Refresh admin statistics"""
     await callback.answer("🔄 Refreshing admin stats...")
     
-    # Get overall bot stats (excluding admin user with id = 19)
+    # Get overall bot stats
     async with db.pool.acquire() as conn:
-        total_users = await conn.fetchval('SELECT COUNT(*) FROM users WHERE id != 19')
+        total_users = await conn.fetchval('SELECT COUNT(*) FROM users')
         total_valid_referrals = await conn.fetchval('''
-            SELECT COUNT(*) FROM referrals r 
-            WHERE r.valid = TRUE AND r.referrer_id != 19 AND r.referred_id != 19
+            SELECT COUNT(*) FROM referrals r
+            WHERE r.valid = TRUE
         ''')
         total_pending_referrals = await conn.fetchval('''
-            SELECT COUNT(*) FROM referrals r 
-            WHERE r.valid = FALSE AND r.referrer_id != 19 AND r.referred_id != 19
+            SELECT COUNT(*) FROM referrals r
+            WHERE r.valid = FALSE
         ''')
     
     reward_access_count = await db.get_reward_access_count()

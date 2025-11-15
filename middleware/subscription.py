@@ -65,7 +65,8 @@ class SubscriptionMiddleware(BaseMiddleware):
             for channel_id in channel_ids:
                 try:
                     member = await bot.get_chat_member(channel_id, user.id)
-                    if member.status in ['left', 'kicked']:
+                    # Check if user is NOT a full member (consistent with referral validation)
+                    if member.status not in ['member', 'administrator', 'creator']:
                         unsubscribed_channels.append(channel_id)
                 except TelegramForbiddenError:
                     bot_permission_error = True

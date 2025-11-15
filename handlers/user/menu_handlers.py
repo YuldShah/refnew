@@ -4,6 +4,7 @@ from aiogram.types import Message, InlineQuery
 from aiogram.fsm.context import FSMContext
 from database.models import Database
 from text.messages import get_text
+from config.loader import get_photo
 from filters.user_filters import IsUserFilter
 from keyboards.user_keyboards import get_main_user_keyboard
 import logging
@@ -161,14 +162,18 @@ async def start_handler(message: Message, state: FSMContext, db: Database):
 
 @menu_router.message(F.text.in_([
     "🔗Taklif havolasi🔗",
-    "Prizlar🏆", 
+    "Prizlar🏆",
     "Ballarim📈",
+    "📊Ballarim📊",
     "🔝SAT marafon haqida🔝",
-    "‼️ Marafonda qatnashish sharti ‼️"
+    "📋 SAT marafon haqida 📋",
+    "‼️ Marafonda qatnashish sharti ‼️",
+    "🎁 Sovrinlar ⭐️",
+    "👇SAT imtixoni beradigan imkoniyatlar👇"
 ]))
 async def new_marathon_buttons_handler(message: Message, db: Database):
     """Handle new marathon button presses"""
-    
+
     # Check if user exists before allowing access to any menu features
     user = await db.get_user(message.from_user.id)
     if not user:
@@ -178,19 +183,27 @@ async def new_marathon_buttons_handler(message: Message, db: Database):
             get_text('register_first', user_lang)
         )
         return
-    
+
     if message.text == "🔗Taklif havolasi🔗":
         from .referral_handlers import show_new_referral_link
         await show_new_referral_link(message, db)
-    elif message.text == "Prizlar🏆":
-        await message.answer_photo(photo="AgACAgIAAxkBAANKaMz4Y9AdZDJBTlm4vIAIgkFWpTwAAoX3MRsM6GlKqL91bcYgiYkBAAMCAAN5AAM2BA", caption=get_text('prizes_info', 'uz'))
-    elif message.text == "Ballarim📈":
+    elif message.text == "Prizlar🏆" or message.text == "🎁 Sovrinlar ⭐️":
+        await message.answer_photo(
+            photo=get_photo('prizes'),
+            caption=get_text('prizes_info', 'uz')
+        )
+    elif message.text in ["Ballarim📈", "📊Ballarim📊"]:
         from .stats_handlers import show_user_points
         await show_user_points(message, db)
-    elif message.text == "🔝SAT marafon haqida🔝":
+    elif message.text in ["🔝SAT marafon haqida🔝", "📋 SAT marafon haqida 📋"]:
         await message.answer(get_text('sat_marathon_info', 'uz'))
     elif message.text == "‼️ Marafonda qatnashish sharti ‼️":
         await message.answer(get_text('marathon_conditions', 'uz'))
+    elif message.text == "👇SAT imtixoni beradigan imkoniyatlar👇":
+        await message.answer_photo(
+            photo=get_photo('sat_opportunities'),
+            caption=get_text('sat_opportunities', 'uz')
+        )
 
 @menu_router.inline_query()
 async def handle_inline_query(inline_query: InlineQuery, db: Database):

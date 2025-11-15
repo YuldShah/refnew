@@ -1,0 +1,21 @@
+{
+  "photos": {
+    "prizes": "AgACAgIAAxkBAANKaMz4Y9AdZDJBTlm4vIAIgkFWpTwAAoX3MRsM6GlKqL91bcYgiYkBAAMCAAN5AAM2BA",
+    "referral_link": "AgACAgIAAxkBAAIBIWjPzxkEZEPoLN1Q64rGMxceWlq_AAK--zEbd9uAShbLWeD9ob0YAQADAgADeQADNgQ",
+    "sat_opportunities": "PLACEHOLDER_PHOTO_ID"
+  },
+  "reward_channels": [
+    {
+      "name": "Bepul darslar guruhi",
+      "chat_id": -1003087849002
+    },
+    {
+      "name": "Bepul darslar kanali",
+      "chat_id": -1002914914573
+    },
+    {
+      "name": "Muhokama guruhi",
+      "chat_id": -1003077395393
+    }
+  ]
+}
