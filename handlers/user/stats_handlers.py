@@ -48,9 +48,20 @@ async def show_about_olympiad(message: Message, db: Database):
         await message.answer(text)
 
 async def show_rewards_info(message: Message, db: Database):
-    """Display rewards/prizes information"""
+    """Display rewards/prizes information with photo"""
+    # Placeholder photo file_id - replace with actual photo
+    photo_file_id = "AgACAgIAAxkBAAIBCGeDPLAAAdEVyxXt5CYi5MeUqxdNUwACjuoxG_REWARDS_PLACEHOLDER"
+    
     text = get_text('rewards_info', 'uz')
-    await message.answer(text)
+    
+    try:
+        await message.answer_photo(
+            photo=photo_file_id,
+            caption=text
+        )
+    except Exception:
+        # If photo fails, just send text
+        await message.answer(text)
 
 async def refresh_user_stats(callback: CallbackQuery, db: Database):
     """Handle refresh stats button press"""
