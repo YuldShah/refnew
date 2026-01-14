@@ -6,7 +6,7 @@ from keyboards.user_keyboards import get_stats_keyboard
 from services.referral_service import ReferralService
 
 async def show_user_stats(message: Message, db: Database):
-    """Display user's referral statistics and overall bot stats"""
+    """Display user's referral statistics (points/balls)"""
     referral_service = ReferralService(db)
       # Check and validate any pending referrals
     validation_result = await referral_service.check_and_validate_pending_referrals(
@@ -21,22 +21,36 @@ async def show_user_stats(message: Message, db: Database):
     # Get updated user stats after validation
     user_stats = await referral_service.get_referral_stats(message.from_user.id)
       # Add user info to stats
-    user_stats['user_id'] = message.from_user.id
-    user_stats['user_mention'] = message.from_user.mention_html()
+    user_stats['user_mention'] = message.from_user.full_name or message.from_user.username or "Foydalanuvchi"
 
-    # Add username line only if user has a username
-    if message.from_user.username:
-        user_stats['username_line'] = f"\n👤 Username: <b>@{message.from_user.username}</b>"
-    else:
-        user_stats['username_line'] = ""
-
-    # Create user stats text (only user's personal stats)
+    # Create user stats text (points display)
     text = get_text('user_stats_message', 'uz', **user_stats)
     
     await message.answer(
         text,
         reply_markup=get_stats_keyboard()
     )
+
+async def show_about_olympiad(message: Message, db: Database):
+    """Display information about the Olympiad with a photo"""
+    # Placeholder photo file_id - replace with actual photo
+    photo_file_id = "AgACAgIAAxkBAAIBCGeDPLAAAdEVyxXt5CYi5MeUqxdNUwACjuoxG_PLACEHOLDER"
+    
+    text = get_text('about_olympiad', 'uz')
+    
+    try:
+        await message.answer_photo(
+            photo=photo_file_id,
+            caption=text
+        )
+    except Exception:
+        # If photo fails, just send text
+        await message.answer(text)
+
+async def show_rewards_info(message: Message, db: Database):
+    """Display rewards/prizes information"""
+    text = get_text('rewards_info', 'uz')
+    await message.answer(text)
 
 async def refresh_user_stats(callback: CallbackQuery, db: Database):
     """Handle refresh stats button press"""
@@ -56,16 +70,9 @@ async def refresh_user_stats(callback: CallbackQuery, db: Database):
     # Get updated user stats after validation
     user_stats = await referral_service.get_referral_stats(callback.from_user.id)
       # Add user info to stats
-    user_stats['user_id'] = callback.from_user.id
-    user_stats['user_mention'] = callback.from_user.mention_html()
+    user_stats['user_mention'] = callback.from_user.full_name or callback.from_user.username or "Foydalanuvchi"
 
-    # Add username line only if user has a username
-    if callback.from_user.username:
-        user_stats['username_line'] = f"\n👤 Username: <b>@{callback.from_user.username}</b>"
-    else:
-        user_stats['username_line'] = ""
-
-    # Create user stats text (only user's personal stats)
+    # Create user stats text (points display)
     text = get_text('user_stats_message', 'uz', **user_stats)
     
     # Add validation result if any referrals were validated

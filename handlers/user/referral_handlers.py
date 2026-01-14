@@ -1,4 +1,4 @@
-from aiogram.types import Message, InlineQuery, InlineQueryResultVideo
+from aiogram.types import Message, InlineQuery, InlineQueryResultArticle, InputTextMessageContent
 from database.models import Database
 from text.messages import get_text
 from keyboards.user_keyboards import get_referral_share_keyboard
@@ -22,14 +22,14 @@ async def show_referral_link(message: Message, db: Database):
         text = get_text('referral_link_error', 'uz')
         keyboard = None
     
-    await message.answer_video(
-        video="BAACAgIAAxkBAAIR4WhUZZTFkl_JvLlAkgod_CQFMljrAAIqdAACA1k4SRSFKq0mGiTUNgQ",
-        caption=text,
-        reply_markup=keyboard
+    await message.answer(
+        text=text,
+        reply_markup=keyboard,
+        disable_web_page_preview=True
     )
 
 async def handle_inline_query(inline_query: InlineQuery, db: Database):
-    """Handle inline queries for sharing referral videos"""
+    """Handle inline queries for sharing referral links"""
     import logging
     logging.info(f"handle_inline_query called for user {inline_query.from_user.id}")
     
@@ -54,18 +54,19 @@ async def handle_inline_query(inline_query: InlineQuery, db: Database):
     # Create referral link
     referral_link = f"https://t.me/{bot_username}?start={user['referral_code']}"
     
-    # Create video result
-    video_result = InlineQueryResultVideo(
-        id="referral_video",
-        video_url="BAACAgIAAxkBAAIR4WhUZZTFkl_JvLlAkgod_CQFMljrAAIqdAACA1k4SRSFKq0mGiTUNgQ",
-        mime_type="video/mp4",  # Optional thumbnail
+    # Create article result (text message)
+    article_result = InlineQueryResultArticle(
+        id="referral_link",
         title="Referral havolasi",
-        thumbnail_url="https://i.postimg.cc/5yCpybYn/uplimg.jpg",
         description="Referral havolangizni ulashing",
-        caption=get_text('referral_link_message', 'uz', link=referral_link)
+        input_message_content=InputTextMessageContent(
+            message_text=get_text('referral_link_message', 'uz', link=referral_link),
+            parse_mode="HTML",
+            disable_web_page_preview=True
+        )
     )
     
-    await inline_query.answer([video_result], cache_time=0)
+    await inline_query.answer([article_result], cache_time=0)
 
 async def handle_inline_query_for_not_subbed(inline_query: InlineQuery, db: Database):
     """Handle inline queries for users who are not subscribed"""

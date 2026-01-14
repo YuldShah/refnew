@@ -1,14 +1,8 @@
 MESSAGES = {
     'uz': {
-        'welcome': """👋 Assalomu alaykum, <b>{link_to_user}</b>!
-
-<i>📖 3 Marta SAT matematika qismidan maximal 800/800 ball olgan Elbek ustoz o'tayotgan Bepul darslarimizga xush kelibsiz!</i>
-
-Bizning bepul darslarda qatnashish uchun siz quyidagi shartlarni bajarishingiz kerak:
-<blockquote>1️⃣ Barcha kanallarimizga a'zo bo'ling
-2️⃣ 3 ta SAT matematika qismidan eng yuqori natijani olaman va 50% ustamani olishni chin dildan niyat qilgan tanishlarni botimizga taklif qiling va ular ham bizning barcha kanallarimizga a'zo bo'lib eng muhim bilimlarni olishsin)</blockquote>
-
-Qoshimcha ma'lumotlar uchun quyidagi menyudan foydalansangiz bo'ladi.""",
+        'welcome': """<b>🎓 Assalomu alaykum,</b> {link_to_user}!
+<blockquote>Sizni  SAT Yil Olimpiadasiga taklif qilamiz!</blockquote>
+✅ Batafsil ma'lumot uchun "Olimpiada haqida" tugmasini bosing""",
         'referral_welcome': "Siz <b>{referrer}</b> tomonidan taklif qilindingiz! 🎉",
         'already_registered': """Siz allaqachon botda ro'yxatdan o'tgansiz!""",
         'invalid_referral': "Noto'g'ri taklif havolasi!",
@@ -54,11 +48,15 @@ Qoshimcha ma'lumotlar uchun quyidagi menyudan foydalansangiz bo'ladi.""",
         'register_first': "Iltimos, avval ro'yxatdan o'ting.\n\n/start /start /start",
         
         # Main menu buttons
-        'rules_button': "📋 Qoidalar",
-        'get_reward_button': "🚀 Kirish huquqini olish",
-        'my_referral_link_button': "🔗 Mening taklif havolam",        'my_stats_button': "📊 Mening statistikam",
+        'rules_button': "📋 Qatnashish sharti 📋",
+        'get_reward_button': "📊 Ballarim 📊",
+        'my_referral_link_button': "🔗 Taklif havolasi 🔗",
+        'my_stats_button': "📊 Ballarim 📊",
+        'about_olympiad_button': "🏆 Olimpiada haqida 🏆",
+        'rewards_button': "🎁 Mukofotlar 🎁",
         'share_referral_link': "🔗 Referral havolani ulashish",
-        'back_to_menu': "🔙 Bosh menyuga qaytish",        'refresh_stats': "🔄 Yangilash",
+        'back_to_menu': "🔙 Bosh menyuga qaytish",
+        'refresh_stats': "🔄 Yangilash",
         'search_user': "🔍 Qidirish",
         'top_10_referrers': "🏆 Top 10",
         'export_my_data': "📊 Eksport",
@@ -75,15 +73,13 @@ Qoshimcha ma'lumotlar uchun quyidagi menyudan foydalansangiz bo'ladi.""",
         'confirm_btn': "✅ Tasdiqlash",
         'cancel_btn': "❌ Bekor qilish",
         
-        # Rules content (placeholder)
-        'rules_content': """📋 <b>Bot qoidalari</b>
-
-🔹 Botdan foydalanish uchun barcha majburiy kanallarga obuna bo'ling
-🔹 Taklif havolangizni do'stlaringiz bilan ulashing
-🔹 Har bir tasdiqlangan taklif uchun mukofot oling
-🔹 Spam va noto'g'ri harakatlar taqiqlanadi
-
-Bu yerda qoidalar to'liq yoziladi...""",
+        # Rules content (participation conditions)
+        'rules_content': """<b>🎯 Olimpiadada ishtirok etish shartlari</b>
+<blockquote>1️⃣ Bot sizga shaxsiy taklif havolasini taqdim etadi. Ushbu havolani kamida 3 nafar matematika ustozlari yoki SAT imtihoniga tayyorlanayotgan tanishlaringizga yuborishingiz kerak. Agar ular sizning havolangiz orqali botga kirsa, sizga ball beriladi.</blockquote>
+<blockquote>2️⃣Agar sizning ballaringiz 3 va undan yuqori bo'lsa, "Ballarim" bo'limi orqali siz uchun maxsus yopiq kanal va guruhga qo'shilish imkoniyati ochiladi.</blockquote>
+<b>🚫 Agar ballaringiz 3 dan kam bo'lib qolsa, siz avtomatik tarzda kanal va guruhdan chiqarilasiz.</b>
+<blockquote>📌 Taklif havolangizni iloji boricha matematika bilan shug'ullanayotgan tanishlaringizga yuboring.</blockquote>
+<i>✅ Tayyor bo'lsangiz, menyudan "🔗 Taklif havolasi 🔗" tugmasini bosing va do'stlaringizni taklif qilishni boshlang!</i>""",
 
         'reward_available': """🎉 <b>Tabriklaymiz!</b>
 
@@ -108,41 +104,64 @@ Bu yerda qoidalar to'liq yoziladi...""",
 """,
         
         # Referral link messages
-        'referral_link_message': """
-<b>Ingliz tili 0 darajada bo'lgan lekin Xalqaro SAT sertifikati orqali 3 yil davomida 50% ustama olishni xohlaganlar uchun SAT ELBEK tomonidan barchaga manfaatli loyihaga start bermoqdamiz!
+        'referral_link_message': """<b>📢 Assalomu alaykum, barcha matematika ustozlari va o'quvchilar!</b>
+<blockquote>SATElbek va InspiringSAT tomonidan 20-yanvar, soat 20:00 da bo'ladigan Yil Olimpiadasiga sizni taklif qilamiz!</blockquote>
+<b>🎯 Olimpiadada jamoangiz bilan qatnashing va quyidagi sovrinlardan biriga ega bo'ling:</b>
+<blockquote>🥇 1-o'rin — 1 500 000 so'm
+🥈 2-o'rin — 1 000 000 so'm
+🥉 3-o'rin — 500 000 so'm</blockquote>
 
-Bizni asosiy maqsadimiz o'qituvchilarni shu serifikat ni olib oz-moz bolsada oilaga qoshimcha rizq olib kirishiga sababchi bolishdir
+<b>Qolgan orinlarga yana umumiy hisobda 7 mln so'mlik qimmatbaho  sovg'alar</b>
+<b>
+📝 Savollar SAT matematika asosida tuziladi.</b>
 
-
-O'qituvchi: 
-Elbek Asatullayev 3x SAT Math score 800/800</b>
-
-1⃣
-<blockquote>Oxirgi 2 yil davomida Ingliz tili mutloqo 0 Dan 1000 lab o'quvchilarni kerakli natijani olishizga sababchi bo'ldim</blockquote>
-2⃣
-<blockquote>Ustozlarimizni Ingliz tili darajasini 0 Dan sertifikat olish darajasigacha ko'tardim.</blockquote>
-
-<b>Agar siz ham Bepul marafonda ishtirok etib maximal natijaga ega bo'lmoqchi bo'lsangiz:
-SAT Elbek kanalga a'zo bo'ling
-
-@satelbek</b>
-
-Yetarli ballarga ega bo'ling yopiq kanal va guruhimiz a'zosiga aylaning.
-
-<blockquote>⚠️ Joylar soni cheklangan, bunday imkoniyatni qo'ldan boy bermang 👇</blockquote>
-{link}
+<i>🟢 Ishtirok etish uchun </i><a href="https://t.me/SATElbekolympiad_bot"><i>"Start"</i></a><i> tugmasini bosing, shaxsiy taklif havolangiz orqali do'stlaringizni taklif qiling va Yangi yil Olimpiadasida bilimingizni sinab ko'rib, pul mukofotlarini qo'lga kiritish imkoniyatiga ega bo'ling!</i>
+<blockquote>⚠️ Joylar soni kam qolmoqda 👇</blockquote>
 {link}
 {link}
 """,
         'referral_link_error': "Taklif havolasini olishda xatolik yuz berdi.",
         
+        # About olympiad message
+        'about_olympiad': """<b>📢 Barcha matematika ustozlari va o'quvchilar diqqatiga!</b>
+
+SATElbek<i> tomonidan tashkil etilayotgan Yil Olimpiadasiga sizni taklif qilamiz!
+Olimpiadada yakka tartibda yoki jamoa bilan ishtirok etishingiz mumkin.</i>
+<blockquote>📅 Sana: 20-yanvar
+⏰ Vaqt: 20:00</blockquote>
+
+<b>📝 Olimpiada tarkibi:</b>
+<blockquote>
+44 ta SAT matematika (ingliz tili) savollari
+Imtixon formatida</blockquote>
+<b>✅ Jami: 44 ta savol</b>
+
+<b>🏆 G'oliblar quyidagi sovrinlar bilan taqdirlanadi:</b>
+<blockquote>🥇 1-o'rin — 1 500 000 so'm
+🥈 2-o'rin — 1 000 000 so'm
+🥉 3-o'rin — 500 000 so'm</blockquote>
+Qolgan o'rinlarga umumiy 7 mln so'mlik qimmatbaho sovg'alar
+
+Umumiy 20 kishi mutloq bepulga pullik turbo guruhimizga qabul qilinadi
+
+<b>🎄 Yangi yilni bilim va g'alaba bilan boshlashni istasangiz, ushbu imkoniyatni qo'ldan boy bermang!</b>""",
+        
+        # About olympiad photo file_id (placeholder)
+        'about_olympiad_photo': "AgACAgIAAxkBAAIBCGeDPLAAAdEVyxXt5CYi5MeUqxdNUwACjuoxG_PLACEHOLDER",
+        
+        # Rewards/prizes message
+        'rewards_info': """<b>🏆 Testdan eng yuqori natijani qayd etgan jamoalar quyidagi pul mukofotlari bilan taqdirlanadi:</b>
+<blockquote>🥇 1-o'rin — 1 500 000 so'm
+🥈 2-o'rin — 1 000 000 so'm
+🥉 3-o'rin — 500 000 so'm</blockquote>
+<b>Qolgan orinlarga yana umumiy hisobda 7 mln so'mlik qimmatbaho  sovg'alar</b>
+<i>
+🎓 Bilimingizni sinab ko'ring, eng yuqori natijalarni qayd eting va katta pul mukofotlariga ega bo'ling!</i>""",
+        
         # User stats messages        
-        'user_stats_message': """
-<b>📊 Sizning statistikangiz:</b>
-<blockquote>👤 Foydalanuvchi: {user_mention}
-🆔 Sizning ID: <code>{user_id}</code>{username_line}
-✅ Tasdiqlangan takliflar: <b>{valid_referrals}</b>
-⏳ Kutilayotgan takliflar: <b>{pending_referrals}</b></blockquote>
+        'user_stats_message': """<b>📈 {user_mention} sizning ballaringiz: {valid_referrals} ball.</b>
+<blockquote>‼️ Siz taklif havolangiz orqali qo'shilgan odam kanallardan obunani bekor qilsa sizga shu odam uchun berilgan ball qaytarib olinadi!</blockquote>
+<b>✅ Hisobingizdagi ballar 3 va undan yuqori ballga ega bo'lgandan so'ng yopiq kanal va guruhimizga qo'shilishingiz mumkin bo'ladi.</b>
 """,
         'referrals_validated': """🎉 <b>Yangilik!</b> Do'stlaringizdan {count} ta yangi taklif tasdiqlandi!""",
         

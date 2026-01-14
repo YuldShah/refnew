@@ -159,10 +159,12 @@ async def start_handler(message: Message, state: FSMContext, db: Database):
         )
 
 @menu_router.message(F.text.in_([
-    "📋 Qoidalar", "📋 Rules",
-    "🚀 Kirish huquqini olish", 
-    "🔗 Mening taklif havolam", "🔗 My Referral Link",
-    "📊 Mening statistikam", "📊 My Stats"
+    "📋 Qatnashish sharti 📋", "📋 Qoidalar", "📋 Rules",
+    "📊 Ballarim 📊", "🚀 Kirish huquqini olish", 
+    "🔗 Taklif havolasi 🔗", "🔗 Mening taklif havolam", "🔗 My Referral Link",
+    "📊 Mening statistikam", "📊 My Stats",
+    "🏆 Olimpiada haqida 🏆",
+    "🎁 Mukofotlar 🎁"
 ]))
 async def menu_button_handler(message: Message, db: Database):
     """Handle main menu button presses"""
@@ -177,18 +179,24 @@ async def menu_button_handler(message: Message, db: Database):
         )
         return
     
-    if message.text in ["📋 Qoidalar", "📋 Rules"]:
+    if message.text in ["📋 Qatnashish sharti 📋", "📋 Qoidalar", "📋 Rules"]:
         from .rules_handlers import show_rules
         await show_rules(message, db)
-    elif message.text in ["🚀 Kirish huquqini olish"]:
+    elif message.text in ["📊 Ballarim 📊", "🚀 Kirish huquqini olish"]:
         from .reward_handlers import show_rewards
         await show_rewards(message, db)
-    elif message.text in ["🔗 Mening taklif havolam", "🔗 My Referral Link"]:
+    elif message.text in ["🔗 Taklif havolasi 🔗", "🔗 Mening taklif havolam", "🔗 My Referral Link"]:
         from .referral_handlers import show_referral_link
         await show_referral_link(message, db)
     elif message.text in ["📊 Mening statistikam", "📊 My Stats"]:
         from .stats_handlers import show_user_stats
         await show_user_stats(message, db)
+    elif message.text == "🏆 Olimpiada haqida 🏆":
+        from .stats_handlers import show_about_olympiad
+        await show_about_olympiad(message, db)
+    elif message.text == "🎁 Mukofotlar 🎁":
+        from .stats_handlers import show_rewards_info
+        await show_rewards_info(message, db)
 
 @menu_router.inline_query()
 async def handle_inline_query(inline_query: InlineQuery, db: Database):

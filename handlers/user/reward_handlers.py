@@ -4,77 +4,67 @@ from text.messages import get_text
 from services.referral_service import ReferralService
 from keyboards.user_keyboards import get_reward_link_button
 
+# Olympiad channel ID
+OLYMPIAD_CHANNEL_ID = -1002676076162
+
 async def show_rewards(message: Message, db: Database):
-    """Display available rewards to user"""
+    """Display user's points and reward access if eligible"""
     user_id = message.from_user.id
     referral_service = ReferralService(db)
 
-    # Get user's valid referrals count
+    # Get user's valid referrals count (points)
     valid_referrals = await referral_service.get_referral_stats(user_id)
     valid_count = valid_referrals.get('valid_referrals', 0)
+    user_mention = message.from_user.full_name or message.from_user.username or "Foydalanuvchi"
 
-    # Check if user has enough referrals for reward
+    # Check if user has enough referrals (3 or more points)
     if valid_count >= db.required_referrals:
-        reward_text = get_text('reward_available', 'uz',
-                                 required_referrals=db.required_referrals,)
+        # User has enough points - show reward with channel link
+        reward_text = f"""<b>📈 {user_mention} sizning ballaringiz: {valid_count} ball.</b>
+<blockquote>‼️ Siz taklif havolangiz orqali qo'shilgan odam kanallardan obunani bekor qilsa sizga shu odam uchun berilgan ball qaytarib olinadi!</blockquote>
+<b>✅ Tabriklaymiz! Siz yopiq kanal va guruhimizga qo'shilishingiz mumkin!</b>"""
 
         # Check if user has already accessed reward
         if await db.has_user_accessed_reward(user_id):
             # Get existing reward data from database
             reward_data = await db.get_user_reward(user_id)
             if reward_data and 'links' in reward_data:
-                # Use existing links
-                links = reward_data['links']
-                await message.answer(reward_text, reply_markup=get_reward_link_button(links), protect_content=True)
+                # Use existing link
+                link = reward_data['links'][0] if isinstance(reward_data['links'], list) else reward_data['links']
+                await message.answer(reward_text, reply_markup=get_reward_link_button(link), protect_content=True)
             else:
-                # Fallback: regenerate links if data is corrupted
-                links = await _generate_invite_links(message, user_id)
-                await _save_reward_data(db, user_id, links)
-                await message.answer(reward_text, reply_markup=get_reward_link_button(links), protect_content=True)
+                # Fallback: regenerate link if data is corrupted
+                link = await _generate_invite_link(message, user_id)
+                await _save_reward_data(db, user_id, link)
+                await message.answer(reward_text, reply_markup=get_reward_link_button(link), protect_content=True)
         else:
-            # First time accessing reward - generate new links
-            links = await _generate_invite_links(message, user_id)
-            await _save_reward_data(db, user_id, links)
-            await message.answer(reward_text, reply_markup=get_reward_link_button(links), protect_content=True)
+            # First time accessing reward - generate new link
+            link = await _generate_invite_link(message, user_id)
+            await _save_reward_data(db, user_id, link)
+            await message.answer(reward_text, reply_markup=get_reward_link_button(link), protect_content=True)
     else:
-        # User doesn't have enough referrals yet
+        # User doesn't have enough points yet
         remaining = db.required_referrals - valid_count
-        reward_text = get_text('reward_not_available', 'uz',
-                             required_referrals=db.required_referrals,
-                             current_referrals=valid_count,
-                             remaining_referrals=remaining)
+        reward_text = f"""<b>📈 {user_mention} sizning ballaringiz: {valid_count} ball.</b>
+<blockquote>‼️ Siz taklif havolangiz orqali qo'shilgan odam kanallardan obunani bekor qilsa sizga shu odam uchun berilgan ball qaytarib olinadi!</blockquote>
+<b>✅ Hisobingizdagi ballar 3 va undan yuqori ballga ega bo'lgandan so'ng yopiq kanal va guruhimizga qo'shilishingiz mumkin bo'ladi.</b>
+
+<i>📢 Yana {remaining} ta do'stingizni taklif qiling!</i>"""
 
         await message.answer(reward_text)
 
-async def _generate_invite_links(message: Message, user_id: int) -> list:
-    """Generate invite links for reward channels"""
-    # Bepul darslar guruhi
-    link1_obj = await message.bot.create_chat_invite_link(
-        chat_id=-1002746646141,
+async def _generate_invite_link(message: Message, user_id: int) -> str:
+    """Generate invite link for Olympiad channel"""
+    link_obj = await message.bot.create_chat_invite_link(
+        chat_id=OLYMPIAD_CHANNEL_ID,
         name=f"Join link for {user_id}",
         member_limit=1
     )
+    return link_obj.invite_link
 
-    # Bepul darslar kanali
-    link2_obj = await message.bot.create_chat_invite_link(
-        chat_id=-1002510444446,
-        name=f"Join link for {user_id}",
-        member_limit=1
-    )
-
-    # Muhokama guruhi
-    link3_obj = await message.bot.create_chat_invite_link(
-        chat_id=-1002861603252,
-        name=f"Join link for {user_id}",
-        member_limit=1
-    )
-
-    # Extract the actual invite link URLs from ChatInviteLink objects
-    return [link1_obj.invite_link, link2_obj.invite_link, link3_obj.invite_link]
-
-async def _save_reward_data(db: Database, user_id: int, links: list):
+async def _save_reward_data(db: Database, user_id: int, link: str):
     """Save reward data to database"""
     reward_data = {
-        'links': links
+        'links': [link]
     }
     await db.save_user_reward(user_id, reward_data)

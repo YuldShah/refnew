@@ -2,12 +2,13 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMar
 from text.messages import get_text
 
 def get_main_user_keyboard() -> ReplyKeyboardMarkup:
-    """Get the main user reply keyboard with 4 options (hardcoded Uzbek)"""
+    """Get the main user reply keyboard with 6 options for Olympiad"""
     keyboard = ReplyKeyboardMarkup(
         keyboard=[
-            [KeyboardButton(text=get_text('get_reward_button', 'uz'))],
-            [KeyboardButton(text=get_text('my_referral_link_button', 'uz'))],
-            [KeyboardButton(text=get_text('my_stats_button', 'uz'))]
+            [KeyboardButton(text="🏆 Olimpiada haqida 🏆")],
+            [KeyboardButton(text="📋 Qatnashish sharti 📋"), KeyboardButton(text="🎁 Mukofotlar 🎁")],
+            [KeyboardButton(text="🔗 Taklif havolasi 🔗")],
+            [KeyboardButton(text="📊 Ballarim 📊")]
         ],
         resize_keyboard=True,
         one_time_keyboard=False
@@ -39,25 +40,13 @@ def get_referral_share_keyboard(referral_link: str = "") -> InlineKeyboardMarkup
     ])
     return keyboard
 
-def get_reward_link_button(links: list) -> InlineKeyboardMarkup:
-    """Get reward link inline keyboard (hardcoded Uzbek)"""
+def get_reward_link_button(link: str) -> InlineKeyboardMarkup:
+    """Get reward link inline keyboard for single Olympiad channel"""
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [
             InlineKeyboardButton(
-                text="Bepul darslar kanali",
-                url=links[1]  # links are now strings, not ChatInviteLink objects
-            )
-        ],
-        [
-            InlineKeyboardButton(
-                text="Bepul darslar guruhi",
-                url=links[0]  # links are now strings, not ChatInviteLink objects
-            )
-        ],
-        [
-            InlineKeyboardButton(
-                text="Muhokama guruhi",
-                url=links[2]  # links are now strings, not ChatInviteLink objects
+                text="🏆 Olimpiada kanali",
+                url=link
             )
         ]
     ])
