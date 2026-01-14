@@ -77,70 +77,77 @@ async def start_handler(message: Message, state: FSMContext, db: Database):
         await message.answer(
             get_text('already_registered', 'uz'),
         )
-        return    # Add user
+        return
+    
+    # Add user
     success, user_referral_code = await db.add_user(user_id, username, full_name)
     
     if referrer and referral_code:
-        logging.info(f"Adding referral: referrer={referrer['telegram_id']}, referred={user_id}, code={referral_code}")
-        success = await db.add_referral(referrer['telegram_id'], user_id, referral_code)
-        logging.info(f"Referral added success: {success}")
-        
-        await message.answer(
-            get_text('welcome', 'uz', link_to_user=message.from_user.mention_html()),
-            reply_markup=get_main_user_keyboard()
-        )
-
-        # Create referrer mention (prefer mention_html, fallback to tg deep link)
-        referrer_mention = f'<a href="tg://user?id={referrer["telegram_id"]}">{referrer["full_name"] or "User"}</a>'
-
-        await message.answer(
-            get_text('referral_welcome', 'uz', referrer=referrer_mention),
-        )
-          # Check if both users are subscribed to validate referral
         bot = message.bot
         channel_ids = await db.get_mandatory_channel_ids()
-        logging.info(f"Checking subscription for channels: {channel_ids}")
         
-        both_subscribed = True
-        for channel_id in channel_ids:
-            try:
-                referrer_member = await bot.get_chat_member(channel_id, referrer['telegram_id'])
-                user_member = await bot.get_chat_member(channel_id, user_id)
-                
-                referrer_status = referrer_member.status
-                user_status = user_member.status
-                
-                logging.info(f"Channel {channel_id} - Referrer status: {referrer_status}, User status: {user_status}")
-                  # In aiogram 3.x, the valid statuses are "member", "administrator", "creator"
-                if (referrer_status not in ['member', 'administrator', 'creator'] or 
-                    user_status not in ['member', 'administrator', 'creator']):
-                    both_subscribed = False
-                    logging.info(f"Not subscribed: referrer_status={referrer_status}, user_status={user_status}")
+        # Check if new user was ALREADY subscribed to ALL channels BEFORE clicking referral link
+        # If they were already subscribed to all, they weren't brought by the referrer
+        user_already_subscribed_to_all = True
+        if channel_ids:
+            for channel_id in channel_ids:
+                try:
+                    user_member = await bot.get_chat_member(channel_id, user_id)
+                    if user_member.status not in ['member', 'administrator', 'creator']:
+                        user_already_subscribed_to_all = False
+                        break
+                except Exception as e:
+                    user_already_subscribed_to_all = False
                     break
-            except Exception as e:
-                both_subscribed = False
-                logging.error(f"Subscription check error: {str(e)}")
-                break
-        
-        if both_subscribed:
-            logging.info(f"Validating referral: referrer={referrer['telegram_id']}, referred={user_id}")
-            await db.validate_referral(referrer['telegram_id'], user_id)
-              # Notify referrer that user joined and is already subscribed
-            # Create user mention (prefer mention_html, fallback to tg deep link)
-            user_mention = f'<a href="tg://user?id={user_id}">{full_name or f"@{username}" or "User"}</a>'
-
-            notification_text = get_text(
-                'referrer_new_user_subscribed',
-                'uz',
-                user_name=user_mention
-            )
-            try:
-                await bot.send_message(referrer['telegram_id'], notification_text)
-            except Exception as e:
-                logging.error(f"Failed to send notification to referrer {referrer['telegram_id']}: {e}")
         else:
-            # Notify referrer that user joined but needs to subscribe
-            # Create user mention (prefer mention_html, fallback to tg deep link)
+            # No mandatory channels configured
+            user_already_subscribed_to_all = False
+        
+        if user_already_subscribed_to_all:
+            # User was already subscribed to all channels - don't count as referral
+            logging.info(f"User {user_id} was already subscribed to all channels - not counting referral from {referrer['telegram_id']}")
+            await message.answer(
+                get_text('welcome', 'uz', link_to_user=message.from_user.mention_html()),
+                reply_markup=get_main_user_keyboard()
+            )
+            # Don't show referral welcome or create referral record
+        else:
+            # User is NOT subscribed to at least one channel - valid referral candidate
+            logging.info(f"Adding referral: referrer={referrer['telegram_id']}, referred={user_id}, code={referral_code}")
+            success = await db.add_referral(referrer['telegram_id'], user_id, referral_code)
+            logging.info(f"Referral added success: {success}")
+            
+            await message.answer(
+                get_text('welcome', 'uz', link_to_user=message.from_user.mention_html()),
+                reply_markup=get_main_user_keyboard()
+            )
+
+            # Create referrer mention (prefer mention_html, fallback to tg deep link)
+            referrer_mention = f'<a href="tg://user?id={referrer["telegram_id"]}">{referrer["full_name"] or "User"}</a>'
+
+            await message.answer(
+                get_text('referral_welcome', 'uz', referrer=referrer_mention),
+            )
+            
+            # Check if referrer is also subscribed to validate referral immediately
+            logging.info(f"Checking subscription for channels: {channel_ids}")
+            
+            referrer_subscribed = True
+            for channel_id in channel_ids:
+                try:
+                    referrer_member = await bot.get_chat_member(channel_id, referrer['telegram_id'])
+                    if referrer_member.status not in ['member', 'administrator', 'creator']:
+                        referrer_subscribed = False
+                        break
+                except Exception as e:
+                    referrer_subscribed = False
+                    logging.error(f"Subscription check error: {str(e)}")
+                    break
+            
+            # Now check if new user subscribed (they weren't before, but middleware may have prompted them)
+            # For now, the referral stays pending until user subscribes via check_subscription callback
+            
+            # Notify referrer about new pending referral
             user_mention = f'<a href="tg://user?id={user_id}">{full_name or f"@{username}" or "User"}</a>'
 
             notification_text = get_text(
