@@ -33,8 +33,7 @@ async def show_user_stats(message: Message, db: Database):
 
 async def show_about_olympiad(message: Message, db: Database):
     """Display information about the Olympiad with a photo"""
-    # Placeholder photo file_id - replace with actual photo
-    photo_file_id = "AgACAgIAAxkBAAIBCGeDPLAAAdEVyxXt5CYi5MeUqxdNUwACjuoxG_PLACEHOLDER"
+    photo_file_id = "AgACAgIAAxkBAAMuaWdMpgRe-C1ZtcabQckLmkvnNXAAAgMWaxu_JTlL08NX75ZE8mMBAAMCAAN5AAM4BA"
     
     text = get_text('about_olympiad', 'uz')
     
@@ -49,8 +48,7 @@ async def show_about_olympiad(message: Message, db: Database):
 
 async def show_rewards_info(message: Message, db: Database):
     """Display rewards/prizes information with photo"""
-    # Placeholder photo file_id - replace with actual photo
-    photo_file_id = "AgACAgIAAxkBAAIBCGeDPLAAAdEVyxXt5CYi5MeUqxdNUwACjuoxG_REWARDS_PLACEHOLDER"
+    photo_file_id = "AgACAgIAAxkBAAMuaWdMpgRe-C1ZtcabQckLmkvnNXAAAgMWaxu_JTlL08NX75ZE8mMBAAMCAAN5AAM4BA"
     
     text = get_text('rewards_info', 'uz')
     
