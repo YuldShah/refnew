@@ -153,4 +153,33 @@ async def process_user_lookup(message: Message, state: FSMContext, db: Database)
     except ValueError:
         await message.answer(get_text('admin_user_not_found', 'uz'))
 
+# Debug feature: Photo ID extractor for admins
+@admin_menu_router.message(F.photo)
+async def debug_photo_id(message: Message):
+    """Extract and display photo ID for admins (debug feature)"""
+    # Get the largest photo size (best quality)
+    photo = message.photo[-1]
+    photo_id = photo.file_id
+
+    # Print to terminal with clear formatting
+    print("\n" + "="*60)
+    print("📸 ADMIN DEBUG - PHOTO ID RECEIVED")
+    print("="*60)
+    print(f"Admin: {message.from_user.full_name} (@{message.from_user.username})")
+    print(f"User ID: {message.from_user.id}")
+    print(f"\nPhoto ID:")
+    print(f"  {photo_id}")
+    print(f"\nPhoto dimensions: {photo.width}x{photo.height}")
+    print(f"Photo size: {photo.file_size} bytes")
+    print("="*60 + "\n")
+
+    # Also send back to admin for easy copy-paste
+    response_text = (
+        f"📸 <b>Photo ID Debug Info</b>\n\n"
+        f"<code>{photo_id}</code>\n\n"
+        f"📐 Size: {photo.width}x{photo.height}\n"
+        f"📦 File size: {photo.file_size} bytes"
+    )
+    await message.answer(response_text)
+
 # Callback query handlers for admin stats inline buttons
