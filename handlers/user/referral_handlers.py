@@ -1,4 +1,4 @@
-from aiogram.types import Message, InlineQuery, InlineQueryResultArticle, InputTextMessageContent
+from aiogram.types import Message, InlineQuery, InlineQueryResultArticle, InlineQueryResultCachedPhoto, InputTextMessageContent
 from database.models import Database
 from text.messages import get_text
 from keyboards.user_keyboards import get_referral_share_keyboard
@@ -22,15 +22,30 @@ async def show_referral_link(message: Message, db: Database):
         text = get_text('referral_link_error', 'uz')
         keyboard = None
     
-    msg = await message.answer(
-        text=text,
-        reply_markup=keyboard,
-        disable_web_page_preview=True
-    )
+    photo_file_id = get_text('referral_link_photo', 'uz')
+    if photo_file_id:
+        try:
+            msg = await message.answer_photo(
+                photo=photo_file_id,
+                caption=text,
+                reply_markup=keyboard
+            )
+        except Exception:
+            msg = await message.answer(
+                text=text,
+                reply_markup=keyboard,
+                disable_web_page_preview=True
+            )
+    else:
+        msg = await message.answer(
+            text=text,
+            reply_markup=keyboard,
+            disable_web_page_preview=True
+        )
 
-    await msg.reply("""<b>👆 Yuqoridagi sizning taklif havolangiz.</b>
-<blockquote>👑 Taklif havolangiz orqali botimizga 3 va undan ortiq do'stlaringizni taklif qiling va Olimpiada kanal va guruhimizga qo'shilish imkoniyatini qo'lga kiriting!</blockquote>
-<b>❗️SHOSHILING! Jami bo'lib 500 ta joy ajratilgan🤝</b>
+    await msg.reply("""👆 <b>Yuqoridagi sizning taklif havolangiz.</b>
+<blockquote>👑 Taklif havolangiz orqali botimizga 3 va undan ortiq do'stlaringizni taklif qiling va VIP kanal va guruhimizga qo'shilish imkoniyatini qo'lga kiriting!</blockquote>
+❗️<b>SHOSHILING! Jami bo'lib 1000 ta joy ajratilgan</b>🤝
 """)
 
 async def handle_inline_query(inline_query: InlineQuery, db: Database):
@@ -59,13 +74,25 @@ async def handle_inline_query(inline_query: InlineQuery, db: Database):
     # Create referral link
     referral_link = f"https://t.me/{bot_username}?start={user['referral_code']}"
     
-    # Create article result (text message)
+    message_text = get_text('referral_link_message', 'uz', link=referral_link)
+    photo_file_id = get_text('referral_link_photo', 'uz')
+    
+    if photo_file_id:
+        photo_result = InlineQueryResultCachedPhoto(
+            id="referral_link_photo",
+            photo_file_id=photo_file_id,
+            caption=message_text,
+            parse_mode="HTML"
+        )
+        await inline_query.answer([photo_result], cache_time=0)
+        return
+
     article_result = InlineQueryResultArticle(
         id="referral_link",
-        title="Referral havolasi",
-        description="Referral havolangizni ulashing",
+        title="Taklif havolasi",
+        description="Taklif havolangizni ulashing",
         input_message_content=InputTextMessageContent(
-            message_text=get_text('referral_link_message', 'uz', link=referral_link),
+            message_text=message_text,
             parse_mode="HTML",
             disable_web_page_preview=True
         )

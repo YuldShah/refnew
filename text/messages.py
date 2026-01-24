@@ -1,8 +1,8 @@
 MESSAGES = {
     'uz': {
         'welcome': """<b>🎓 Assalomu alaykum,</b> {link_to_user}!
-<blockquote>Sizni  SAT Yil Olimpiadasiga taklif qilamiz!</blockquote>
-✅ Batafsil ma'lumot uchun "Olimpiada haqida" tugmasini bosing""",
+<blockquote>Sizni May SAT matematika uchun BEPUL Turbo Marafonimizga taklif qilamiz!</blockquote>
+✅ Batafsil ma'lumot uchun "📋 SAT marafon haqida 📋" tugmasini bosing""",
         'referral_welcome': "Siz <b>{referrer}</b> tomonidan taklif qilindingiz! 🎉",
         'already_registered': """Siz allaqachon botda ro'yxatdan o'tgansiz!""",
         'invalid_referral': "Noto'g'ri taklif havolasi!",
@@ -48,13 +48,13 @@ MESSAGES = {
         'register_first': "Iltimos, avval ro'yxatdan o'ting.\n\n/start /start /start",
         
         # Main menu buttons
-        'rules_button': "📋 Qatnashish sharti 📋",
-        'get_reward_button': "📊 Ballarim 📊",
-        'my_referral_link_button': "🔗 Taklif havolasi 🔗",
-        'my_stats_button': "📊 Ballarim 📊",
-        'about_olympiad_button': "🏆 Olimpiada haqida 🏆",
-        'rewards_button': "🎁 Mukofotlar 🎁",
-        'share_referral_link': "🔗 Referral havolani ulashish",
+        'rules_button': "‼️ Marafonda qatnashish sharti ‼️",
+        'get_reward_button': "📊Ballarim📊",
+        'my_referral_link_button': "🔗Taklif havolasi🔗",
+        'my_stats_button': "📊Ballarim📊",
+        'about_olympiad_button': "📋 SAT marafon haqida 📋",
+        'rewards_button': "🎁 Sovrinlar ⭐️",
+        'share_referral_link': "🔗 Taklif havolasini ulashish",
         'back_to_menu': "🔙 Bosh menyuga qaytish",
         'refresh_stats': "🔄 Yangilash",
         'search_user': "🔍 Qidirish",
@@ -74,12 +74,12 @@ MESSAGES = {
         'cancel_btn': "❌ Bekor qilish",
         
         # Rules content (participation conditions)
-        'rules_content': """<b>🎯 Olimpiadada ishtirok etish shartlari</b>
-<blockquote>1️⃣ Bot sizga shaxsiy taklif havolasini taqdim etadi. Ushbu havolani kamida 3 nafar matematika ustozlari yoki SAT imtihoniga tayyorlanayotgan tanishlaringizga yuborishingiz kerak. Agar ular sizning havolangiz orqali botga kirsa, sizga ball beriladi.</blockquote>
-<blockquote>2️⃣Agar sizning ballaringiz 3 va undan yuqori bo'lsa, "Ballarim" bo'limi orqali siz uchun maxsus yopiq kanal va guruhga qo'shilish imkoniyati ochiladi.</blockquote>
-<b>🚫 Agar ballaringiz 3 dan kam bo'lib qolsa, siz avtomatik tarzda kanal va guruhdan chiqarilasiz.</b>
-<blockquote>📌 Taklif havolangizni iloji boricha matematika bilan shug'ullanayotgan tanishlaringizga yuboring.</blockquote>
-<i>✅ Tayyor bo'lsangiz, menyudan "🔗 Taklif havolasi 🔗" tugmasini bosing va do'stlaringizni taklif qilishni boshlang!</i>""",
+        'rules_content': """🎯 <b>Bepul Turbo SAT Marafonida ishtirok eting!</b>
+<blockquote>1️⃣ Bot sizga shaxsiy taklif havolasini taqdim etadi. Siz ushbu havolani kamida 3 nafar SAT imtihoniga tayyorlanayotgan tanishlaringizga yuborishingiz kerak bo'ladi. Ular sizning havolangiz orqali botga kirsa, har biri uchun sizga 1 balldan beriladi.
+2️⃣ Sizning <b>ballaringiz 3 va undan ko'p</b> bo'lsa, Ballarim bo'limi orqali siz uchun maxsus yopiq kanal va guruhga qo'shilish imkoniyatiga ega bo'lasiz.</blockquote>
+🚫 <b>Ballaringiz 3 dan kamayib ketsa, avtomatik tarzda guruh va kanaldan chetlatilasiz.</b>
+<blockquote>📌 Taklif havolangizni matematika bilan shug'ullanayotgan tanishlaringizga yuborishga harakat qiling!</blockquote>
+✅ Tayyor bo'lsangiz, menyudan "🔗 <b>Taklif havolasi</b> 🔗" tugmasini bosing va do'stlaringizni taklif qiling!""",
 
         'reward_available': """🎉 <b>Tabriklaymiz!</b>
 
@@ -104,65 +104,71 @@ MESSAGES = {
 """,
         
         # Referral link messages
-        'referral_link_message': """<b>📢 Assalomu alaykum, barcha matematika ustozlari va o'quvchilar!</b>
-<blockquote>SATElbek and SATElbek Academy tomonidan 28-yanvar, soat 20:00 da bo'ladigan Yil Olimpiadasiga sizni taklif qilamiz!</blockquote>
-<b>🎯 Olimpiadada jamoangiz bilan qatnashing va quyidagi sovrinlardan biriga ega bo'ling:</b>
-<blockquote>🥇 1-o'rin — 1 500 000 so'm
-🥈 2-o'rin — 1 000 000 so'm
-🥉 3-o'rin — 500 000 so'm</blockquote>
+        'referral_link_message': """<b>Deyarli hamma ustama olib boldi. Sizda esa hali ham tayyorgarlik yaxshi emas.
+Bizda esa siz uchun ajoyib yechim bor.</b>
+<i>Jamoamiz o'z</i> ishining ustasi
+<blockquote>Elbek Asatullayev
+<b>SAT math ketma-ket 4 marta 800/800 maximal ball 🔥
+SAT umumiy natija 1550/1600 ⭐️
+IELTS overall 7.5/9.0 ball 📌
+Agar sizning ingliz tili darajangiz 0 bolsa, sizga ingliz tili o'rganishni eng oson usullarini biz o'rgatamiz.
+Ayniqsa matnli masalalarga kelganda boshqa kurslardan farqini sezasizlar. ‼️</b></blockquote>
 
-<b>Qolgan orinlarga yana umumiy hisobda 7 mln so'mlik qimmatbaho  sovg'alar</b>
-<b>
-📝 Savollar SAT matematika asosida tuziladi.</b>
+<blockquote>Sizlarni MAY SAT BEPUL Turbo  Marafon yopiq guruh va kanalimizga taklif etamiz
 
-<i>🟢 Ishtirok etish uchun </i><a href="https://t.me/SATElbekolympiad_bot"><i>"Start"</i></a><i> tugmasini bosing, shaxsiy taklif havolangiz orqali do'stlaringizni taklif qiling va Yangi yil Olimpiadasida bilimingizni sinab ko'rib, pul mukofotlarini qo'lga kiritish imkoniyatiga ega bo'ling!</i>
+📊So'nggi 2 yil ichida kurslarimizda  4000+ ustozlar va o'quvchilarimiz Xalqaro Sertifikatlarda maximal natija qayd etdi.
+Ularning qatorida esa navbat endi sizniki bo'lishi shart!
+
+🟢 Taklif havola tugmasini bosing!</blockquote>
+🟢 <b>Agar siz ham Turbo Marafon guruhimizga qo'shilmoqchi bo'lsangiz — botga </b><a href="https://t.me/satbepulbot"><b>Start</b></a><b> bering va joyingizni band qiling!</b>
 <blockquote>⚠️ Joylar soni kam qolmoqda 👇</blockquote>
-{link}
-{link}
+
+<code>{link}</code>
 """,
         'referral_link_error': "Taklif havolasini olishda xatolik yuz berdi.",
         
         # About olympiad message
-        'about_olympiad': """<b>📢 Barcha matematika ustozlari va o'quvchilar diqqatiga!</b>
+        'about_olympiad': """📢 <b>Assalomu alaykum, hurmatli matematika ustozlar va o'quvchilar!</b>
 
-SATElbek<i> tomonidan tashkil etilayotgan Yil Olimpiadasiga sizni taklif qilamiz!
-Olimpiadada yakka tartibda yoki jamoa bilan ishtirok etishingiz mumkin.</i>
-<blockquote>📅 Sana: 28-yanvar
-⏰ Vaqt: 20:00</blockquote>
+SAT imtixonining matematika qismidan <i>anchadan beri tayyorgarlik ko'rayapsiz lekin natijalar siz xohlagan darajada emasmi?</i>
 
-<b>📝 Olimpiada tarkibi:</b>
-<blockquote>
-44 ta SAT matematika (ingliz tili) savollari
-Imtixon formatida</blockquote>
-<b>✅ Jami: 44 ta savol</b>
+📌 <b>Unda sizni May SAT matematika uchun BEPUL Turbo Marafonimizga taklif qilaman!</b>
+<blockquote>⚡️O'qituvchimiz— Bir nechta xalqaro sertifikatlar sohibi
 
-<b>🏆 G'oliblar quyidagi sovrinlar bilan taqdirlanadi:</b>
-<blockquote>🥇 1-o'rin — 1 500 000 so'm
-🥈 2-o'rin — 1 000 000 so'm
-🥉 3-o'rin — 500 000 so'm</blockquote>
-Qolgan o'rinlarga umumiy 7 mln so'mlik qimmatbaho sovg'alar
+<b>ELBEK Asatullayev
+SAT Math ketma-ket 4x (800/800)
+SAT Umumiy natija (1550/1600)
+IELTS (7.5/9.0)
+Dekabr imtixonning ozida SAT matematikadan maximal 25 ta 800/800 natija
+So'nggi 2 yil ichida kurslarimizda  4000+</b> ustozlar Xalqaro Sertifikatlarda maximal natija qayd etdi.
+Ularning qatorida esa navbat endi sizniki bo'lishi shart!
 
-Umumiy 20 kishi mutloq bepulga pullik turbo guruhimizga qabul qilinadi
+<b>Ustozimiz</b> o'z soxasi ustasi va sizni imtixongacha puxta va hotirjam tayyor bolishingizda yaqindan yordam beradi.</blockquote>
+🎯 <i>Agar siz ham jonli darslarimizga qatnashib, darslarimizdan namunalar ko'rib,  kursimizga qo'shilmoqchi bo'lsangiz.
+Marafon shartlarini bajaring va joyingizni oldindan band eting.</i>
 
-<b>🎄 Yangi yilni bilim va g'alaba bilan boshlashni istasangiz, ushbu imkoniyatni qo'ldan boy bermang!</b>""",
+Marafonda qatnashish uchun "‼️ <b>Marafonda qatnashish sharti </b>‼️" tugmasini bosing va batafsil ma'lumotni oling!""",
         
-        # About olympiad photo file_id (placeholder)
-        'about_olympiad_photo': "AgACAgIAAxkBAAIBCGeDPLAAAdEVyxXt5CYi5MeUqxdNUwACjuoxG_PLACEHOLDER",
+        # Photo file_ids (placeholders to fill later)
+        'rewards_photo': "",
+        'referral_link_photo': "",
+        'sat_opportunities_photo': "",
         
         # Rewards/prizes message
-        'rewards_info': """<b>🏆 Testdan eng yuqori natijani qayd etgan jamoalar quyidagi pul mukofotlari bilan taqdirlanadi:</b>
-<blockquote>🥇 1-o'rin — 1 500 000 so'm
-🥈 2-o'rin — 1 000 000 so'm
-🥉 3-o'rin — 500 000 so'm</blockquote>
-<b>Qolgan orinlarga yana umumiy hisobda 7 mln so'mlik qimmatbaho  sovg'alar</b>
-<i>
-🎓 Bilimingizni sinab ko'ring, eng yuqori natijalarni qayd eting va katta pul mukofotlariga ega bo'ling!</i>""",
+        'rewards_info': """🏆<b> Marafonda sizni nafaqat bilim, balki KATTA imkoniyatlar ham kutmoqda!</b>
+<blockquote><i>📌 Marafon guruhida faol qatnashib, vazifalarni bajargan  eng  yuqori natija qayd etgan 3 ta ustozlarimizga imtixon</i> harajatlari toliq qoplanib beriladi (111$+Turbo kursimiz narxi)</blockquote>
+<blockquote>Shoshmang, bu Hali hammasi e,marafonga qatnashib, vazifalarni o'z vaqtida bajarib aktivlik ko'rsatgan Top-7 ishtirokchilarga esa Mart kursi uchun  💯 foizlik vaucherlar taqdim etiladi</blockquote>
+🎯<b>Shoshiling,  sovg'alardan  biri aynan sizniki bo'lishi mumkin.</b>""",
         
         # User stats messages        
-        'user_stats_message': """<b>📈 {user_mention} sizning ballaringiz: {valid_referrals} ball.</b>
+        'user_stats_message': """<b>📈 Sizning ballaringiz: {valid_referrals} ball.</b>
 <blockquote>‼️ Siz taklif havolangiz orqali qo'shilgan odam kanallardan obunani bekor qilsa sizga shu odam uchun berilgan ball qaytarib olinadi!</blockquote>
-<b>✅ Hisobingizdagi ballar 3 va undan yuqori ballga ega bo'lgandan so'ng yopiq kanal va guruhimizga qo'shilishingiz mumkin bo'ladi.</b>
+<b>✅ Hisobingizdagi ballar 3 balldan yuqori qiymatga ega bo‘lgandan so‘ng yopiq kanal va guruhimizga qo‘shilishingiz mumkin bo‘ladi.</b>
 """,
+        'sat_opportunities': """<b>Hozirda SAT sizga qanday imkoniyatlar bermoqda.
+1) Agarda siz matematika o'qituvchisi bolsangiz SAT imtixonining matematika qismidan eng kamida 700/800 natija orqali 3 yilga 50% ustamani naqd qilasiz
+
+2) Agarda siz maktab o'quvchisi bolsangiz vazirlar mahkamasining yaqinda  qabul qilgan qaroriga ko'ra SAT imtixonidan umumiy 1200+ natija orqali davlat universitetlariga 100% grandni qo'lga kiritasiz</b>""",
         'referrals_validated': """🎉 <b>Yangilik!</b> Do'stlaringizdan {count} ta yangi taklif tasdiqlandi!""",
         
         # Referrer notification messages

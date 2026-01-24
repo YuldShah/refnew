@@ -18,11 +18,13 @@ async def show_rewards(message: Message, db: Database):
     user_mention = message.from_user.full_name or message.from_user.username or "Foydalanuvchi"
 
     # Check if user has enough referrals (3 or more points)
+    base_text = f"""<b>📈 Sizning ballaringiz: {valid_count} ball.</b>
+<blockquote>‼️ Siz taklif havolangiz orqali qo'shilgan odam kanallardan obunani bekor qilsa sizga shu odam uchun berilgan ball qaytarib olinadi!</blockquote>
+<b>✅ Hisobingizdagi ballar 3 balldan yuqori qiymatga ega bo‘lgandan so‘ng yopiq kanal va guruhimizga qo‘shilishingiz mumkin bo‘ladi.</b>"""
+
     if valid_count >= db.required_referrals:
         # User has enough points - show reward with channel link
-        reward_text = f"""<b>📈 {user_mention} sizning ballaringiz: {valid_count} ball.</b>
-<blockquote>‼️ Siz taklif havolangiz orqali qo'shilgan odam kanallardan obunani bekor qilsa sizga shu odam uchun berilgan ball qaytarib olinadi!</blockquote>
-<b>✅ Tabriklaymiz! Siz yopiq kanal va guruhimizga qo'shilishingiz mumkin!</b>"""
+        reward_text = base_text + "\n\n<b>✅ Tabriklaymiz! Siz yopiq kanal va guruhimizga qo'shilishingiz mumkin!</b>"
 
         # Check if user has already accessed reward
         if await db.has_user_accessed_reward(user_id):
@@ -45,11 +47,7 @@ async def show_rewards(message: Message, db: Database):
     else:
         # User doesn't have enough points yet
         remaining = db.required_referrals - valid_count
-        reward_text = f"""<b>📈 {user_mention} sizning ballaringiz: {valid_count} ball.</b>
-<blockquote>‼️ Siz taklif havolangiz orqali qo'shilgan odam kanallardan obunani bekor qilsa sizga shu odam uchun berilgan ball qaytarib olinadi!</blockquote>
-<b>✅ Hisobingizdagi ballar 3 va undan yuqori ballga ega bo'lgandan so'ng yopiq kanal va guruhimizga qo'shilishingiz mumkin bo'ladi.</b>
-
-<i>📢 Yana {remaining} ta do'stingizni taklif qiling!</i>"""
+        reward_text = base_text + f"\n\n<i>📢 Yana {remaining} ta do'stingizni taklif qiling!</i>"
 
         await message.answer(reward_text)
 

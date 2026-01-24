@@ -2,13 +2,15 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMar
 from text.messages import get_text
 
 def get_main_user_keyboard() -> ReplyKeyboardMarkup:
-    """Get the main user reply keyboard with 6 options for Olympiad"""
+    """Get the main user reply keyboard for SAT marathon"""
     keyboard = ReplyKeyboardMarkup(
         keyboard=[
-            [KeyboardButton(text="🏆 Olimpiada haqida 🏆")],
-            [KeyboardButton(text="📋 Qatnashish sharti 📋"), KeyboardButton(text="🎁 Mukofotlar 🎁")],
-            [KeyboardButton(text="🔗 Taklif havolasi 🔗")],
-            [KeyboardButton(text="📊 Ballarim 📊")]
+            [KeyboardButton(text="📋 SAT marafon haqida 📋")],
+            [KeyboardButton(text="‼️ Marafonda qatnashish sharti ‼️")],
+            [KeyboardButton(text="🎁 Sovrinlar ⭐️")],
+            [KeyboardButton(text="🔗Taklif havolasi🔗")],
+            [KeyboardButton(text="👇SAT imtixoni beradigan imkoniyatlar👇")],
+            [KeyboardButton(text="📊Ballarim📊")]
         ],
         resize_keyboard=True,
         one_time_keyboard=False
@@ -29,7 +31,7 @@ def get_referral_share_keyboard(referral_link: str = "") -> InlineKeyboardMarkup
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [
             InlineKeyboardButton(
-                text="Referral havolani nusxalash",
+                text="Taklif havolani nusxalash",
                 copy_text=CopyTextButton(text=referral_link)
             )
         ],

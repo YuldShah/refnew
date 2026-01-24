@@ -32,34 +32,39 @@ async def show_user_stats(message: Message, db: Database):
     )
 
 async def show_about_olympiad(message: Message, db: Database):
-    """Display information about the Olympiad with a photo"""
-    photo_file_id = "AgACAgIAAxkBAAMuaWdMpgRe-C1ZtcabQckLmkvnNXAAAgMWaxu_JTlL08NX75ZE8mMBAAMCAAN5AAM4BA"
-    
+    """Display information about the SAT marathon"""
     text = get_text('about_olympiad', 'uz')
-    
-    try:
-        await message.answer_photo(
-            photo=photo_file_id,
-            caption=text
-        )
-    except Exception:
-        # If photo fails, just send text
-        await message.answer(text)
+    await message.answer(text)
 
 async def show_rewards_info(message: Message, db: Database):
     """Display rewards/prizes information with photo"""
-    photo_file_id = "AgACAgIAAxkBAAMuaWdMpgRe-C1ZtcabQckLmkvnNXAAAgMWaxu_JTlL08NX75ZE8mMBAAMCAAN5AAM4BA"
-    
+    photo_file_id = get_text('rewards_photo', 'uz')
     text = get_text('rewards_info', 'uz')
-    
-    try:
-        await message.answer_photo(
-            photo=photo_file_id,
-            caption=text
-        )
-    except Exception:
-        # If photo fails, just send text
-        await message.answer(text)
+    if photo_file_id:
+        try:
+            await message.answer_photo(
+                photo=photo_file_id,
+                caption=text
+            )
+            return
+        except Exception:
+            pass
+    await message.answer(text)
+
+async def show_sat_opportunities(message: Message, db: Database):
+    """Display SAT opportunities information with photo"""
+    photo_file_id = get_text('sat_opportunities_photo', 'uz')
+    text = get_text('sat_opportunities', 'uz')
+    if photo_file_id:
+        try:
+            await message.answer_photo(
+                photo=photo_file_id,
+                caption=text
+            )
+            return
+        except Exception:
+            pass
+    await message.answer(text)
 
 async def refresh_user_stats(callback: CallbackQuery, db: Database):
     """Handle refresh stats button press"""

@@ -167,12 +167,12 @@ async def start_handler(message: Message, state: FSMContext, db: Database):
         )
 
 @menu_router.message(F.text.in_([
-    "📋 Qatnashish sharti 📋", "📋 Qoidalar", "📋 Rules",
-    "📊 Ballarim 📊", "🚀 Kirish huquqini olish", 
-    "🔗 Taklif havolasi 🔗", "🔗 Mening taklif havolam", "🔗 My Referral Link",
-    "📊 Mening statistikam", "📊 My Stats",
-    "🏆 Olimpiada haqida 🏆",
-    "🎁 Mukofotlar 🎁"
+    "📋 SAT marafon haqida 📋",
+    "‼️ Marafonda qatnashish sharti ‼️",
+    "🎁 Sovrinlar ⭐️",
+    "🔗Taklif havolasi🔗",
+    "👇SAT imtixoni beradigan imkoniyatlar👇",
+    "📊Ballarim📊"
 ]))
 async def menu_button_handler(message: Message, db: Database):
     """Handle main menu button presses"""
@@ -187,24 +187,24 @@ async def menu_button_handler(message: Message, db: Database):
         )
         return
     
-    if message.text in ["📋 Qatnashish sharti 📋", "📋 Qoidalar", "📋 Rules"]:
+    if message.text == "‼️ Marafonda qatnashish sharti ‼️":
         from .rules_handlers import show_rules
         await show_rules(message, db)
-    elif message.text in ["📊 Ballarim 📊", "🚀 Kirish huquqini olish"]:
+    elif message.text == "📊Ballarim📊":
         from .reward_handlers import show_rewards
         await show_rewards(message, db)
-    elif message.text in ["🔗 Taklif havolasi 🔗", "🔗 Mening taklif havolam", "🔗 My Referral Link"]:
+    elif message.text == "🔗Taklif havolasi🔗":
         from .referral_handlers import show_referral_link
         await show_referral_link(message, db)
-    elif message.text in ["📊 Mening statistikam", "📊 My Stats"]:
-        from .stats_handlers import show_user_stats
-        await show_user_stats(message, db)
-    elif message.text == "🏆 Olimpiada haqida 🏆":
+    elif message.text == "📋 SAT marafon haqida 📋":
         from .stats_handlers import show_about_olympiad
         await show_about_olympiad(message, db)
-    elif message.text == "🎁 Mukofotlar 🎁":
+    elif message.text == "🎁 Sovrinlar ⭐️":
         from .stats_handlers import show_rewards_info
         await show_rewards_info(message, db)
+    elif message.text == "👇SAT imtixoni beradigan imkoniyatlar👇":
+        from .stats_handlers import show_sat_opportunities
+        await show_sat_opportunities(message, db)
 
 @menu_router.inline_query()
 async def handle_inline_query(inline_query: InlineQuery, db: Database):
