@@ -88,24 +88,25 @@ async def start_handler(message: Message, state: FSMContext, db: Database):
         
         # Check if new user was ALREADY subscribed to ALL channels BEFORE clicking referral link
         # If they were already subscribed to all, they weren't brought by the referrer
-        user_already_subscribed_to_all = True
+        user_already_subscribed_to_one = False
         if channel_ids:
             for channel_id in channel_ids:
                 try:
                     user_member = await bot.get_chat_member(channel_id, user_id)
-                    if user_member.status not in ['member', 'administrator', 'creator']:
-                        user_already_subscribed_to_all = False
+                    if user_member.status in ['member', 'administrator', 'creator']:
+                        user_already_subscribed_to_one = True
                         break
                 except Exception as e:
-                    user_already_subscribed_to_all = False
+                    print("Error while checking the subscription")
                     break
         else:
             # No mandatory channels configured
-            user_already_subscribed_to_all = False
+            user_already_subscribed_to_one = False
         
-        if user_already_subscribed_to_all:
-            # User was already subscribed to all channels - don't count as referral
-            logging.info(f"User {user_id} was already subscribed to all channels - not counting referral from {referrer['telegram_id']}")
+        if user_already_subscribed_to_one:
+            # User was already subscribed to at least one channel - don't count as referral
+            logging.info(f"User {user_id} was already subscribed to at least one channel - not counting referral from {referrer['telegram_id']}")
+            await bot.send_message(referrer['telegram_id'], "Siz taklif qilgan foydalunchi oldindan kanallarimizda mavjud edi. Bu referral hisobga olinmaydi.")
             await message.answer(
                 get_text('welcome', 'uz', link_to_user=message.from_user.mention_html()),
                 reply_markup=get_main_user_keyboard()

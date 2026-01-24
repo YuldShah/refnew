@@ -22,11 +22,16 @@ async def show_referral_link(message: Message, db: Database):
         text = get_text('referral_link_error', 'uz')
         keyboard = None
     
-    await message.answer(
+    msg = await message.answer(
         text=text,
         reply_markup=keyboard,
         disable_web_page_preview=True
     )
+
+    await msg.reply("""<b>👆 Yuqoridagi sizning taklif havolangiz.</b>
+<blockquote>👑 Taklif havolangiz orqali botimizga 3 va undan ortiq do'stlaringizni taklif qiling va Olimpiada kanal va guruhimizga qo'shilish imkoniyatini qo'lga kiriting!</blockquote>
+<b>❗️SHOSHILING! Jami bo'lib 500 ta joy ajratilgan🤝</b>
+""")
 
 async def handle_inline_query(inline_query: InlineQuery, db: Database):
     """Handle inline queries for sharing referral links"""

@@ -105,7 +105,7 @@ MESSAGES = {
         
         # Referral link messages
         'referral_link_message': """<b>📢 Assalomu alaykum, barcha matematika ustozlari va o'quvchilar!</b>
-<blockquote>SATElbek va InspiringSAT tomonidan 25-yanvar, soat 20:00 da bo'ladigan Yil Olimpiadasiga sizni taklif qilamiz!</blockquote>
+<blockquote>SATElbek and SATElbek Academy tomonidan 28-yanvar, soat 20:00 da bo'ladigan Yil Olimpiadasiga sizni taklif qilamiz!</blockquote>
 <b>🎯 Olimpiadada jamoangiz bilan qatnashing va quyidagi sovrinlardan biriga ega bo'ling:</b>
 <blockquote>🥇 1-o'rin — 1 500 000 so'm
 🥈 2-o'rin — 1 000 000 so'm
@@ -127,7 +127,7 @@ MESSAGES = {
 
 SATElbek<i> tomonidan tashkil etilayotgan Yil Olimpiadasiga sizni taklif qilamiz!
 Olimpiadada yakka tartibda yoki jamoa bilan ishtirok etishingiz mumkin.</i>
-<blockquote>📅 Sana: 25-yanvar
+<blockquote>📅 Sana: 28-yanvar
 ⏰ Vaqt: 20:00</blockquote>
 
 <b>📝 Olimpiada tarkibi:</b>

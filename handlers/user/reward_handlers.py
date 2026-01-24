@@ -5,7 +5,7 @@ from services.referral_service import ReferralService
 from keyboards.user_keyboards import get_reward_link_button
 
 # Olympiad channel ID
-OLYMPIAD_CHANNEL_ID = -1002676076162
+OLYMPIAD_CHANNEL_ID = -1003676076162
 
 async def show_rewards(message: Message, db: Database):
     """Display user's points and reward access if eligible"""
