@@ -150,9 +150,9 @@ Marafon shartlarini bajaring va joyingizni oldindan band eting.</i>
 Marafonda qatnashish uchun "‼️ <b>Marafonda qatnashish sharti </b>‼️" tugmasini bosing va batafsil ma'lumotni oling!""",
         
         # Photo file_ids (placeholders to fill later)
-        'rewards_photo': "",
-        'referral_link_photo': "",
-        'sat_opportunities_photo': "",
+        'rewards_photo': "AgACAgIAAxkBAAMtaXSkTYkbylp_FEjh4o0CvL22caYAAs4Naxuo8KlL3MWuXMNAxkgBAAMCAAN5AAM4BA",
+        'referral_link_photo': "AgACAgIAAxkBAAMvaXSkbUV5fylURrxSXoiRgwEGusIAAs8Naxuo8KlLfA4U5dr7qmgBAAMCAAN5AAM4BA",
+        'sat_opportunities_photo': "AgACAgIAAxkBAAMxaXSkkhCXsJbLhgg4Rotm9JP2C7sAAtANaxuo8KlLBOnAWzEMMqgBAAMCAAN5AAM4BA",
         
         # Rewards/prizes message
         'rewards_info': """🏆<b> Marafonda sizni nafaqat bilim, balki KATTA imkoniyatlar ham kutmoqda!</b>
