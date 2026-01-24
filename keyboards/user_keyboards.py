@@ -6,10 +6,14 @@ def get_main_user_keyboard() -> ReplyKeyboardMarkup:
     keyboard = ReplyKeyboardMarkup(
         keyboard=[
             [KeyboardButton(text="📋 SAT marafon haqida 📋")],
-            [KeyboardButton(text="‼️ Marafonda qatnashish sharti ‼️")],
-            [KeyboardButton(text="🎁 Sovrinlar ⭐️")],
-            [KeyboardButton(text="🔗Taklif havolasi🔗")],
-            [KeyboardButton(text="👇SAT imtixoni beradigan imkoniyatlar👇")],
+            [
+                KeyboardButton(text="‼️ Marafonda qatnashish sharti ‼️"),
+                KeyboardButton(text="🎁 Sovrinlar ⭐️")
+            ],
+            [
+                KeyboardButton(text="🔗Taklif havolasi🔗"),
+                KeyboardButton(text="👇SAT imtixoni beradigan imkoniyatlar👇")
+            ],
             [KeyboardButton(text="📊Ballarim📊")]
         ],
         resize_keyboard=True,
