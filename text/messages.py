@@ -160,6 +160,18 @@ Marafonda qatnashish uchun "‼️ <b>Marafonda qatnashish sharti </b>‼️" tu
 <blockquote>Shoshmang, bu Hali hammasi e,marafonga qatnashib, vazifalarni o'z vaqtida bajarib aktivlik ko'rsatgan Top-7 ishtirokchilarga esa Mart kursi uchun  💯 foizlik vaucherlar taqdim etiladi</blockquote>
 🎯<b>Shoshiling,  sovg'alardan  biri aynan sizniki bo'lishi mumkin.</b>""",
         
+        # Rewards photo file_id (placeholder - will be filled after first photo upload)
+        'rewards_photo': "",
+        
+        # SAT opportunities message
+        'sat_opportunities': """<b>Hozirda SAT sizga qanday imkoniyatlar bermoqda.
+1) Agarda siz matematika o'qituvchisi bolsangiz SAT imtixonining matematika qismidan eng kamida 700/800 natija orqali 3 yilga 50% ustamani naqd qilasiz
+
+2) Agarda siz maktab o'quvchisi bolsangiz vazirlar mahkamasining yaqinda  qabul qilgan qaroriga ko'ra SAT imtixonidan umumiy 1200+ natija orqali davlat universitetlariga 100% grandni qo'lga kiritasiz</b>""",
+        
+        # SAT opportunities photo file_id (placeholder - will be filled after first photo upload)
+        'sat_opportunities_photo': "",
+        
         # User stats messages        
         'user_stats_message': """<b>📈 Sizning ballaringiz: {valid_referrals} ball.</b>
 <blockquote>‼️ Siz taklif havolangiz orqali qo'shilgan odam kanallardan obunani bekor qilsa sizga shu odam uchun berilgan ball qaytarib olinadi!</blockquote>
