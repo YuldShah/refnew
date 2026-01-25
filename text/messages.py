@@ -123,7 +123,9 @@ Ularning qatorida esa navbat endi sizniki bo'lishi shart!
 🟢 <b>Agar siz ham Turbo Marafon guruhimizga qo'shilmoqchi bo'lsangiz — botga </b><a href="https://t.me/satbepulbot"><b>Start</b></a><b> bering va joyingizni band qiling!</b>
 <blockquote>⚠️ Joylar soni kam qolmoqda 👇</blockquote>
 
-<code>{link}</code>
+{link}
+{link}
+{link}
 """,
         'referral_link_error': "Taklif havolasini olishda xatolik yuz berdi.",
         
