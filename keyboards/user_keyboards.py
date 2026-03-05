@@ -9,7 +9,6 @@ from aiogram.types import (
 from text.messages import get_text
 from text.user_content import (
     REGISTRATION_BACK_BUTTON_TEXT,
-    REGISTRATION_CONTINUE_BUTTON_TEXT,
     REGISTRATION_SHARE_PHONE_BUTTON_TEXT,
 )
 
@@ -32,23 +31,17 @@ def get_main_user_keyboard() -> ReplyKeyboardMarkup:
     )
 
 
-def get_contact_request_keyboard(has_existing_phone: bool = False) -> ReplyKeyboardMarkup:
-    keyboard = [
-        [
-            KeyboardButton(
-                text=REGISTRATION_SHARE_PHONE_BUTTON_TEXT,
-                request_contact=True,
-            )
-        ]
-    ]
-
-    if has_existing_phone:
-        keyboard.append([KeyboardButton(text=REGISTRATION_CONTINUE_BUTTON_TEXT)])
-
-    keyboard.append([KeyboardButton(text=REGISTRATION_BACK_BUTTON_TEXT)])
-
+def get_contact_request_keyboard() -> ReplyKeyboardMarkup:
     return ReplyKeyboardMarkup(
-        keyboard=keyboard,
+        keyboard=[
+            [
+                KeyboardButton(
+                    text=REGISTRATION_SHARE_PHONE_BUTTON_TEXT,
+                    request_contact=True,
+                )
+            ],
+            [KeyboardButton(text=REGISTRATION_BACK_BUTTON_TEXT)],
+        ],
         resize_keyboard=True,
         one_time_keyboard=True,
     )

@@ -27,13 +27,12 @@ from text.user_content import (
     REGISTRATION_BACK_BUTTON_TEXT,
     REGISTRATION_BACK_NAV_TEXT,
     REGISTRATION_COMPLETE_TEXT,
-    REGISTRATION_CONTINUE_BUTTON_TEXT,
     REGISTRATION_NAME_INVALID_TEXT,
     REGISTRATION_NAME_PROMPT,
     REGISTRATION_PHONE_ACCEPTED_TEXT,
-    REGISTRATION_PHONE_EXISTING_PROMPT,
     REGISTRATION_PHONE_INVALID_TEXT,
     REGISTRATION_PHONE_PROMPT,
+    REGISTRATION_PHONE_SKIPPED_TEXT,
     REGISTRATION_SAT_GOAL_SELECTED_TEXT,
     REGISTRATION_SAT_GOAL_INVALID_TEXT,
     REGISTRATION_SAT_GOAL_PROMPT,
@@ -234,7 +233,21 @@ async def _ask_full_name(target_message: Message, state: FSMContext):
     )
 
 
-async def _ask_age(target_message: Message, state: FSMContext):
+async def _ask_age(
+    target_message: Message,
+    state: FSMContext,
+    show_phone_skip_context: bool = False,
+):
+    if show_phone_skip_context:
+        state_data = await state.get_data()
+        phone_number = state_data.get("phone_number")
+        if phone_number:
+            await state.update_data(phone_skip_notice_shown=True)
+            await target_message.answer(
+                REGISTRATION_PHONE_SKIPPED_TEXT.format(phone_number=phone_number),
+                reply_markup=ReplyKeyboardRemove(),
+            )
+
     await state.set_state(RegistrationStates.age)
     await target_message.answer(
         REGISTRATION_AGE_PROMPT,
@@ -244,19 +257,9 @@ async def _ask_age(target_message: Message, state: FSMContext):
 
 async def _ask_phone(target_message: Message, state: FSMContext):
     await state.set_state(RegistrationStates.phone_number)
-    state_data = await state.get_data()
-    existing_phone = state_data.get("phone_number")
-
-    if existing_phone:
-        await target_message.answer(
-            REGISTRATION_PHONE_EXISTING_PROMPT.format(phone_number=existing_phone),
-            reply_markup=get_contact_request_keyboard(has_existing_phone=True),
-        )
-        return
-
     await target_message.answer(
         REGISTRATION_PHONE_PROMPT,
-        reply_markup=get_contact_request_keyboard(has_existing_phone=False),
+        reply_markup=get_contact_request_keyboard(),
     )
 
 
@@ -266,6 +269,23 @@ async def _ask_education_status(target_message: Message, state: FSMContext):
         REGISTRATION_STATUS_PROMPT,
         reply_markup=get_education_status_keyboard(),
     )
+
+
+async def _advance_after_age(target_message: Message, state: FSMContext):
+    state_data = await state.get_data()
+    phone_number = state_data.get("phone_number")
+    if phone_number:
+        if state_data.get("phone_skip_notice_shown"):
+            await state.update_data(phone_skip_notice_shown=False)
+        else:
+            await target_message.answer(
+                REGISTRATION_PHONE_SKIPPED_TEXT.format(phone_number=phone_number),
+                reply_markup=ReplyKeyboardRemove(),
+            )
+        await _ask_education_status(target_message, state)
+        return
+
+    await _ask_phone(target_message, state)
 
 
 @registration_router.message(CommandStart())
@@ -337,32 +357,12 @@ async def process_age(message: Message, state: FSMContext):
         return
 
     await state.update_data(age=age)
-    await _ask_phone(message, state)
+    await _advance_after_age(message, state)
 
 
 @registration_router.message(RegistrationStates.phone_number, F.text == REGISTRATION_BACK_BUTTON_TEXT)
 async def back_from_phone(message: Message, state: FSMContext):
     await _ask_age(message, state)
-
-
-@registration_router.message(
-    RegistrationStates.phone_number,
-    F.text == REGISTRATION_CONTINUE_BUTTON_TEXT,
-)
-async def continue_with_saved_phone(message: Message, state: FSMContext):
-    state_data = await state.get_data()
-    if not state_data.get("phone_number"):
-        await message.answer(
-            REGISTRATION_PHONE_PROMPT,
-            reply_markup=get_contact_request_keyboard(has_existing_phone=False),
-        )
-        return
-
-    await message.answer(
-        REGISTRATION_PHONE_ACCEPTED_TEXT,
-        reply_markup=ReplyKeyboardRemove(),
-    )
-    await _ask_education_status(message, state)
 
 
 @registration_router.message(RegistrationStates.phone_number, F.contact)
@@ -381,12 +381,9 @@ async def process_phone_number(message: Message, state: FSMContext):
 
 @registration_router.message(RegistrationStates.phone_number)
 async def process_phone_number_invalid(message: Message, state: FSMContext):
-    state_data = await state.get_data()
     await message.answer(
         REGISTRATION_PHONE_INVALID_TEXT,
-        reply_markup=get_contact_request_keyboard(
-            has_existing_phone=bool(state_data.get("phone_number"))
-        ),
+        reply_markup=get_contact_request_keyboard(),
     )
 
 
@@ -423,7 +420,7 @@ async def process_education_status(callback: CallbackQuery, state: FSMContext):
 async def back_from_education_status(callback: CallbackQuery, state: FSMContext):
     await callback.answer("Oldingi qadamga qaytdingiz.")
     await callback.message.edit_text(REGISTRATION_BACK_NAV_TEXT)
-    await _ask_phone(callback.message, state)
+    await _ask_age(callback.message, state, show_phone_skip_context=True)
 
 
 @registration_router.message(RegistrationStates.sat_goal)

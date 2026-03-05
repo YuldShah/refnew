@@ -24,10 +24,6 @@ REGISTRATION_AGE_RANGE_INVALID_TEXT = """<b>⚠️ Yosh noto‘g‘ri kiritildi.
 REGISTRATION_PHONE_PROMPT = """<b>3-qadam:</b> Telefon raqamingizni yuboring.
 <blockquote>Pastdagi tugma orqali raqamingizni ulashing.</blockquote>"""
 
-REGISTRATION_PHONE_EXISTING_PROMPT = """<b>3-qadam:</b> Telefon raqamingiz saqlandi.
-<blockquote>Saqlangan raqam: <b>{phone_number}</b></blockquote>
-<b>✅ Shu raqam bilan davom etishingiz yoki pastdagi tugma orqali boshqa raqam yuborishingiz mumkin.</b>"""
-
 REGISTRATION_PHONE_INVALID_TEXT = """<b>⚠️ Telefon raqam qabul qilinmadi.</b>
 <blockquote>Iltimos, pastdagi tugma orqali o‘zingizning telefon raqamingizni yuboring.</blockquote>"""
 
@@ -49,8 +45,11 @@ REGISTRATION_COMPLETE_TEXT = """<b>✅ Rahmat!</b>
 REGISTRATION_PHONE_ACCEPTED_TEXT = """<b>✅ Telefon raqamingiz qabul qilindi.</b>
 <blockquote>Keyingi qadamga o‘tamiz.</blockquote>"""
 
+REGISTRATION_PHONE_SKIPPED_TEXT = """<b>3-qadam o‘tkazib yuborildi.</b>
+<blockquote>Siz yuborgan telefon raqami: <b>{phone_number}</b></blockquote>
+<b>Telefon raqamingiz saqlangan va qayta so‘ralmaydi.</b>"""
+
 REGISTRATION_BACK_BUTTON_TEXT = "⬅️ Orqaga"
-REGISTRATION_CONTINUE_BUTTON_TEXT = "✅ Shu raqam bilan davom etish"
 REGISTRATION_SHARE_PHONE_BUTTON_TEXT = "📱 Telefon raqamni yuborish"
 
 REGISTRATION_STATUS_SELECTED_TEXT = """<b>4-qadam yakunlandi.</b>
