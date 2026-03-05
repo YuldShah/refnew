@@ -1,64 +1,115 @@
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton, SwitchInlineQueryChosenChat, CopyTextButton
+from aiogram.types import (
+    CopyTextButton,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    KeyboardButton,
+    ReplyKeyboardMarkup,
+)
+
 from text.messages import get_text
 
+
 def get_main_user_keyboard() -> ReplyKeyboardMarkup:
-    """Get the main user reply keyboard with 4 options (hardcoded Uzbek)"""
-    keyboard = ReplyKeyboardMarkup(
+    return ReplyKeyboardMarkup(
         keyboard=[
-            [KeyboardButton(text=get_text('get_reward_button', 'uz'))],
-            [KeyboardButton(text=get_text('my_referral_link_button', 'uz'))],
-            [KeyboardButton(text=get_text('my_stats_button', 'uz'))]
+            [
+                KeyboardButton(text="📃 Qatnashish sharti 📃"),
+                KeyboardButton(text="✅ Turbo marafon haqida ✅"),
+            ],
+            [
+                KeyboardButton(text="🔗 Taklif havolasi 🔗"),
+                KeyboardButton(text="📈Ballarim📈"),
+            ],
+            [KeyboardButton(text="🎁 Sovrinlar ⭐️")],
         ],
         resize_keyboard=True,
-        one_time_keyboard=False
+        one_time_keyboard=False,
     )
-    return keyboard
+
+
+def get_contact_request_keyboard() -> ReplyKeyboardMarkup:
+    return ReplyKeyboardMarkup(
+        keyboard=[
+            [
+                KeyboardButton(
+                    text="Telefon raqamni yuborish",
+                    request_contact=True,
+                )
+            ]
+        ],
+        resize_keyboard=True,
+        one_time_keyboard=True,
+    )
+
+
+def get_education_status_keyboard() -> ReplyKeyboardMarkup:
+    return ReplyKeyboardMarkup(
+        keyboard=[
+            [KeyboardButton(text="O'qituvchi")],
+            [KeyboardButton(text="Talaba")],
+            [KeyboardButton(text="O'quvchi")],
+        ],
+        resize_keyboard=True,
+        one_time_keyboard=True,
+    )
+
+
+def get_sat_goal_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="Grant uchun (1200+)",
+                    callback_data="sat_goal:grant",
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text="Ustama uchun (700+)",
+                    callback_data="sat_goal:ustama",
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text="Boshqa",
+                    callback_data="sat_goal:other",
+                )
+            ],
+        ]
+    )
+
 
 def get_stats_keyboard() -> InlineKeyboardMarkup:
-    """Get stats inline keyboard for users (only refresh option)"""
-    keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [
-            InlineKeyboardButton(text=get_text('refresh_stats', 'uz'), callback_data='refresh_stats')
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text=get_text("refresh_stats", "uz"),
+                    callback_data="refresh_stats",
+                )
+            ]
         ]
-    ])
-    return keyboard
+    )
+
 
 def get_referral_share_keyboard(referral_link: str = "") -> InlineKeyboardMarkup:
-    """Get referral link share inline keyboard (hardcoded Uzbek)"""
-    keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [
-            InlineKeyboardButton(
-                text="Referral havolani nusxalash",
-                copy_text=CopyTextButton(text=referral_link)
-            )
-        ],
-        [InlineKeyboardButton(
-            text=get_text('share_referral_link', 'uz'), 
-            switch_inline_query_chosen_chat=SwitchInlineQueryChosenChat(allow_bot_chats=False, allow_channel_chats=True, allow_user_chats=True, allow_group_chats=True, query="Xabar yuklanishini kuting...")
-        )]
-    ])
-    return keyboard
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="Taklif havolasini nusxalash",
+                    copy_text=CopyTextButton(text=referral_link),
+                )
+            ]
+        ]
+    )
+
 
 def get_reward_link_button(links: list) -> InlineKeyboardMarkup:
-    """Get reward link inline keyboard (hardcoded Uzbek)"""
-    keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [
-            InlineKeyboardButton(
-                text="Bepul darslar kanali",
-                url=links[1]  # links are now strings, not ChatInviteLink objects
-            )
-        ],
-        [
-            InlineKeyboardButton(
-                text="Bepul darslar guruhi",
-                url=links[0]  # links are now strings, not ChatInviteLink objects
-            )
-        ],
-        [
-            InlineKeyboardButton(
-                text="Muhokama guruhi",
-                url=links[2]  # links are now strings, not ChatInviteLink objects
-            )
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text="Yopiq kanal", url=links[1])],
+            [InlineKeyboardButton(text="Yopiq guruh", url=links[0])],
+            [InlineKeyboardButton(text="Muhokama guruhi", url=links[2])],
         ]
-    ])
-    return keyboard
+    )

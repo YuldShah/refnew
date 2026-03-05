@@ -33,10 +33,15 @@ class Database:
                     telegram_id BIGINT UNIQUE NOT NULL,
                     username VARCHAR(255),
                     full_name VARCHAR(255),
+                    age INTEGER,
+                    phone_number VARCHAR(32),
+                    education_status VARCHAR(64),
+                    sat_goal VARCHAR(64),
                     referral_code VARCHAR(8) UNIQUE,
                     language VARCHAR(2) DEFAULT 'uz',
                     joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    manual_access INTEGER DEFAULT 0
+                    manual_access INTEGER DEFAULT 0,
+                    registration_completed BOOLEAN DEFAULT FALSE
                 )
             ''')
             await conn.execute('''
@@ -64,36 +69,172 @@ class Database:
                     generated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             ''')
+            await conn.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS age INTEGER")
+            await conn.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS phone_number VARCHAR(32)")
+            await conn.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS education_status VARCHAR(64)")
+            await conn.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS sat_goal VARCHAR(64)")
+            await conn.execute(
+                "ALTER TABLE users ADD COLUMN IF NOT EXISTS registration_completed BOOLEAN DEFAULT FALSE"
+            )
+            await conn.execute(
+                "ALTER TABLE users ALTER COLUMN registration_completed SET DEFAULT FALSE"
+            )
 
     def generate_referral_code(self) -> str:
         """Generate 8-character random string"""
         characters = string.ascii_letters + string.digits
         return ''.join(secrets.choice(characters) for _ in range(8))
 
-    async def add_user(self, telegram_id: int, username: str, full_name: str) -> tuple[bool, str]:
+    async def _generate_unique_referral_code(self, conn) -> str:
+        for _ in range(10):
+            code = self.generate_referral_code()
+            exists = await conn.fetchval('SELECT id FROM users WHERE referral_code = $1', code)
+            if not exists:
+                return code
+        raise RuntimeError("Could not generate unique referral code")
+
+    async def add_user(
+        self,
+        telegram_id: int,
+        username: str,
+        full_name: str,
+        age: int | None = None,
+        phone_number: str | None = None,
+        education_status: str | None = None,
+        sat_goal: str | None = None,
+    ) -> tuple[bool, str]:
         async with self.pool.acquire() as conn:
             try:
-                # Generate unique referral code
-                referral_code = None
-                for _ in range(10):  # Try up to 10 times to get unique code
-                    code = self.generate_referral_code()
-                    exists = await conn.fetchval('SELECT id FROM users WHERE referral_code = $1', code)
-                    if not exists:
-                        referral_code = code
-                        break
-                
-                if not referral_code:
-                    raise Exception("Could not generate unique referral code")
-                
+                referral_code = await self._generate_unique_referral_code(conn)
                 await conn.execute(
-                    'INSERT INTO users (telegram_id, username, full_name, referral_code, language) VALUES ($1, $2, $3, $4, $5)',
-                    telegram_id, username, full_name, referral_code, 'uz'
+                    '''
+                    INSERT INTO users (
+                        telegram_id,
+                        username,
+                        full_name,
+                        age,
+                        phone_number,
+                        education_status,
+                        sat_goal,
+                        referral_code,
+                        language,
+                        registration_completed
+                    )
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+                    ''',
+                    telegram_id,
+                    username,
+                    full_name,
+                    age,
+                    phone_number,
+                    education_status,
+                    sat_goal,
+                    referral_code,
+                    'uz',
+                    True,
                 )
                 return True, referral_code
             except asyncpg.UniqueViolationError:
                 # Get existing referral code and return it as-is without generating a new one.
                 existing_code = await conn.fetchval('SELECT referral_code FROM users WHERE telegram_id = $1', telegram_id)
                 return False, existing_code
+
+    async def ensure_user(self, telegram_id: int, username: str) -> dict:
+        async with self.pool.acquire() as conn:
+            user = await conn.fetchrow('SELECT * FROM users WHERE telegram_id = $1', telegram_id)
+            if user:
+                updates = []
+                params = []
+                param_index = 1
+
+                if (user['username'] or '') != username:
+                    updates.append(f'username = ${param_index}')
+                    params.append(username)
+                    param_index += 1
+
+                if not user['referral_code']:
+                    referral_code = await self._generate_unique_referral_code(conn)
+                    updates.append(f'referral_code = ${param_index}')
+                    params.append(referral_code)
+                    param_index += 1
+
+                if updates:
+                    params.append(telegram_id)
+                    await conn.execute(
+                        f'UPDATE users SET {", ".join(updates)} WHERE telegram_id = ${param_index}',
+                        *params,
+                    )
+                    user = await conn.fetchrow('SELECT * FROM users WHERE telegram_id = $1', telegram_id)
+
+                return dict(user)
+
+            referral_code = await self._generate_unique_referral_code(conn)
+            await conn.execute(
+                '''
+                INSERT INTO users (
+                    telegram_id,
+                    username,
+                    referral_code,
+                    language,
+                    registration_completed
+                )
+                VALUES ($1, $2, $3, $4, $5)
+                ''',
+                telegram_id,
+                username,
+                referral_code,
+                'uz',
+                False,
+            )
+            user = await conn.fetchrow('SELECT * FROM users WHERE telegram_id = $1', telegram_id)
+            return dict(user)
+
+    async def complete_user_registration(
+        self,
+        telegram_id: int,
+        username: str,
+        full_name: str,
+        age: int,
+        phone_number: str,
+        education_status: str,
+        sat_goal: str,
+    ) -> bool:
+        async with self.pool.acquire() as conn:
+            user_exists = await conn.fetchval('SELECT id FROM users WHERE telegram_id = $1', telegram_id)
+            if not user_exists:
+                await self.add_user(
+                    telegram_id=telegram_id,
+                    username=username,
+                    full_name=full_name,
+                    age=age,
+                    phone_number=phone_number,
+                    education_status=education_status,
+                    sat_goal=sat_goal,
+                )
+                return True
+
+            result = await conn.execute(
+                '''
+                UPDATE users
+                SET
+                    username = $2,
+                    full_name = $3,
+                    age = $4,
+                    phone_number = $5,
+                    education_status = $6,
+                    sat_goal = $7,
+                    registration_completed = TRUE
+                WHERE telegram_id = $1
+                ''',
+                telegram_id,
+                username,
+                full_name,
+                age,
+                phone_number,
+                education_status,
+                sat_goal,
+            )
+            return result != "UPDATE 0"
                 
     async def get_user(self, telegram_id: int) -> Optional[dict]:
         async with self.pool.acquire() as conn:
@@ -316,8 +457,13 @@ class Database:
         async with self.pool.acquire() as conn:
             try:
                 await conn.execute(
-                    'INSERT INTO users (telegram_id, manual_access) VALUES ($1, $2)',
-                    telegram_id, access_level
+                    '''
+                    INSERT INTO users (telegram_id, manual_access, registration_completed)
+                    VALUES ($1, $2, $3)
+                    ''',
+                    telegram_id,
+                    access_level,
+                    False,
                 )
                 return True
             except asyncpg.UniqueViolationError:

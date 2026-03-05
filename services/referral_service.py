@@ -136,11 +136,13 @@ class ReferralService:
     
     async def _send_reward_notification(self, user_id: int, bot):
         """Send reward eligibility notification to user"""
-        from text.messages import get_text
+        text = (
+            "<b>🎉 Tabriklaymiz!</b>\n"
+            "<blockquote>Siz 3 ballga yetdingiz. Endi “📈Ballarim📈” bo‘limi orqali "
+            "yopiq kanal va guruh havolalarini olishingiz mumkin.</blockquote>"
+        )
         
         try:
-            text = get_text('reward_eligible_notification', 'uz', 
-                          required_referrals=self.db.required_referrals)
             await bot.send_message(user_id, text)
         except Exception as e:
             # Log error but don't raise - notification failure shouldn't break flow
