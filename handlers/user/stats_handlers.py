@@ -15,8 +15,9 @@ async def show_user_stats(message: Message, db: Database):
 
     user_stats = await referral_service.get_referral_stats(message.from_user.id)
     valid_points = user_stats.get("valid_referrals", 0)
+    user_name = message.from_user.mention_html()
 
-    await message.answer(POINTS_TEXT.format(points=valid_points))
+    await message.answer(POINTS_TEXT.format(user_name=user_name, points=valid_points))
     await send_reward_access_if_eligible(message, db, valid_points)
 
 
@@ -29,11 +30,16 @@ async def refresh_user_stats(callback: CallbackQuery, db: Database):
 
     user_stats = await referral_service.get_referral_stats(callback.from_user.id)
     valid_points = user_stats.get("valid_referrals", 0)
+    user_name = callback.from_user.mention_html()
 
     try:
-        await callback.message.edit_text(POINTS_TEXT.format(points=valid_points))
+        await callback.message.edit_text(
+            POINTS_TEXT.format(user_name=user_name, points=valid_points)
+        )
     except Exception:
-        await callback.message.answer(POINTS_TEXT.format(points=valid_points))
+        await callback.message.answer(
+            POINTS_TEXT.format(user_name=user_name, points=valid_points)
+        )
 
     await send_reward_access_if_eligible(callback.message, db, valid_points)
     await callback.answer("Ballar yangilandi.")

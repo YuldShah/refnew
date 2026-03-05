@@ -126,7 +126,7 @@ REFERRAL_FOLLOWUP_TEXT = """<b>👆 Yuqoridagi sizning taklif havolangiz.</b>
 <blockquote>👑 Taklif havolangiz orqali botimizga 3 va undan ortiq do'stlaringizni taklif qiling va Olimpiada kanal va guruhimizga qo'shilish imkoniyatini qo'lga kiriting!</blockquote>
 <b>❗️SHOSHILING! Jami bo'lib 200 ta joy ajratilgan🤝</b>"""
 
-POINTS_TEXT = """<b>📈 </b><a href="https://t.me/asatullayevelbek"><b>SAT offline admin </b></a><b> sizning ballaringiz: {points} ball.</b>
+POINTS_TEXT = """<b>📈 {user_name}, sizning ballaringiz: {points} ball.</b>
 <blockquote>‼️ Siz taklif havolangiz orqali qo'shilgan odam kanallardan obunani bekor qilsa sizga shu odam uchun berilgan ball qaytarib olinadi!</blockquote>
 <b>✅ Hisobingizdagi ballar 3 va undan yuqori ballga ega bo‘lgandan so‘ng yopiq kanal va guruhimizga qo‘shilishingiz mumkin bo‘ladi.</b>"""
 
