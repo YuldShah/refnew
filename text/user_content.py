@@ -42,6 +42,20 @@ REGISTRATION_SAT_GOAL_INVALID_TEXT = """<b>⚠️ Variant tanlanmadi.</b>
 REGISTRATION_COMPLETE_TEXT = """<b>✅ Rahmat!</b>
 <blockquote>Ma’lumotlaringiz muvaffaqiyatli saqlandi.</blockquote>"""
 
+REGISTRATION_PHONE_ACCEPTED_TEXT = """<b>✅ Telefon raqamingiz qabul qilindi.</b>
+<blockquote>Keyingi qadamga o‘tamiz.</blockquote>"""
+
+REGISTRATION_BACK_BUTTON_TEXT = "⬅️ Orqaga"
+REGISTRATION_SHARE_PHONE_BUTTON_TEXT = "📱 Telefon raqamni yuborish"
+
+REGISTRATION_STATUS_SELECTED_TEXT = """<b>4-qadam yakunlandi.</b>
+<blockquote>Tanlangan maqom: <b>{option}</b></blockquote>"""
+
+REGISTRATION_SAT_GOAL_SELECTED_TEXT = """<b>5-qadam yakunlandi.</b>
+<blockquote>Tanlangan maqsad: <b>{option}</b></blockquote>"""
+
+REGISTRATION_BACK_NAV_TEXT = """<b>↩️ Oldingi qadamga qaytdingiz.</b>"""
+
 PARTICIPATION_PHOTO_ID = os.getenv(
     "PARTICIPATION_PHOTO_ID",
     "REPLACE_ME_PARTICIPATION_PHOTO_ID",

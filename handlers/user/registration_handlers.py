@@ -14,6 +14,7 @@ from handlers.user.access_helpers import (
 )
 from handlers.user.registration_states import RegistrationStates
 from keyboards.user_keyboards import (
+    get_back_reply_keyboard,
     get_contact_request_keyboard,
     get_education_status_keyboard,
     get_sat_goal_keyboard,
@@ -23,13 +24,18 @@ from text.user_content import (
     REGISTRATION_AGE_INVALID_TEXT,
     REGISTRATION_AGE_PROMPT,
     REGISTRATION_AGE_RANGE_INVALID_TEXT,
+    REGISTRATION_BACK_BUTTON_TEXT,
+    REGISTRATION_BACK_NAV_TEXT,
     REGISTRATION_COMPLETE_TEXT,
     REGISTRATION_NAME_INVALID_TEXT,
     REGISTRATION_NAME_PROMPT,
+    REGISTRATION_PHONE_ACCEPTED_TEXT,
     REGISTRATION_PHONE_INVALID_TEXT,
     REGISTRATION_PHONE_PROMPT,
+    REGISTRATION_SAT_GOAL_SELECTED_TEXT,
     REGISTRATION_SAT_GOAL_INVALID_TEXT,
     REGISTRATION_SAT_GOAL_PROMPT,
+    REGISTRATION_STATUS_SELECTED_TEXT,
     REGISTRATION_STATUS_INVALID_TEXT,
     REGISTRATION_STATUS_PROMPT,
 )
@@ -40,15 +46,33 @@ registration_router.message.filter(IsUserFilter())
 registration_router.callback_query.filter(IsUserFilter())
 
 EDUCATION_OPTIONS = {
-    "teacher": "o'qituvchi",
-    "student": "talaba",
-    "school_student": "o'quvchi",
+    "teacher": {
+        "value": "o'qituvchi",
+        "label": "👨‍🏫 O'qituvchi",
+    },
+    "student": {
+        "value": "talaba",
+        "label": "🎓 Talaba",
+    },
+    "school_student": {
+        "value": "o'quvchi",
+        "label": "🧑‍🎓 O'quvchi",
+    },
 }
 
 SAT_GOAL_OPTIONS = {
-    "grant": "grant uchun (1200+)",
-    "ustama": "ustama uchun (700+)",
-    "other": "boshqa",
+    "grant": {
+        "value": "grant uchun (1200+)",
+        "label": "Grant uchun (1200+)",
+    },
+    "ustama": {
+        "value": "ustama uchun (700+)",
+        "label": "Ustama uchun (700+)",
+    },
+    "other": {
+        "value": "boshqa",
+        "label": "Boshqa",
+    },
 }
 
 
@@ -156,7 +180,7 @@ async def _finish_registration(
     sat_goal_key: str,
 ):
     state_data = await state.get_data()
-    sat_goal = SAT_GOAL_OPTIONS[sat_goal_key]
+    sat_goal = SAT_GOAL_OPTIONS[sat_goal_key]["value"]
     collected_full_name = state_data["full_name"]
 
     await db.complete_user_registration(
@@ -200,6 +224,38 @@ async def _ask_sat_goal(target_message: Message, state: FSMContext, education_st
     )
 
 
+async def _ask_full_name(target_message: Message, state: FSMContext):
+    await state.set_state(RegistrationStates.full_name)
+    await target_message.answer(
+        REGISTRATION_NAME_PROMPT,
+        reply_markup=ReplyKeyboardRemove(),
+    )
+
+
+async def _ask_age(target_message: Message, state: FSMContext):
+    await state.set_state(RegistrationStates.age)
+    await target_message.answer(
+        REGISTRATION_AGE_PROMPT,
+        reply_markup=get_back_reply_keyboard(),
+    )
+
+
+async def _ask_phone(target_message: Message, state: FSMContext):
+    await state.set_state(RegistrationStates.phone_number)
+    await target_message.answer(
+        REGISTRATION_PHONE_PROMPT,
+        reply_markup=get_contact_request_keyboard(),
+    )
+
+
+async def _ask_education_status(target_message: Message, state: FSMContext):
+    await state.set_state(RegistrationStates.education_status)
+    await target_message.answer(
+        REGISTRATION_STATUS_PROMPT,
+        reply_markup=get_education_status_keyboard(),
+    )
+
+
 @registration_router.message(CommandStart())
 async def start_handler(message: Message, state: FSMContext, db: Database):
     fallback_state_data = await state.get_data()
@@ -234,8 +290,7 @@ async def start_handler(message: Message, state: FSMContext, db: Database):
         referrer_telegram_id=referrer["telegram_id"] if referrer else None,
         referral_code=referral_code,
     )
-    await state.set_state(RegistrationStates.full_name)
-    await message.answer(REGISTRATION_NAME_PROMPT)
+    await _ask_full_name(message, state)
 
 
 @registration_router.message(RegistrationStates.full_name)
@@ -250,8 +305,12 @@ async def process_full_name(message: Message, state: FSMContext):
         return
 
     await state.update_data(full_name=full_name)
-    await state.set_state(RegistrationStates.age)
-    await message.answer(REGISTRATION_AGE_PROMPT)
+    await _ask_age(message, state)
+
+
+@registration_router.message(RegistrationStates.age, F.text == REGISTRATION_BACK_BUTTON_TEXT)
+async def back_from_age(message: Message, state: FSMContext):
+    await _ask_full_name(message, state)
 
 
 @registration_router.message(RegistrationStates.age)
@@ -266,11 +325,12 @@ async def process_age(message: Message, state: FSMContext):
         return
 
     await state.update_data(age=age)
-    await state.set_state(RegistrationStates.phone_number)
-    await message.answer(
-        REGISTRATION_PHONE_PROMPT,
-        reply_markup=get_contact_request_keyboard(),
-    )
+    await _ask_phone(message, state)
+
+
+@registration_router.message(RegistrationStates.phone_number, F.text == REGISTRATION_BACK_BUTTON_TEXT)
+async def back_from_phone(message: Message, state: FSMContext):
+    await _ask_age(message, state)
 
 
 @registration_router.message(RegistrationStates.phone_number, F.contact)
@@ -280,12 +340,11 @@ async def process_phone_number(message: Message, state: FSMContext):
         return
 
     await state.update_data(phone_number=message.contact.phone_number)
-    await state.set_state(RegistrationStates.education_status)
     await message.answer(
-        "<b>✅ Telefon raqamingiz qabul qilindi.</b>",
+        REGISTRATION_PHONE_ACCEPTED_TEXT,
         reply_markup=ReplyKeyboardRemove(),
     )
-    await message.answer(REGISTRATION_STATUS_PROMPT, reply_markup=get_education_status_keyboard())
+    await _ask_education_status(message, state)
 
 
 @registration_router.message(RegistrationStates.phone_number)
@@ -315,13 +374,21 @@ async def process_education_status(callback: CallbackQuery, state: FSMContext):
         await callback.answer("Noto'g'ri variant.", show_alert=True)
         return
 
-    try:
-        await callback.message.edit_reply_markup(reply_markup=None)
-    except Exception:
-        pass
-
     await callback.answer("Maqom saqlandi.")
-    await _ask_sat_goal(callback.message, state, education_status)
+    await callback.message.edit_text(
+        REGISTRATION_STATUS_SELECTED_TEXT.format(option=education_status["label"]),
+    )
+    await _ask_sat_goal(callback.message, state, education_status["value"])
+
+
+@registration_router.callback_query(
+    RegistrationStates.education_status,
+    F.data == "registration_back:phone_number",
+)
+async def back_from_education_status(callback: CallbackQuery, state: FSMContext):
+    await callback.answer("Oldingi qadamga qaytdingiz.")
+    await callback.message.edit_text(REGISTRATION_BACK_NAV_TEXT)
+    await _ask_phone(callback.message, state)
 
 
 @registration_router.message(RegistrationStates.sat_goal)
@@ -335,14 +402,26 @@ async def process_sat_goal_invalid(message: Message):
 )
 async def process_sat_goal(callback: CallbackQuery, state: FSMContext, db: Database):
     sat_goal_key = callback.data.split(":", 1)[1]
-    if sat_goal_key not in SAT_GOAL_OPTIONS:
+    sat_goal = SAT_GOAL_OPTIONS.get(sat_goal_key)
+    if not sat_goal:
         await callback.answer("Noto'g'ri variant.", show_alert=True)
         return
 
-    try:
-        await callback.message.edit_reply_markup(reply_markup=None)
-    except Exception:
-        pass
-
     await callback.answer("Ma'lumotlar saqlandi.")
+    await callback.message.edit_text(
+        REGISTRATION_SAT_GOAL_SELECTED_TEXT.format(option=sat_goal["label"]),
+    )
     await _finish_registration(callback.message, callback.from_user, state, db, sat_goal_key)
+
+
+@registration_router.callback_query(
+    RegistrationStates.sat_goal,
+    F.data == "registration_back:education_status",
+)
+async def back_from_sat_goal(callback: CallbackQuery, state: FSMContext):
+    await callback.answer("Oldingi qadamga qaytdingiz.")
+    await callback.message.edit_text(
+        REGISTRATION_STATUS_PROMPT,
+        reply_markup=get_education_status_keyboard(),
+    )
+    await state.set_state(RegistrationStates.education_status)
