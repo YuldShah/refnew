@@ -42,15 +42,28 @@ def get_contact_request_keyboard() -> ReplyKeyboardMarkup:
     )
 
 
-def get_education_status_keyboard() -> ReplyKeyboardMarkup:
-    return ReplyKeyboardMarkup(
-        keyboard=[
-            [KeyboardButton(text="O'qituvchi")],
-            [KeyboardButton(text="Talaba")],
-            [KeyboardButton(text="O'quvchi")],
-        ],
-        resize_keyboard=True,
-        one_time_keyboard=True,
+def get_education_status_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="O'qituvchi",
+                    callback_data="education_status:teacher",
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text="Talaba",
+                    callback_data="education_status:student",
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text="O'quvchi",
+                    callback_data="education_status:school_student",
+                )
+            ],
+        ]
     )
 
 

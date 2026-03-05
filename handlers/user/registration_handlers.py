@@ -23,11 +23,12 @@ from text.messages import get_text
 
 registration_router = Router()
 registration_router.message.filter(IsUserFilter())
+registration_router.callback_query.filter(IsUserFilter())
 
 EDUCATION_OPTIONS = {
-    "o'qituvchi": "o'qituvchi",
-    "talaba": "talaba",
-    "o'quvchi": "o'quvchi",
+    "teacher": "o'qituvchi",
+    "student": "talaba",
+    "school_student": "o'quvchi",
 }
 
 SAT_GOAL_OPTIONS = {
@@ -35,17 +36,6 @@ SAT_GOAL_OPTIONS = {
     "ustama": "ustama uchun (700+)",
     "other": "boshqa",
 }
-
-
-def _normalize_choice(value: str) -> str:
-    return (
-        value.strip()
-        .lower()
-        .replace("`", "'")
-        .replace("\u2019", "'")
-        .replace("\u02bb", "'")
-        .replace("\u2018", "'")
-    )
 
 
 async def _extract_referral_from_start(
@@ -187,6 +177,16 @@ async def _finish_registration(
     )
 
 
+async def _ask_sat_goal(target_message: Message, state: FSMContext, education_status: str):
+    await state.update_data(education_status=education_status)
+    await state.set_state(RegistrationStates.sat_goal)
+    await target_message.answer("SAT sizga nimaga kerak?")
+    await target_message.answer(
+        "Quyidagi variantlardan birini tanlang.",
+        reply_markup=get_sat_goal_keyboard(),
+    )
+
+
 @registration_router.message(CommandStart())
 async def start_handler(message: Message, state: FSMContext, db: Database):
     fallback_state_data = await state.get_data()
@@ -272,6 +272,10 @@ async def process_phone_number(message: Message, state: FSMContext):
     await state.set_state(RegistrationStates.education_status)
     await message.answer(
         "Ta'limdagi maqomingizni tanlang.",
+        reply_markup=ReplyKeyboardRemove(),
+    )
+    await message.answer(
+        "Quyidagi inline tugmalardan birini bosing.",
         reply_markup=get_education_status_keyboard(),
     )
 
@@ -285,30 +289,31 @@ async def process_phone_number_invalid(message: Message):
 
 
 @registration_router.message(RegistrationStates.education_status)
-async def process_education_status(message: Message, state: FSMContext):
-    if not message.text:
-        await message.answer("Iltimos, variantlardan birini tanlang.")
-        return
+async def process_education_status_invalid(message: Message):
+    await message.answer(
+        "Iltimos, maqomni inline tugmalar orqali tanlang.",
+        reply_markup=get_education_status_keyboard(),
+    )
 
-    normalized_value = _normalize_choice(message.text)
-    education_status = EDUCATION_OPTIONS.get(normalized_value)
+
+@registration_router.callback_query(
+    RegistrationStates.education_status,
+    F.data.startswith("education_status:"),
+)
+async def process_education_status(callback: CallbackQuery, state: FSMContext):
+    education_status_key = callback.data.split(":", 1)[1]
+    education_status = EDUCATION_OPTIONS.get(education_status_key)
     if not education_status:
-        await message.answer(
-            "Iltimos, quyidagi variantlardan birini tanlang.",
-            reply_markup=get_education_status_keyboard(),
-        )
+        await callback.answer("Noto'g'ri variant.", show_alert=True)
         return
 
-    await state.update_data(education_status=education_status)
-    await state.set_state(RegistrationStates.sat_goal)
-    await message.answer(
-        "SAT sizga nimaga kerak?",
-        reply_markup=ReplyKeyboardRemove(),
-    )
-    await message.answer(
-        "Quyidagi variantlardan birini tanlang.",
-        reply_markup=get_sat_goal_keyboard(),
-    )
+    try:
+        await callback.message.edit_reply_markup(reply_markup=None)
+    except Exception:
+        pass
+
+    await callback.answer("Maqom saqlandi.")
+    await _ask_sat_goal(callback.message, state, education_status)
 
 
 @registration_router.message(RegistrationStates.sat_goal)
