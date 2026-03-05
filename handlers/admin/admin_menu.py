@@ -154,3 +154,13 @@ async def process_user_lookup(message: Message, state: FSMContext, db: Database)
         await message.answer(get_text('admin_user_not_found', 'uz'))
 
 # Callback query handlers for admin stats inline buttons
+
+
+@admin_menu_router.message(F.photo)
+async def send_admin_photo_id(message: Message):
+    largest_photo = message.photo[-1]
+    text = "<b>Photo file_id:</b>\n"
+    text += f"<code>{largest_photo.file_id}</code>\n\n"
+    text += "<b>file_unique_id:</b>\n"
+    text += f"<code>{largest_photo.file_unique_id}</code>"
+    await message.answer(text)
