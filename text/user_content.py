@@ -5,6 +5,43 @@ MAIN_MENU_TEXT = """<b>🎓 Assalomu alaykum, {user_name}!</b>
 <blockquote>SAT Math bepul marafoni haqida to‘liq va rasmiy ma’lumot bilan tanishing.</blockquote>
 <b>👇👇Quyidagi menyudan kerakli bo‘limni tanlang👇👇</b>"""
 
+REGISTRATION_NAME_PROMPT = """<b>📝 Ro‘yxatdan o‘tish boshlandi!</b>
+<blockquote>Botdan to‘liq foydalanish uchun quyidagi ma’lumotlarni ketma-ket yuboring.</blockquote>
+<b>1-qadam:</b> Ism va familiyangizni yuboring."""
+
+REGISTRATION_NAME_INVALID_TEXT = """<b>⚠️ Ism va familiya qabul qilinmadi.</b>
+<blockquote>Iltimos, ism va familiyangizni matn ko‘rinishida va to‘liq yuboring.</blockquote>"""
+
+REGISTRATION_AGE_PROMPT = """<b>2-qadam:</b> Yoshingizni kiriting.
+<blockquote>Yoshni faqat raqam bilan yuboring.</blockquote>"""
+
+REGISTRATION_AGE_INVALID_TEXT = """<b>⚠️ Yosh noto‘g‘ri kiritildi.</b>
+<blockquote>Iltimos, yoshingizni faqat raqam bilan yuboring.</blockquote>"""
+
+REGISTRATION_AGE_RANGE_INVALID_TEXT = """<b>⚠️ Yosh noto‘g‘ri kiritildi.</b>
+<blockquote>Iltimos, haqiqiy yoshingizni kiriting.</blockquote>"""
+
+REGISTRATION_PHONE_PROMPT = """<b>3-qadam:</b> Telefon raqamingizni yuboring.
+<blockquote>Pastdagi tugma orqali raqamingizni ulashing.</blockquote>"""
+
+REGISTRATION_PHONE_INVALID_TEXT = """<b>⚠️ Telefon raqam qabul qilinmadi.</b>
+<blockquote>Iltimos, pastdagi tugma orqali o‘zingizning telefon raqamingizni yuboring.</blockquote>"""
+
+REGISTRATION_STATUS_PROMPT = """<b>4-qadam:</b> Ta’limdagi maqomingizni tanlang.
+<blockquote>Quyidagi inline tugmalardan birini bosing.</blockquote>"""
+
+REGISTRATION_STATUS_INVALID_TEXT = """<b>⚠️ Maqom tanlanmadi.</b>
+<blockquote>Iltimos, ta’limdagi maqomingizni inline tugmalar orqali tanlang.</blockquote>"""
+
+REGISTRATION_SAT_GOAL_PROMPT = """<b>5-qadam:</b> SAT sizga nimaga kerak?
+<blockquote>Quyidagi variantlardan birini tanlang.</blockquote>"""
+
+REGISTRATION_SAT_GOAL_INVALID_TEXT = """<b>⚠️ Variant tanlanmadi.</b>
+<blockquote>Iltimos, SAT maqsadini tugmalar orqali tanlang.</blockquote>"""
+
+REGISTRATION_COMPLETE_TEXT = """<b>✅ Rahmat!</b>
+<blockquote>Ma’lumotlaringiz muvaffaqiyatli saqlandi.</blockquote>"""
+
 PARTICIPATION_PHOTO_ID = os.getenv(
     "PARTICIPATION_PHOTO_ID",
     "REPLACE_ME_PARTICIPATION_PHOTO_ID",

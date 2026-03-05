@@ -19,6 +19,20 @@ from keyboards.user_keyboards import (
     get_sat_goal_keyboard,
 )
 from text.messages import get_text
+from text.user_content import (
+    REGISTRATION_AGE_INVALID_TEXT,
+    REGISTRATION_AGE_PROMPT,
+    REGISTRATION_AGE_RANGE_INVALID_TEXT,
+    REGISTRATION_COMPLETE_TEXT,
+    REGISTRATION_NAME_INVALID_TEXT,
+    REGISTRATION_NAME_PROMPT,
+    REGISTRATION_PHONE_INVALID_TEXT,
+    REGISTRATION_PHONE_PROMPT,
+    REGISTRATION_SAT_GOAL_INVALID_TEXT,
+    REGISTRATION_SAT_GOAL_PROMPT,
+    REGISTRATION_STATUS_INVALID_TEXT,
+    REGISTRATION_STATUS_PROMPT,
+)
 
 
 registration_router = Router()
@@ -166,7 +180,7 @@ async def _finish_registration(
 
     await state.clear()
     await target_message.answer(
-        "Rahmat. Ma'lumotlaringiz saqlandi.",
+        REGISTRATION_COMPLETE_TEXT,
         reply_markup=ReplyKeyboardRemove(),
     )
     await send_entry_message(
@@ -180,9 +194,8 @@ async def _finish_registration(
 async def _ask_sat_goal(target_message: Message, state: FSMContext, education_status: str):
     await state.update_data(education_status=education_status)
     await state.set_state(RegistrationStates.sat_goal)
-    await target_message.answer("SAT sizga nimaga kerak?")
     await target_message.answer(
-        "Quyidagi variantlardan birini tanlang.",
+        REGISTRATION_SAT_GOAL_PROMPT,
         reply_markup=get_sat_goal_keyboard(),
     )
 
@@ -222,42 +235,40 @@ async def start_handler(message: Message, state: FSMContext, db: Database):
         referral_code=referral_code,
     )
     await state.set_state(RegistrationStates.full_name)
-    await message.answer(
-        "Assalomu alaykum. Ro'yxatdan o'tish uchun ism va familiyangizni yuboring."
-    )
+    await message.answer(REGISTRATION_NAME_PROMPT)
 
 
 @registration_router.message(RegistrationStates.full_name)
 async def process_full_name(message: Message, state: FSMContext):
     if not message.text:
-        await message.answer("Iltimos, ism va familiyangizni matn ko'rinishida yuboring.")
+        await message.answer(REGISTRATION_NAME_INVALID_TEXT)
         return
 
     full_name = " ".join(message.text.split())
     if len(full_name) < 3:
-        await message.answer("Ism va familiya kamida 3 ta belgidan iborat bo'lishi kerak.")
+        await message.answer(REGISTRATION_NAME_INVALID_TEXT)
         return
 
     await state.update_data(full_name=full_name)
     await state.set_state(RegistrationStates.age)
-    await message.answer("Yoshingizni kiriting.")
+    await message.answer(REGISTRATION_AGE_PROMPT)
 
 
 @registration_router.message(RegistrationStates.age)
 async def process_age(message: Message, state: FSMContext):
     if not message.text or not message.text.strip().isdigit():
-        await message.answer("Yoshni faqat raqam bilan yuboring.")
+        await message.answer(REGISTRATION_AGE_INVALID_TEXT)
         return
 
     age = int(message.text.strip())
     if age < 7 or age > 100:
-        await message.answer("Iltimos, to'g'ri yosh kiriting.")
+        await message.answer(REGISTRATION_AGE_RANGE_INVALID_TEXT)
         return
 
     await state.update_data(age=age)
     await state.set_state(RegistrationStates.phone_number)
     await message.answer(
-        "Telefon raqamingizni yuboring.",
+        REGISTRATION_PHONE_PROMPT,
         reply_markup=get_contact_request_keyboard(),
     )
 
@@ -265,25 +276,22 @@ async def process_age(message: Message, state: FSMContext):
 @registration_router.message(RegistrationStates.phone_number, F.contact)
 async def process_phone_number(message: Message, state: FSMContext):
     if message.contact.user_id != message.from_user.id:
-        await message.answer("Iltimos, o'zingizning telefon raqamingizni yuboring.")
+        await message.answer(REGISTRATION_PHONE_INVALID_TEXT)
         return
 
     await state.update_data(phone_number=message.contact.phone_number)
     await state.set_state(RegistrationStates.education_status)
     await message.answer(
-        "Ta'limdagi maqomingizni tanlang.",
+        "<b>✅ Telefon raqamingiz qabul qilindi.</b>",
         reply_markup=ReplyKeyboardRemove(),
     )
-    await message.answer(
-        "Quyidagi inline tugmalardan birini bosing.",
-        reply_markup=get_education_status_keyboard(),
-    )
+    await message.answer(REGISTRATION_STATUS_PROMPT, reply_markup=get_education_status_keyboard())
 
 
 @registration_router.message(RegistrationStates.phone_number)
 async def process_phone_number_invalid(message: Message):
     await message.answer(
-        "Telefon raqamni pastdagi tugma orqali yuboring.",
+        REGISTRATION_PHONE_INVALID_TEXT,
         reply_markup=get_contact_request_keyboard(),
     )
 
@@ -291,7 +299,7 @@ async def process_phone_number_invalid(message: Message):
 @registration_router.message(RegistrationStates.education_status)
 async def process_education_status_invalid(message: Message):
     await message.answer(
-        "Iltimos, maqomni inline tugmalar orqali tanlang.",
+        REGISTRATION_STATUS_INVALID_TEXT,
         reply_markup=get_education_status_keyboard(),
     )
 
@@ -318,7 +326,7 @@ async def process_education_status(callback: CallbackQuery, state: FSMContext):
 
 @registration_router.message(RegistrationStates.sat_goal)
 async def process_sat_goal_invalid(message: Message):
-    await message.answer("Iltimos, SAT maqsadini tugmalar orqali tanlang.")
+    await message.answer(REGISTRATION_SAT_GOAL_INVALID_TEXT)
 
 
 @registration_router.callback_query(
