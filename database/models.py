@@ -169,23 +169,31 @@ class Database:
                 return dict(user)
 
             referral_code = await self._generate_unique_referral_code(conn)
-            await conn.execute(
-                '''
-                INSERT INTO users (
+            try:
+                await conn.execute(
+                    '''
+                    INSERT INTO users (
+                        telegram_id,
+                        username,
+                        referral_code,
+                        language,
+                        registration_completed
+                    )
+                    VALUES ($1, $2, $3, $4, $5)
+                    ''',
                     telegram_id,
                     username,
                     referral_code,
-                    language,
-                    registration_completed
+                    'uz',
+                    False,
                 )
-                VALUES ($1, $2, $3, $4, $5)
-                ''',
-                telegram_id,
-                username,
-                referral_code,
-                'uz',
-                False,
-            )
+            except asyncpg.UniqueViolationError:
+                # Another update created the row after the initial SELECT; fetch it and continue.
+                user = await conn.fetchrow('SELECT * FROM users WHERE telegram_id = $1', telegram_id)
+                if user:
+                    return dict(user)
+                raise
+
             user = await conn.fetchrow('SELECT * FROM users WHERE telegram_id = $1', telegram_id)
             return dict(user)
 
