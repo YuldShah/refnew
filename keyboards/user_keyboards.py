@@ -146,8 +146,8 @@ def get_referral_share_keyboard(referral_link: str = "") -> InlineKeyboardMarkup
 def get_reward_link_button(links: list) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text="Yopiq kanal", url=links[1])],
-            [InlineKeyboardButton(text="Yopiq guruh", url=links[0])],
-            [InlineKeyboardButton(text="Muhokama guruhi", url=links[2])],
+            [InlineKeyboardButton(text="Muhokama guruh", url=links[0])],
+            [InlineKeyboardButton(text="SAT Elbek guruh", url=links[1])],
+            [InlineKeyboardButton(text="SAT Elbek Iyun", url=links[2])],
         ]
     )

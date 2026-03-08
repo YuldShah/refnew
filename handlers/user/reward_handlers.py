@@ -7,6 +7,13 @@ from services.referral_service import ReferralService
 from text.user_content import ACCESS_READY_TEXT, PRIZES_CAPTION, PRIZES_PHOTO_ID
 
 
+PRIVATE_REWARD_CHAT_IDS = (
+    -1003640124334,
+    -1003545085346,
+    -1003712836334,
+)
+
+
 async def show_rewards(message: Message, db: Database):
     await send_photo_or_text(
         message,
@@ -48,17 +55,17 @@ async def send_reward_access_if_eligible(
 
 async def _generate_invite_links(message: Message, user_id: int) -> list:
     link1_obj = await message.bot.create_chat_invite_link(
-        chat_id=-1002746646141,
+        chat_id=PRIVATE_REWARD_CHAT_IDS[0],
         name=f"Join link for {user_id}",
         member_limit=1,
     )
     link2_obj = await message.bot.create_chat_invite_link(
-        chat_id=-1002510444446,
+        chat_id=PRIVATE_REWARD_CHAT_IDS[1],
         name=f"Join link for {user_id}",
         member_limit=1,
     )
     link3_obj = await message.bot.create_chat_invite_link(
-        chat_id=-1002861603252,
+        chat_id=PRIVATE_REWARD_CHAT_IDS[2],
         name=f"Join link for {user_id}",
         member_limit=1,
     )
