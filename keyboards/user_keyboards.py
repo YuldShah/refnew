@@ -138,6 +138,12 @@ def get_referral_share_keyboard(referral_link: str = "") -> InlineKeyboardMarkup
                     text="Taklif havolasini nusxalash",
                     copy_text=CopyTextButton(text=referral_link),
                 )
+            ],
+            [
+                InlineKeyboardButton(
+                    text="Taklif havolasini ulashish",
+                    switch_inline_query=referral_link,
+                )
             ]
         ]
     )
