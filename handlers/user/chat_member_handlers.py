@@ -5,9 +5,8 @@ from aiogram import Router
 from aiogram.types import ChatMemberUpdated, User
 
 from database.models import Database
-from handlers.user.access_helpers import VALID_MEMBER_STATUSES, get_missing_channel_ids
+from handlers.user.access_helpers import VALID_MEMBER_STATUSES
 from handlers.user.reward_handlers import PRIVATE_REWARD_CHAT_IDS
-from services.referral_service import ReferralService
 from text.messages import get_text
 
 
@@ -101,25 +100,6 @@ async def _handle_member_left(event: ChatMemberUpdated, db: Database, referred_t
             required_referrals=db.required_referrals,
         ),
     )
-
-
-async def _handle_member_rejoined(event: ChatMemberUpdated, db: Database, referred_telegram_id: int):
-    referrer_telegram_id = await db.get_referrer_of_user(referred_telegram_id)
-    if not referrer_telegram_id:
-        return
-
-    missing_channel_ids = await get_missing_channel_ids(event.bot, referred_telegram_id, db)
-    if missing_channel_ids:
-        return
-
-    referral_validated = await db.validate_referral(referrer_telegram_id, referred_telegram_id)
-    if not referral_validated:
-        return
-
-    referral_service = ReferralService(db)
-    await referral_service.check_and_notify_reward_eligibility(referrer_telegram_id, event.bot)
-
-
 @chat_member_router.chat_member()
 async def handle_mandatory_chat_member_update(event: ChatMemberUpdated, db: Database):
     target_user = event.new_chat_member.user
@@ -135,5 +115,3 @@ async def handle_mandatory_chat_member_update(event: ChatMemberUpdated, db: Data
 
     if was_active and not is_active:
         await _handle_member_left(event, db, target_user.id)
-    elif not was_active and is_active:
-        await _handle_member_rejoined(event, db, target_user.id)

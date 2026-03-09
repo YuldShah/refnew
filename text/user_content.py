@@ -143,7 +143,7 @@ balki <b>SAT imtihoni uchun $111 registratsiya summasini yutib olish</b> imkoniy
 🏆 <b>Mukofotlar:</b>
 <i><b>Turbo Marafonda yuqori natija ko‘rsatgan</b> ustozlar va o‘quvchilar orasidan
 👉 </i><i><b>jami 5 nafar ishtirokchi</b> uchun</i>
-<blockquote>💰 <b>Mart oyidagi SAT registratsiya summasi ($111)</b>
+<blockquote>💰 <b>Iyun oyidagi SAT registratsiya summasi ($111)</b>
 <b>SAT Elbek tomonidan TO‘LIQ qoplab beriladi!</b></blockquote>
 
 🔥 <b>Qo‘shimcha imkoniyat:</b>
