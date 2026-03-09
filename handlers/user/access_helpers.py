@@ -10,6 +10,27 @@ from text.user_content import MAIN_MENU_TEXT
 VALID_MEMBER_STATUSES = {"member", "administrator", "creator"}
 
 
+async def has_any_mandatory_channel_membership(bot, user_id: int, db: Database) -> bool:
+    channel_ids = await db.get_mandatory_channel_ids()
+
+    for channel_id in channel_ids:
+        try:
+            member = await bot.get_chat_member(channel_id, user_id)
+        except Exception as exc:
+            logging.error(
+                "Failed to check existing membership for user %s in channel %s: %s",
+                user_id,
+                channel_id,
+                exc,
+            )
+            continue
+
+        if member.status in VALID_MEMBER_STATUSES:
+            return True
+
+    return False
+
+
 async def get_missing_channel_ids(bot, user_id: int, db: Database) -> list[int]:
     channel_ids = await db.get_mandatory_channel_ids()
     missing_channel_ids = []

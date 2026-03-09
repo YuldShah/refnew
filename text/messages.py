@@ -158,6 +158,12 @@ Yetarli ballarga ega bo'ling yopiq kanal va guruhimiz a'zosiga aylaning.
 👤 {user_name} sizning taklifingiz orqali botga qo'shildi.
 
 ⏳ Taklif qilingan foydalanuvchi bizning kanallarga obuna bo'lgandan so'ng taklif tasdiqlanadi.""",
+
+        'referrer_new_user_already_in_channels': """⚠️ <b>Taklif hisoblanmadi</b>
+
+👤 {user_name} sizning taklifingiz orqali botga ro'yxatdan o'tdi.
+
+🚫 Taklif qilingan foydalanuvchi yangi a'zo emas""",
         
         'referrer_user_subscribed': """🎉 <b>Taklif tasdiqlandi!</b>
 
@@ -168,6 +174,12 @@ Yetarli ballarga ega bo'ling yopiq kanal va guruhimiz a'zosiga aylaning.
     'en': {
         'welcome': "Welcome to the bot! 🎉",
         'referral_welcome': "You were invited by <b>{referrer}</b>! 🎉",
+
+        'referrer_new_user_already_in_channels': """⚠️ <b>Referral not counted</b>
+
+👤 {user_name} joined the bot through your referral link.
+
+🚫 That user was already in at least one mandatory chat before registering, so this referral does not count.""",
         'already_registered': "You are already registered!",
         'invalid_referral': "Invalid referral link!",
         'subscription_required': "Subscribe to all mandatory channels to use the bot:",

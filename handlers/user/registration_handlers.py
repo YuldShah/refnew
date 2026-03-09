@@ -9,6 +9,7 @@ from database.models import Database
 from filters.user_filters import IsUserFilter
 from handlers.user.access_helpers import (
     get_missing_channel_ids,
+    has_any_mandatory_channel_membership,
     send_entry_message,
     send_subscription_prompt,
 )
@@ -126,12 +127,32 @@ async def _notify_referrer_about_registration(
     referrer_telegram_id: int | None,
     referral_code: str | None,
     collected_full_name: str,
+    had_any_mandatory_membership: bool,
 ):
     if not referrer_telegram_id or not referral_code:
         return
 
     referrer = await db.get_user(referrer_telegram_id)
     if not referrer:
+        return
+
+    user_label = collected_full_name or (f"@{actor.username}" if actor.username else "User")
+    user_mention = f'<a href="tg://user?id={actor.id}">{user_label}</a>'
+
+    if had_any_mandatory_membership:
+        notification_text = get_text(
+            "referrer_new_user_already_in_channels",
+            "uz",
+            user_name=user_mention,
+        )
+        try:
+            await target_message.bot.send_message(referrer["telegram_id"], notification_text)
+        except Exception as exc:
+            logging.error(
+                "Failed to send invalid referral notification to %s: %s",
+                referrer["telegram_id"],
+                exc,
+            )
         return
 
     referral_added = await db.add_referral(
@@ -145,9 +166,6 @@ async def _notify_referrer_about_registration(
     referrer_missing = await get_missing_channel_ids(target_message.bot, referrer["telegram_id"], db)
     user_missing = await get_missing_channel_ids(target_message.bot, actor.id, db)
     both_subscribed = not referrer_missing and not user_missing
-
-    user_label = collected_full_name or (f"@{actor.username}" if actor.username else "User")
-    user_mention = f'<a href="tg://user?id={actor.id}">{user_label}</a>'
 
     if both_subscribed:
         await db.validate_referral(referrer["telegram_id"], actor.id)
@@ -183,6 +201,11 @@ async def _finish_registration(
     state_data = await state.get_data()
     sat_goal = SAT_GOAL_OPTIONS[sat_goal_key]["value"]
     collected_full_name = state_data["full_name"]
+    had_any_mandatory_membership = await has_any_mandatory_channel_membership(
+        target_message.bot,
+        actor.id,
+        db,
+    )
 
     await db.complete_user_registration(
         telegram_id=actor.id,
@@ -201,6 +224,7 @@ async def _finish_registration(
         state_data.get("referrer_telegram_id"),
         state_data.get("referral_code"),
         collected_full_name,
+        had_any_mandatory_membership,
     )
 
     await state.clear()
