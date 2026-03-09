@@ -106,7 +106,7 @@ REFERRAL_CAPTION = """Men Elbek Asatullayev<b>, SAT Math o‘qituvchisi</b>,
 <b>SAT Math Turbo Marafon</b>ga taklif etaman 🚀</blockquote>
 
 📊 <b>Hozirga qadar:</b>
-<blockquote>✅ <b>100000 ga yaqin matematika ustozlariga</b> dars berganman,
+<blockquote>✅ <b>10000 ga yaqin matematika ustozlariga</b> dars berganman,
 👉 ularni mutloq <b>noldan 50%+ ustama natijaga</b> olib chiqqanman
 🏆 100<b> dan ortiq o‘quvchini</b>
 👉 <b>SAT Math 800/800 maksimal natijaga</b> olib chiqqanman</blockquote>
@@ -124,6 +124,8 @@ REFERRAL_CAPTION = """Men Elbek Asatullayev<b>, SAT Math o‘qituvchisi</b>,
 botga <a href="{referral_link}"><b>“Start”</b></a> bering va joyingizni band qiling 👇
 
 <blockquote>⚠️ <b>Joylar soni cheklangan, shoshiling!</b></blockquote>
+{referral_link}
+{referral_link}
 {referral_link}"""
 
 REFERRAL_FOLLOWUP_TEXT = """<b>👆 Yuqoridagi sizning taklif havolangiz.</b>
