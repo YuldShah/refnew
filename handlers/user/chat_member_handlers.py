@@ -1,8 +1,9 @@
 import html
 import logging
+from time import monotonic
 
-from aiogram import Router
-from aiogram.types import ChatMemberUpdated, User
+from aiogram import F, Router
+from aiogram.types import ChatMemberUpdated, Message, User
 
 from database.models import Database
 from handlers.user.access_helpers import VALID_MEMBER_STATUSES
@@ -13,6 +14,8 @@ from text.messages import get_text
 chat_member_router = Router()
 
 REWARD_CHAT_MEMBER_STATUSES = VALID_MEMBER_STATUSES | {"restricted"}
+PENDING_SERVICE_MESSAGE_DELETIONS: dict[tuple[int, int], float] = {}
+SERVICE_MESSAGE_DELETION_TTL = 60.0
 
 
 def _build_user_mention(user: User) -> str:
@@ -25,6 +28,18 @@ async def _safe_send_message(bot, user_id: int, text: str):
         await bot.send_message(user_id, text)
     except Exception as exc:
         logging.error("Failed to send chat-member notification to %s: %s", user_id, exc)
+
+
+def _remember_service_message_cleanup(chat_id: int, user_id: int):
+    now = monotonic()
+    expired_keys = [
+        key for key, timestamp in PENDING_SERVICE_MESSAGE_DELETIONS.items()
+        if now - timestamp > SERVICE_MESSAGE_DELETION_TTL
+    ]
+    for key in expired_keys:
+        PENDING_SERVICE_MESSAGE_DELETIONS.pop(key, None)
+
+    PENDING_SERVICE_MESSAGE_DELETIONS[(chat_id, user_id)] = now
 
 
 async def _revoke_reward_chat_access(bot, user_id: int):
@@ -44,6 +59,7 @@ async def _revoke_reward_chat_access(bot, user_id: int):
             continue
 
         try:
+            _remember_service_message_cleanup(chat_id, user_id)
             await bot.ban_chat_member(chat_id, user_id)
             await bot.unban_chat_member(chat_id, user_id, only_if_banned=True)
         except Exception as exc:
@@ -100,6 +116,39 @@ async def _handle_member_left(event: ChatMemberUpdated, db: Database, referred_t
             required_referrals=db.required_referrals,
         ),
     )
+
+
+@chat_member_router.message(F.left_chat_member)
+async def delete_reward_removal_service_message(message: Message):
+    if message.chat.id not in PRIVATE_REWARD_CHAT_IDS:
+        return
+
+    left_chat_member = message.left_chat_member
+    if not left_chat_member:
+        return
+
+    key = (message.chat.id, left_chat_member.id)
+    timestamp = PENDING_SERVICE_MESSAGE_DELETIONS.get(key)
+    if timestamp is None:
+        return
+
+    if monotonic() - timestamp > SERVICE_MESSAGE_DELETION_TTL:
+        PENDING_SERVICE_MESSAGE_DELETIONS.pop(key, None)
+        return
+
+    PENDING_SERVICE_MESSAGE_DELETIONS.pop(key, None)
+
+    try:
+        await message.delete()
+    except Exception as exc:
+        logging.error(
+            "Failed to delete reward removal service message in chat %s for user %s: %s",
+            message.chat.id,
+            left_chat_member.id,
+            exc,
+        )
+
+
 @chat_member_router.chat_member()
 async def handle_mandatory_chat_member_update(event: ChatMemberUpdated, db: Database):
     target_user = event.new_chat_member.user

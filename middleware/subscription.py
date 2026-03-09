@@ -46,6 +46,9 @@ class SubscriptionMiddleware(BaseMiddleware):
         if isinstance(event, Message) and event.text and event.text.startswith("/start"):
             return await handler(event, data)
 
+        if isinstance(event, Message) and event.left_chat_member:
+            return await handler(event, data)
+
         if isinstance(event, CallbackQuery) and event.data == "check_subscription":
             return await handler(event, data)
 
