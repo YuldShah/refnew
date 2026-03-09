@@ -288,13 +288,42 @@ class Database:
                 logging.error(f"Error adding referral: {str(e)}")
                 return False
 
-    async def validate_referral(self, referrer_telegram_id: int, referred_telegram_id: int):
+    async def validate_referral(self, referrer_telegram_id: int, referred_telegram_id: int) -> bool:
         async with self.pool.acquire() as conn:
-            await conn.execute('''
+            result = await conn.execute('''
                 UPDATE referrals SET valid = TRUE 
                 WHERE referrer_id = (SELECT id FROM users WHERE telegram_id = $1) 
                 AND referred_id = (SELECT id FROM users WHERE telegram_id = $2)
             ''', referrer_telegram_id, referred_telegram_id)
+            return result != "UPDATE 0"
+
+    async def invalidate_referral(self, referrer_telegram_id: int, referred_telegram_id: int) -> bool:
+        async with self.pool.acquire() as conn:
+            result = await conn.execute(
+                '''
+                UPDATE referrals SET valid = FALSE
+                WHERE referrer_id = (SELECT id FROM users WHERE telegram_id = $1)
+                AND referred_id = (SELECT id FROM users WHERE telegram_id = $2)
+                AND valid = TRUE
+                ''',
+                referrer_telegram_id,
+                referred_telegram_id,
+            )
+            return result != "UPDATE 0"
+
+    async def get_referrer_of_user(self, referred_telegram_id: int) -> Optional[int]:
+        async with self.pool.acquire() as conn:
+            return await conn.fetchval(
+                '''
+                SELECT u.telegram_id
+                FROM referrals r
+                JOIN users u ON r.referrer_id = u.id
+                WHERE r.referred_id = (SELECT id FROM users WHERE telegram_id = $1)
+                ORDER BY r.id
+                LIMIT 1
+                ''',
+                referred_telegram_id,
+            )
 
     async def get_unvalidated_referrals(self, referrer_telegram_id: int) -> List[dict]:
         async with self.pool.acquire() as conn:
@@ -393,6 +422,16 @@ class Database:
 
             result = await conn.fetchval('SELECT id FROM rewards WHERE user_id = $1', user_id)
             return result is not None
+
+    async def delete_user_reward(self, telegram_id: int) -> bool:
+        """Delete all saved reward data for a user"""
+        async with self.pool.acquire() as conn:
+            user_id = await conn.fetchval('SELECT id FROM users WHERE telegram_id = $1', telegram_id)
+            if not user_id:
+                return False
+
+            result = await conn.execute('DELETE FROM rewards WHERE user_id = $1', user_id)
+            return result != "DELETE 0"
     
     # Mandatory Channels Management
     async def add_mandatory_channel(self, chat_id: int, title: str, link: str = None) -> bool:

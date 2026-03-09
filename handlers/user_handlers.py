@@ -8,6 +8,7 @@ from handlers.user.access_helpers import (
     send_main_menu,
     send_subscription_prompt,
 )
+from handlers.user.chat_member_handlers import chat_member_router
 from handlers.user.menu_handlers import menu_router
 from handlers.user.registration_handlers import registration_router
 from handlers.user.stats_handlers import refresh_user_stats
@@ -15,6 +16,7 @@ from text.messages import get_text
 
 
 user_router = Router()
+user_router.include_router(chat_member_router)
 user_router.include_router(registration_router)
 user_router.include_router(menu_router)
 

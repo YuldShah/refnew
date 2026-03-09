@@ -41,7 +41,7 @@ async def main():
     
     try:
         # Start polling
-        await dp.start_polling(bot)
+        await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
     except Exception as e:
         logging.error(f"Error starting bot: {e}")
     finally:

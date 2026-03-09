@@ -170,6 +170,18 @@ Yetarli ballarga ega bo'ling yopiq kanal va guruhimiz a'zosiga aylaning.
 👤 {user_name} bizning kanallarga obuna bo'ldi!
 
 ✅ Bu taklif endi tasdiqlangan takliflar ro'yxatida.""",
+
+        'referral_invalidated': """⚠️ <b>Taklif bekor qilindi</b>
+
+👤 {user_name} {channel_name} chatidan chiqib ketdi.
+
+📉 Tasdiqlangan takliflaringiz soni: <b>{current_referrals}/{required_referrals}</b>.""",
+
+        'reward_access_revoked': """🚫 <b>Yopiq chatlar kirishi bekor qilindi</b>
+
+📉 Tasdiqlangan takliflaringiz soni <b>{current_referrals}</b> taga tushdi.
+
+🔒 Shu sababli sizga berilgan yopiq chat havolalari bekor qilindi. {required_referrals} ta tasdiqlangan taklifga qaytsangiz, yangi havolalarni olasiz.""",
     },
     'en': {
         'welcome': "Welcome to the bot! 🎉",
@@ -322,23 +334,35 @@ Keep going and earn more rewards! 🎯""",
         'referrals_validated': """🎉 <b>News!</b> {count} new referrals have been confirmed from your friends!""",
         
         # Referrer notification messages
-        'referrer_new_user_subscribed': """🎉 <b>Yangi foydalanuvchi!</b>
+        'referrer_new_user_subscribed': """🎉 <b>New user!</b>
 
-👤 {user_name} sizning taklifingiz orqali botga qo'shildi va bizning barcha kanallarimizga obuna bo'ldi!
+👤 {user_name} joined the bot through your referral link and subscribed to all mandatory chats!
 
-✅ Bu taklif tasdiqlangan takliflar ro'yxatiga qo'shildi.""",
+✅ This referral has been added to your confirmed referral list.""",
         
-        'referrer_new_user_pending': """🔔 <b>Yangi foydalanuvchi!</b>
+        'referrer_new_user_pending': """🔔 <b>New user!</b>
 
-👤 {user_name} sizning taklifingiz orqali botga qo'shildi.
+👤 {user_name} joined the bot through your referral link.
 
-⏳ Hozircha bizning kanallarimizga obuna bo'lishi kutilmoqda. Obuna bo'lgandan so'ng taklif tasdiqlanadi.""",
+⏳ This referral will be confirmed after that user subscribes to all mandatory chats.""",
         
-        'referrer_user_subscribed': """🎉 <b>Taklif tasdiqlandi!</b>
+        'referrer_user_subscribed': """🎉 <b>Referral confirmed!</b>
 
-👤 {user_name} bizning kanallarimizga obuna bo'ldi!
+👤 {user_name} subscribed to all mandatory chats.
 
-✅ Bu taklif endi tasdiqlangan takliflar ro'yxatida.""",
+✅ This referral is now in your confirmed referral list.""",
+
+        'referral_invalidated': """⚠️ <b>Referral invalidated</b>
+
+👤 {user_name} left {channel_name}.
+
+📉 Your confirmed referral count is now <b>{current_referrals}/{required_referrals}</b>.""",
+
+        'reward_access_revoked': """🚫 <b>Reward chat access revoked</b>
+
+📉 Your confirmed referral count dropped to <b>{current_referrals}</b>.
+
+🔒 Your saved reward access has been revoked. Reach {required_referrals} confirmed referrals again to receive fresh invite links.""",
     }
 }
 
