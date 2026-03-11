@@ -1,6 +1,7 @@
 import logging
 
 from aiogram import F, Router
+from aiogram.exceptions import TelegramForbiddenError
 from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message, ReplyKeyboardRemove
@@ -327,14 +328,21 @@ async def start_handler(message: Message, state: FSMContext, db: Database):
 
     existing_user = await db.get_user(message.from_user.id)
     if existing_user and existing_user.get("registration_completed"):
-        await send_entry_message(
-            message,
-            db,
-            message.from_user.id,
-            message.from_user.mention_html(),
-        )
-        if referral_code:
-            await message.answer(get_text("already_registered", "uz"))
+        try:
+            await send_entry_message(
+                message,
+                db,
+                message.from_user.id,
+                message.from_user.mention_html(),
+            )
+            if referral_code:
+                await message.answer(get_text("already_registered", "uz"))
+        except TelegramForbiddenError as exc:
+            logging.warning(
+                "User %s blocked the bot during /start for an existing account: %s",
+                message.from_user.id,
+                exc,
+            )
         return
 
     await db.ensure_user(
@@ -346,7 +354,15 @@ async def start_handler(message: Message, state: FSMContext, db: Database):
         referrer_telegram_id=referrer["telegram_id"] if referrer else None,
         referral_code=referral_code,
     )
-    await _ask_full_name(message, state)
+    try:
+        await _ask_full_name(message, state)
+    except TelegramForbiddenError as exc:
+        logging.warning(
+            "User %s blocked the bot before the registration prompt could be sent: %s",
+            message.from_user.id,
+            exc,
+        )
+        await state.clear()
 
 
 @registration_router.message(RegistrationStates.full_name)
