@@ -43,11 +43,11 @@ class SubscriptionMiddleware(BaseMiddleware):
         if self._is_admin(user.id):
             return await handler(event, data)
 
-        if isinstance(event, Message) and event.text and event.text.startswith("/start"):
-            return await handler(event, data)
-
         if isinstance(event, Message) and event.chat.type != "private":
             return
+
+        if isinstance(event, Message) and event.text and event.text.startswith("/start"):
+            return await handler(event, data)
 
         if isinstance(event, Message) and event.left_chat_member:
             return await handler(event, data)
